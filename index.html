@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteCore - Control de Notas y Simulación Académica</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER / NAVEGACIÓN -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <span class="logo-text">Note<span class="highlight">Core</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="#caracteristicas">Características</a>
+        <a href="#como-funciona">¿Cómo funciona?</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline">Iniciar Sesión</a>
+        <a href="register.html" class="btn btn-primary">Registrarse</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="container hero-container">
+      <div class="hero-content">
+        <span class="badge">Acompañamiento Universitario Inteligente</span>
+        <h1>Toma el control total de tus <span class="highlight">notas del semestre</span></h1>
+        <p>
+          Configura los cortes de tu universidad, calcula cuánto necesitas exactamente para aprobar y recibe recomendaciones inteligentes con <strong>CoreAI</strong>.
+        </p>
+        <div class="hero-buttons">
+          <a href="register.html" class="btn btn-primary btn-lg">Comenzar gratis</a>
+          <a href="#como-funciona" class="btn btn-outline btn-lg">Ver simulación</a>
+        </div>
+      </div>
+      <div class="hero-preview">
+        <!-- Mockup o vista previa visual de la simulación de notas -->
+        <div class="card-preview">
+          <div class="card-preview-header">
+            <span>Sistemas y Servidores</span>
+            <span class="status-badge warning">En riesgo (2.8/5.0)</span>
+          </div>
+          <div class="card-preview-body">
+            <p class="sim-text">Necesitas mínimo <strong>3.5</strong> en el 3er corte para aprobar la asignatura.</p>
+            <div class="progress-bar-demo">
+              <div class="fill" style="width: 60%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARACTERÍSTICAS -->
+  <section id="caracteristicas" class="features container">
+    <h2 class="section-title">Diseñado para la vida universitaria</h2>
+    <div class="features-grid">
+      <article class="feature-card">
+        <div class="feature-icon">⚙️</div>
+        <h3>Cortes Personalizables</h3>
+        <p>Adapta los porcentajes por materia (30-30-40 o esquemas propios) según lo defina tu profesor.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>Simulador Metodológico</h3>
+        <p>Calcula múltiples escenarios de calificación para tus cortes finales según la nota del primer parcial.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>Asistente CoreAI</h3>
+        <p>Diagnósticos en tiempo real y planes de estudio ajustados a tu meta académica para evitar sorpresas.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <p>&copy; 2026 NoteCore. Desarrollado por Estiben.dev</p>
+    </div>
+  </footer>
+
+</body>
+</html>
