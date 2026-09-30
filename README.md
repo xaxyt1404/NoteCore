@@ -1,0 +1,1 @@
+# NoteCore - Gestión Académica Universitaria
