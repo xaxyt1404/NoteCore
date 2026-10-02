@@ -1,1 +1,9 @@
 node_modules/\n.env
+
+# Archivos temporales y de sincronización de Google Drive
+*.tmp
+*.driveupload
+.ds_store
+desktop.ini
+thumbs.db
+~$*

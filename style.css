@@ -327,53 +327,88 @@ a {
 /* ==========================================
    AJUSTE DE ESCALA Y ESPACIOS EN MÓVIL
    ========================================== */
+/* ==========================================
+   AJUSTE RESPONSIVE CORREGIDO PARA MÓVIL
+   ========================================== */
 @media (max-width: 768px) {
-  html {
-    font-size: 14px;
-    /* Hace que todos los elementos con rem bajen de escala un 12% */
+  /* Evita el desbordamiento horizontal */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
   }
 
-  .hero-content h1 {
-    font-size: 1.85rem;
-    /* Título más compacto */
-    line-height: 1.2;
+  /* 1. Ocultamos los links de navegación de texto en celular para dar espacio */
+  .nav-links {
+    display: none !important;
   }
 
-  .hero-content p {
-    font-size: 0.95rem;
-    /* Párrafo más fino */
-    margin-bottom: 1.5rem;
+  /* 2. Reestructurar la Navbar en móvil */
+  .nav-container {
+    height: 60px;
+    padding: 0 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo-img {
+    height: 32px; /* Logo a tamaño cómodo */
+  }
+
+  .nav-actions {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  /* Botones superiores súper compactos y bonitos */
+  .nav-actions .btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    border-radius: 10px;
+  }
+
+  /* 3. Reorganizar la Hero Section a 1 sola columna */
+  .hero-container {
+    grid-template-columns: 1fr !important; /* Fuerza una columna */
+    gap: 2rem;
+    text-align: center;
   }
 
   .hero {
-    padding: 2rem 0 3rem;
-    /* Menos espacio vertical arriba y abajo */
+    padding: 1.5rem 0 2rem;
   }
 
-  .container {
-    padding: 0 1rem;
-    /* Márgenes laterales más delgados */
+  .hero-content h1 {
+    font-size: 1.65rem;
+    line-height: 1.25;
   }
 
-  .btn {
-    padding: 0.6rem 1.1rem;
-    font-size: 0.88rem;
-    /* Botones más proporcionados */
+  .hero-content p {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
   }
 
-  .btn-lg {
-    padding: 0.75rem 1.4rem;
-    font-size: 0.95rem;
+  .hero-buttons {
+    justify-content: center;
+    gap: 0.8rem;
   }
 
+  .hero-buttons .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Tarjeta Preview */
   .card-preview {
-    padding: 1.2rem;
-    /* Menos relleno interno en la tarjeta preview */
+    padding: 1rem;
+    margin: 0 auto;
+    max-width: 100%;
   }
 
+  /* Reducir los iconos 3D para que no estorben */
   .bg-icon {
-    opacity: 0.2;
-    transform: scale(0.6);
+    opacity: 0.15;
+    transform: scale(0.5);
   }
 }
 
