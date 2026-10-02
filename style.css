@@ -331,8 +331,10 @@ a {
    AJUSTE RESPONSIVE CORREGIDO PARA MÓVIL
    ========================================== */
 @media (max-width: 768px) {
+
   /* Evita el desbordamiento horizontal */
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     width: 100%;
   }
@@ -352,7 +354,8 @@ a {
   }
 
   .logo-img {
-    height: 32px; /* Logo a tamaño cómodo */
+    height: 32px;
+    /* Logo a tamaño cómodo */
   }
 
   .nav-actions {
@@ -369,7 +372,8 @@ a {
 
   /* 3. Reorganizar la Hero Section a 1 sola columna */
   .hero-container {
-    grid-template-columns: 1fr !important; /* Fuerza una columna */
+    grid-template-columns: 1fr !important;
+    /* Fuerza una columna */
     gap: 2rem;
     text-align: center;
   }

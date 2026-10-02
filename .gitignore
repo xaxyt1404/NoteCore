@@ -1,4 +1,5 @@
-node_modules/\n.env
+node_modules/
+.env
 
 # Archivos temporales y de sincronización de Google Drive
 *.tmp
