@@ -34,6 +34,94 @@ section[id] {
   --shadow-button-3d: 0 6px 0px #0077c8, 0 10px 20px rgba(0, 163, 255, 0.3);
 }
 
+/* ==========================================
+   MODO OSCURO (DARK MODE 3D)
+   ========================================== */
+[data-theme="dark"] {
+  --bg-main: #0a1118;
+  --bg-card: #16202c;
+  --bg-card-hover: #1c2a3a;
+  --border-color: #202e3e;
+
+  --primary: #38bdf8;
+  --primary-hover: #0284c7;
+  --text-main: #ffffff;
+  --text-muted: #90a4ae;
+
+  --warning: #ff9800;
+  --success: #10b981;
+
+  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-hover: 0 20px 40px rgba(0, 163, 255, 0.15);
+  --shadow-button-3d: 0 5px 0px #0284c7, 0 8px 18px rgba(56, 189, 248, 0.25);
+}
+
+/* Ajustes específicos de componentes para el Modo Oscuro */
+[data-theme="dark"] .navbar {
+  background-color: rgba(10, 17, 24, 0.85);
+  border-bottom: 1px solid rgba(32, 46, 62, 0.8);
+}
+
+[data-theme="dark"] .badge {
+  background-color: #1a2636;
+  color: var(--primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .btn-outline {
+  background-color: #1a2636;
+  border-color: var(--border-color);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+[data-theme="dark"] .status-badge.warning {
+  background-color: #3d2400;
+  color: #ff9800;
+}
+
+[data-theme="dark"] .footer {
+  background-color: #0a1118;
+  border-top: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea {
+  background-color: #0d1622;
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group textarea:focus {
+  background-color: #131d2a;
+}
+
+[data-theme="dark"] .bg-icon {
+  opacity: 0.18;
+}
+
+/* Transición suave para todos los elementos al cambiar de tema */
+body,
+.navbar,
+.card-preview,
+.feature-card,
+.info-card,
+.contact-form,
+.hamburger-btn,
+.btn,
+.badge,
+.footer,
+.sidebar,
+.theme-menu,
+.form-group input,
+.form-group textarea {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -297,6 +385,69 @@ a {
   background-color: var(--bg-card-hover);
   color: var(--primary);
   transform: translateX(4px);
+}
+
+/* ==========================================
+   DROPDOWN SELECTOR DE TEMA
+   ========================================== */
+.theme-dropdown-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  transform: translateY(2px);
+}
+
+.theme-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 130px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: var(--transition);
+  z-index: 250;
+}
+
+.theme-menu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.theme-option {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  text-align: left;
+}
+
+.theme-option:hover {
+  background-color: var(--bg-card-hover);
+  color: var(--primary);
+}
+
+.theme-option.active {
+  color: var(--primary);
+  background-color: var(--bg-card-hover);
 }
 
 /* ==========================================
@@ -817,6 +968,22 @@ a {
     padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
     border-radius: 10px;
+  }
+
+  /* Ajustes del Menú de Tema en Móviles */
+  .theme-dropdown-wrapper {
+    transform: translateY(1px);
+  }
+
+  .theme-menu {
+    right: -10px;
+    min-width: 120px;
+    padding: 4px;
+  }
+
+  .theme-option {
+    padding: 10px;
+    font-size: 0.8rem;
   }
 
   .hero-container {

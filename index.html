@@ -39,7 +39,7 @@
   <!-- NAV BAR -->
   <header class="navbar">
     <div class="nav-container container">
-      <!-- Lado Izquierdo: Botón Hamburguesa + Logo -->
+      <!-- Botón Hamburguesa + Logo -->
       <div class="nav-left">
         <button class="hamburger-btn" id="menuToggle" aria-label="Abrir menú">
           <i class="fa-solid fa-bars"></i>
@@ -49,8 +49,27 @@
         </a>
       </div>
 
-      <!-- Lado Derecho: Botones de Acción -->
+      <!-- Botones de Acción -->
       <div class="nav-actions">
+        <!-- Botón Selector de Tema -->
+        <div class="theme-dropdown-wrapper">
+          <button id="theme-btn" class="hamburger-btn" aria-label="Cambiar tema">
+            <i id="theme-btn-icon" class="fa-solid fa-sun"></i>
+          </button>
+
+          <!-- Menú desplegable flotante -->
+          <div id="theme-menu" class="theme-menu">
+            <button class="theme-option" data-theme-opt="light">
+              <i class="fa-solid fa-sun"></i> Claro
+            </button>
+            <button class="theme-option" data-theme-opt="dark">
+              <i class="fa-solid fa-moon"></i> Oscuro
+            </button>
+            <button class="theme-option" data-theme-opt="system">
+              <i class="fa-solid fa-desktop"></i> Sistema
+            </button>
+          </div>
+        </div>
         <a href="login.html" class="btn btn-outline">Iniciar Sesión</a>
         <a href="register.html" class="btn btn-primary">Registrarse</a>
       </div>
