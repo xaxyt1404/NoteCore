@@ -85,6 +85,11 @@ section[id] {
   color: #ff9800;
 }
 
+[data-theme="dark"] .status-badge.info {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: var(--primary);
+}
+
 [data-theme="dark"] .footer {
   background-color: #0a1118;
   border-top: 1px solid var(--border-color);
@@ -104,17 +109,11 @@ section[id] {
   opacity: 0.18;
 }
 
-/* Transición suave para todos los elementos al cambiar de tema */
+/* Transición suave para elementos interactivos al cambiar de tema o hover */
 body,
 .navbar,
-.card-preview,
-.feature-card,
-.info-card,
-.contact-form,
 .hamburger-btn,
 .btn,
-.badge,
-.footer,
 .sidebar,
 .theme-menu,
 .form-group input,
@@ -180,7 +179,7 @@ a {
   transform: scale(1.03);
 }
 
-/* Botones 3D */
+/* Botones 3D (Interactividad Exclusiva) */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -282,7 +281,6 @@ a {
   box-shadow: 0 1px 0px var(--border-color);
 }
 
-/* Botones de acción en la navbar */
 .nav-actions {
   display: flex;
   gap: 0.8rem;
@@ -357,7 +355,6 @@ a {
   background-color: var(--bg-card-hover);
 }
 
-/* Enlaces del Sidebar */
 .sidebar-links {
   display: flex;
   flex-direction: column;
@@ -483,7 +480,7 @@ a {
   gap: 1.2rem;
 }
 
-/* Tarjeta Preview Estilo 3D Soft */
+/* Contenedor Base de Tarjeta Preview */
 .card-preview {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -491,11 +488,6 @@ a {
   padding: 2rem;
   box-shadow: var(--shadow-card);
   transition: var(--transition);
-}
-
-.card-preview:hover {
-  box-shadow: var(--shadow-hover);
-  transform: translateY(-4px);
 }
 
 .card-preview-header {
@@ -519,24 +511,75 @@ a {
   color: #d97706;
 }
 
-.sim-text {
-  font-size: 0.95rem;
+/* --- TARJETA PASO A PASO COREAI --- */
+.ai-guide-card {
+  border-color: var(--border-color);
+  background: var(--bg-card);
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.status-badge.info {
+  background-color: rgba(0, 163, 255, 0.12);
+  color: var(--primary);
+}
+
+.ai-greeting {
+  font-size: 0.92rem;
   color: var(--text-muted);
+  font-style: italic;
   margin-bottom: 1.2rem;
 }
 
-.progress-bar-demo {
-  height: 12px;
-  background-color: var(--bg-main);
-  border-radius: 10px;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
+.ai-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
-.progress-bar-demo .fill {
-  height: 100%;
-  background-color: var(--warning);
-  border-radius: 10px;
+.ai-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.step-num {
+  background-color: var(--primary);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.75rem;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-footer-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  background-color: var(--bg-main);
+  padding: 0.5rem 0.8rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  border: 1px solid var(--border-color);
 }
 
 /* ==========================================
@@ -566,12 +609,6 @@ a {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   transition: var(--transition);
-}
-
-.feature-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-hover);
-  border-color: var(--primary);
 }
 
 .feature-icon {
@@ -641,12 +678,6 @@ a {
   transition: var(--transition);
 }
 
-.info-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-hover);
-}
-
 .info-card i {
   font-size: 1.25rem;
   color: var(--primary);
@@ -682,10 +713,6 @@ a {
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border-color);
   transition: var(--transition);
-}
-
-.contact-form:hover {
-  box-shadow: var(--shadow-hover);
 }
 
 .contact-form h3 {
