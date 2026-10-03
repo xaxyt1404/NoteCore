@@ -1,3 +1,10 @@
+/* ==========================================
+   MAIN.CSS
+   Base global y componentes compartidos (navbar, botones, sidebar,
+   hero, contacto, footer, fondo animado, modal del simulador y responsive).
+   Requiere variables.css.
+   ========================================== */
+
 html {
   scroll-behavior: smooth;
 }
@@ -5,108 +12,6 @@ html {
 /* Offset para que los enlaces internos no queden ocultos tras la navbar pegajosa */
 section[id] {
   scroll-margin-top: 50px;
-}
-
-/* ==========================================
-   VARIABLES Y ESTILOS BASE (LIGHT MODE 3D)
-   ========================================== */
-:root {
-  /* Paleta de Colores */
-  --bg-main: #eaf4fe;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f1f7ff;
-  --border-color: #d0e3ff;
-
-  --primary: #00a3ff;
-  --primary-hover: #0082cc;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-
-  --warning: #f59e0b;
-  --success: #10b981;
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Sombras 3D Soft */
-  --shadow-card: 0 12px 32px rgba(0, 102, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.02);
-  --shadow-hover: 0 20px 40px rgba(0, 102, 255, 0.15);
-  --shadow-button-3d: 0 6px 0px #0077c8, 0 10px 20px rgba(0, 163, 255, 0.3);
-}
-
-/* ==========================================
-   MODO OSCURO (DARK MODE 3D)
-   ========================================== */
-[data-theme="dark"] {
-  --bg-main: #0a1118;
-  --bg-card: #16202c;
-  --bg-card-hover: #1c2a3a;
-  --border-color: #202e3e;
-
-  --primary: #38bdf8;
-  --primary-hover: #0284c7;
-  --text-main: #ffffff;
-  --text-muted: #90a4ae;
-
-  --warning: #ff9800;
-  --success: #10b981;
-
-  --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
-  --shadow-hover: 0 20px 40px rgba(0, 163, 255, 0.15);
-  --shadow-button-3d: 0 5px 0px #0284c7, 0 8px 18px rgba(56, 189, 248, 0.25);
-}
-
-/* Ajustes específicos de componentes para el Modo Oscuro */
-[data-theme="dark"] .navbar {
-  background-color: rgba(10, 17, 24, 0.85);
-  border-bottom: 1px solid rgba(32, 46, 62, 0.8);
-}
-
-[data-theme="dark"] .badge {
-  background-color: #1a2636;
-  color: var(--primary);
-  border-color: var(--border-color);
-}
-
-[data-theme="dark"] .btn-outline {
-  background-color: #1a2636;
-  border-color: var(--border-color);
-  color: #ffffff;
-}
-
-[data-theme="dark"] .btn-outline:hover {
-  background-color: var(--bg-card-hover);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-[data-theme="dark"] .status-badge.warning {
-  background-color: #3d2400;
-  color: #ff9800;
-}
-
-[data-theme="dark"] .status-badge.info {
-  background-color: rgba(56, 189, 248, 0.15);
-  color: var(--primary);
-}
-
-[data-theme="dark"] .footer {
-  background-color: #0a1118;
-  border-top: 1px solid var(--border-color);
-}
-
-[data-theme="dark"] .form-group input,
-[data-theme="dark"] .form-group textarea {
-  background-color: #0d1622;
-}
-
-[data-theme="dark"] .form-group input:focus,
-[data-theme="dark"] .form-group textarea:focus {
-  background-color: #131d2a;
-}
-
-[data-theme="dark"] .bg-icon {
-  opacity: 0.18;
 }
 
 /* Transición suave para elementos interactivos al cambiar de tema o hover */
