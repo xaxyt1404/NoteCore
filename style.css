@@ -50,7 +50,7 @@ a {
 }
 
 /* ==========================================
-   COMPONENTES Y BOTONES 3D
+   COMPONENTES Y BOTONES
    ========================================== */
 .highlight {
   color: var(--primary);
@@ -133,7 +133,7 @@ a {
 }
 
 /* ==========================================
-   NAVBAR
+   NAVBAR CON MENÚ HAMBURGUESA Y SIDEBAR
    ========================================== */
 .navbar {
   background-color: rgba(234, 244, 254, 0.85);
@@ -148,28 +148,145 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
+  height: 70px;
 }
 
-.nav-links {
+.nav-left {
   display: flex;
-  gap: 2rem;
+  align-items: center;
+  gap: 1rem;
 }
 
-.nav-links a {
-  color: var(--text-muted);
-  font-weight: 600;
-  font-size: 0.95rem;
+/* Botón Hamburguesa 3D Soft */
+.hamburger-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  font-size: 1.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 3px 0px var(--border-color);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hamburger-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.hamburger-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0px var(--border-color);
+}
+
+/* Botones de acción en la navbar */
+.nav-actions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+/* --- ESTILOS DE LA BARRA LATERAL (SIDEBAR) --- */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
   transition: var(--transition);
 }
 
-.nav-links a:hover {
-  color: var(--primary);
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
-.nav-actions {
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -280px; /* Oculto fuera de la pantalla */
+  width: 260px;
+  height: 100vh;
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-color);
+  box-shadow: 10px 0 30px rgba(0, 102, 255, 0.1);
+  z-index: 201;
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  padding: 1.5rem;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.active {
+  transform: translateX(280px); /* Se desliza desde la izquierda */
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header .logo-img {
+  height: 36px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 8px;
+  transition: var(--transition);
+}
+
+.close-btn:hover {
+  color: var(--primary);
+  background-color: var(--bg-card-hover);
+}
+
+/* Enlaces del Sidebar */
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.75rem 1rem;
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: var(--radius-md);
+  transition: var(--transition);
+}
+
+.sidebar-link i {
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.sidebar-link:hover {
+  background-color: var(--bg-card-hover);
+  color: var(--primary);
+  transform: translateX(4px);
 }
 
 /* ==========================================
@@ -313,6 +430,202 @@ a {
 }
 
 /* ==========================================
+   CONTACTO
+   ========================================== */
+.contact {
+  padding: 40px 15px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.contact-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.contact-header h2 {
+  font-size: 1.9rem;
+  color: var(--text-main);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.contact-underline {
+  width: 50px;
+  height: 4px;
+  background-color: var(--primary);
+  margin: 0 auto 12px auto;
+  border-radius: 4px;
+}
+
+.contact-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* Contenedor Principal (Flujo Vertical) */
+.contact-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 1. Tarjetas de Información Arriba (Fila Horizontal) */
+.contact-info-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-hover);
+}
+
+.info-card i {
+  font-size: 1.25rem;
+  color: var(--primary);
+  width: 24px;
+  text-align: center;
+}
+
+.info-title {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-text {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+/* 2. Formularios Abajo (Lado a Lado) */
+.contact-forms-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.contact-form {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.contact-form:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.contact-form h3 {
+  font-size: 1rem;
+  margin-bottom: 14px;
+  color: var(--text-main);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+/* Cuadros de Entrada Más Compactos */
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  color: var(--text-main);
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0, 102, 255, 0.03);
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  background-color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.15);
+}
+
+/* Botones 3D Compactos */
+.submit-btn {
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  background-color: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-button-3d);
+  transition: var(--transition);
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0px #0077c8;
+}
+
+/* Botón 3D para WhatsApp */
+.ws-btn {
+  background-color: #25d366;
+  box-shadow: 0 5px 0px #1ba850, 0 8px 15px rgba(37, 211, 102, 0.25);
+}
+
+.ws-btn:hover {
+  background-color: #20bd5a;
+  transform: translateY(-2px);
+}
+
+.ws-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0px #1ba850;
+}
+
+/* ==========================================
    FOOTER
    ========================================== */
 .footer {
@@ -325,55 +638,79 @@ a {
 }
 
 /* ==========================================
-   AJUSTE DE ESCALA Y ESPACIOS EN MÓVIL
+   AJUSTES RESPONSIVE NAVBAR Y DISEÑO
    ========================================== */
-/* ==========================================
-   AJUSTE RESPONSIVE CORREGIDO PARA MÓVIL
-   ========================================== */
-@media (max-width: 768px) {
 
-  /* Evita el desbordamiento horizontal */
+/* Previene que el texto dentro de cualquier botón haga salto de línea */
+.btn {
+  white-space: nowrap;
+}
+
+/* 1. Laptops pequeñas y Tablets en horizontal (1024px a 901px) */
+@media (max-width: 1024px) {
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  .nav-links {
+    gap: 1.2rem;
+  }
+
+  .nav-links a {
+    font-size: 0.88rem;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .nav-actions .btn {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* 2. Transición a pantallas medianas (900px a 601px) */
+@media (max-width: 900px) {
+  .nav-links {
+    display: none !important;
+  }
+
+  .logo-img {
+    height: 38px;
+  }
+
+  .nav-actions .btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+  }
+}
+
+/* 3. Ajuste para Teléfonos Celulares (600px o menos) */
+@media (max-width: 600px) {
   html,
   body {
     overflow-x: hidden;
     width: 100%;
   }
 
-  /* 1. Ocultamos los links de navegación de texto en celular para dar espacio */
-  .nav-links {
-    display: none !important;
-  }
-
-  /* 2. Reestructurar la Navbar en móvil */
   .nav-container {
     height: 60px;
     padding: 0 0.8rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
 
   .logo-img {
     height: 32px;
-    /* Logo a tamaño cómodo */
   }
 
-  .nav-actions {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  /* Botones superiores súper compactos y bonitos */
   .nav-actions .btn {
     padding: 0.35rem 0.65rem;
     font-size: 0.75rem;
     border-radius: 10px;
   }
 
-  /* 3. Reorganizar la Hero Section a 1 sola columna */
   .hero-container {
     grid-template-columns: 1fr !important;
-    /* Fuerza una columna */
     gap: 2rem;
     text-align: center;
   }
@@ -402,17 +739,15 @@ a {
     font-size: 0.85rem;
   }
 
-  /* Tarjeta Preview */
   .card-preview {
     padding: 1rem;
     margin: 0 auto;
     max-width: 100%;
   }
 
-  /* Reducir los iconos 3D para que no estorben */
   .bg-icon {
-    opacity: 0.15;
-    transform: scale(0.5);
+    opacity: 0.3;
+    transform: scale(0.7);
   }
 }
 

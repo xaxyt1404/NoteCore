@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NoteCore</title>
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,23 +28,48 @@
 
 <body>
 
-  <!-- HEADER / NAVEGACIÓN -->
+  <!-- NAV BAR -->
   <header class="navbar">
-    <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <img src="logotipo.png" alt="NoteCore Logo" class="logo-img">
-      </a>
-      <nav class="nav-links">
-        <a href="#caracteristicas">Características</a>
-        <a href="#como-funciona">¿Cómo funciona?</a>
-        <a href="#contacto">Contacto</a>
-      </nav>
+    <div class="nav-container container">
+      <!-- Lado Izquierdo: Botón Hamburguesa + Logo -->
+      <div class="nav-left">
+        <button class="hamburger-btn" id="menuToggle" aria-label="Abrir menú">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a href="#" class="logo">
+          <img src="logotipo.png" alt="NoteCore Logo" class="logo-img">
+        </a>
+      </div>
+
+      <!-- Lado Derecho: Botones de Acción -->
       <div class="nav-actions">
         <a href="login.html" class="btn btn-outline">Iniciar Sesión</a>
         <a href="register.html" class="btn btn-primary">Registrarse</a>
       </div>
     </div>
   </header>
+
+<!-- SIDEBAR / BARRA LATERAL DESPLEGABLE -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <img src="logotipo.png" alt="NoteCore Logo" class="logo-img">
+    <button class="close-btn" id="closeSidebar" aria-label="Cerrar menú">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <nav class="sidebar-links">
+    <a href="#caracteristicas" class="sidebar-link">
+      <i class="fa-solid fa-star"></i> Características
+    </a>
+    <a href="#como-funciona" class="sidebar-link">
+      <i class="fa-solid fa-circle-info"></i> ¿Cómo funciona?
+    </a>
+    <a href="#contacto" class="sidebar-link">
+      <i class="fa-solid fa-envelope"></i> Contacto
+    </a>
+  </nav>
+</aside>
 
   <!-- HERO SECTION -->
   <section class="hero">
@@ -103,6 +129,95 @@
     </div>
   </section>
 
+  <!--CONTACTO-->
+  <section id="contact" class="contact">
+    <div class="contact-header">
+      <h2>Contáctame</h2>
+      <p class="contact-subtitle">
+        ¿Tienes una duda o sugerencia? Envíame un mensaje y me pondré en contacto contigo.
+      </p>
+    </div>
+
+    <div class="contact-wrapper">
+      <!-- Información de Contacto Directo -->
+      <div class="contact-info-wrapper">
+        <div class="info-card">
+          <i class="fa-solid fa-envelope"></i>
+          <div>
+            <span class="info-title">Email</span>
+            <span class="info-text">martineze1422@outlook.com</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <i class="fa-solid fa-phone"></i>
+          <div>
+            <span class="info-title">Teléfono</span>
+            <span class="info-text">+57 313 629 7041</span>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <i class="fa-solid fa-location-dot"></i>
+          <div>
+            <span class="info-title">Ubicación</span>
+            <span class="info-text">Arjona, Bolívar, Colombia</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formularios de Contacto (Correo y WhatsApp) -->
+      <div class="contact-forms-container">
+
+        <!-- Opción 1: Formulario / Enlace WhatsApp Directo -->
+        <form class="contact-form ws-form" id="whatsappForm" onsubmit="sendToWhatsApp(event)">
+          <h3><i class="fa-brands fa-whatsapp"></i> Chat de WhatsApp</h3>
+          
+          <div class="form-group">
+            <label for="ws-name">Nombre</label>
+            <input type="text" id="ws-name" placeholder="Tu nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="ws-message">Consulta o Sugerencia</label>
+            <textarea id="ws-message" rows="3" placeholder="¿En qué te puedo ayudar?" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="submit-btn ws-btn">
+              <i class="fa-brands fa-whatsapp"></i> Enviar mensaje
+            </button>
+          </div>
+        </form>
+        
+        <!-- Opción 2: Formulario Correo -->
+        <form class="contact-form" id="emailForm">
+          <h3><i class="fa-solid fa-paper-plane"></i> Envío por Email</h3>
+          
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" id="name" name="name" placeholder="Tu nombre" autocomplete="name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="tu@correo.com" autocomplete="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea id="message" name="message" rows="3" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="submit-btn">Enviar Mensaje</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container footer-container">
@@ -127,6 +242,7 @@
     <img src="fondo\iconosfondo_13.png" class="bg-icon icon-13" alt="">
   </div>
 
+  <script src="script.js"></script>
 </body>
 
 </html>
