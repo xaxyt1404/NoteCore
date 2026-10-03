@@ -987,6 +987,7 @@ a {
     padding: 0 0.8rem;
     gap: 0.3rem;
   }
+
   .nav-left {
     gap: 0.4rem;
   }
@@ -1018,7 +1019,7 @@ a {
     width: 32px;
     display: flex;
     align-items: center;
-    justify-content: center;  
+    justify-content: center;
   }
 
   .theme-menu {
