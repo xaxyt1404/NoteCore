@@ -985,32 +985,51 @@ a {
   .nav-container {
     height: 60px;
     padding: 0 0.8rem;
+    gap: 0.3rem;
+  }
+  .nav-left {
+    gap: 0.4rem;
   }
 
   .logo-img {
     height: 32px;
   }
 
+  .nav-actions {
+    gap: 0.3rem;
+    align-items: center;
+  }
+
   .nav-actions .btn {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-    border-radius: 10px;
+    padding: 0.35rem 0.55rem;
+    font-size: 0.72rem;
+    border-radius: 8px;
   }
 
   /* Ajustes del Menú de Tema en Móviles */
   .theme-dropdown-wrapper {
-    transform: translateY(1px);
+    transform: none;
+  }
+
+  .theme-dropdown-wrapper .btn {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    height: 32px;
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;  
   }
 
   .theme-menu {
-    right: -10px;
-    min-width: 120px;
+    right: 0;
+    min-width: 110px;
     padding: 4px;
   }
 
   .theme-option {
-    padding: 10px;
-    font-size: 0.8rem;
+    padding: 8px;
+    font-size: 0.75rem;
   }
 
   .hero-container {
