@@ -1,8 +1,17 @@
+html {
+  scroll-behavior: smooth;
+}
+
+/* Offset para que los enlaces internos no queden ocultos tras la navbar pegajosa */
+section[id] {
+  scroll-margin-top: 50px;
+}
+
 /* ==========================================
    VARIABLES Y ESTILOS BASE (LIGHT MODE 3D)
    ========================================== */
 :root {
-  /* Paleta de Colores Inspirada en el Banner */
+  /* Paleta de Colores */
   --bg-main: #eaf4fe;
   --bg-card: #ffffff;
   --bg-card-hover: #f1f7ff;
@@ -95,6 +104,7 @@ a {
   cursor: pointer;
   transition: var(--transition);
   border: none;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -213,7 +223,7 @@ a {
 .sidebar {
   position: fixed;
   top: 0;
-  left: -280px; /* Oculto fuera de la pantalla */
+  left: -280px;
   width: 260px;
   height: 100vh;
   background-color: var(--bg-card);
@@ -227,7 +237,7 @@ a {
 }
 
 .sidebar.active {
-  transform: translateX(280px); /* Se desliza desde la izquierda */
+  transform: translateX(280px);
 }
 
 .sidebar-header {
@@ -379,7 +389,7 @@ a {
 }
 
 /* ==========================================
-   CARACTERÍSTICAS (PILARES DE NOTECORE)
+   CARACTERÍSTICAS
    ========================================== */
 .features {
   padding: 3rem 1.5rem 5rem;
@@ -450,27 +460,17 @@ a {
   margin-bottom: 8px;
 }
 
-.contact-underline {
-  width: 50px;
-  height: 4px;
-  background-color: var(--primary);
-  margin: 0 auto 12px auto;
-  border-radius: 4px;
-}
-
 .contact-subtitle {
   color: var(--text-muted);
   font-size: 0.95rem;
 }
 
-/* Contenedor Principal (Flujo Vertical) */
 .contact-wrapper {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* 1. Tarjetas de Información Arriba (Fila Horizontal) */
 .contact-info-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -518,7 +518,6 @@ a {
   font-weight: 700;
 }
 
-/* 2. Formularios Abajo (Lado a Lado) */
 .contact-forms-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -561,7 +560,6 @@ a {
   margin-bottom: 4px;
 }
 
-/* Cuadros de Entrada Más Compactos */
 .form-group input,
 .form-group textarea {
   width: 100%;
@@ -584,7 +582,6 @@ a {
   box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.15);
 }
 
-/* Botones 3D Compactos */
 .submit-btn {
   width: 100%;
   padding: 0.7rem 1.2rem;
@@ -609,7 +606,6 @@ a {
   box-shadow: 0 2px 0px #0077c8;
 }
 
-/* Botón 3D para WhatsApp */
 .ws-btn {
   background-color: #25d366;
   box-shadow: 0 5px 0px #1ba850, 0 8px 15px rgba(37, 211, 102, 0.25);
@@ -638,120 +634,6 @@ a {
 }
 
 /* ==========================================
-   AJUSTES RESPONSIVE NAVBAR Y DISEÑO
-   ========================================== */
-
-/* Previene que el texto dentro de cualquier botón haga salto de línea */
-.btn {
-  white-space: nowrap;
-}
-
-/* 1. Laptops pequeñas y Tablets en horizontal (1024px a 901px) */
-@media (max-width: 1024px) {
-  .nav-container {
-    padding: 0 1rem;
-  }
-
-  .nav-links {
-    gap: 1.2rem;
-  }
-
-  .nav-links a {
-    font-size: 0.88rem;
-  }
-
-  .nav-actions {
-    gap: 0.5rem;
-  }
-
-  .nav-actions .btn {
-    padding: 0.55rem 1rem;
-    font-size: 0.85rem;
-  }
-}
-
-/* 2. Transición a pantallas medianas (900px a 601px) */
-@media (max-width: 900px) {
-  .nav-links {
-    display: none !important;
-  }
-
-  .logo-img {
-    height: 38px;
-  }
-
-  .nav-actions .btn {
-    padding: 0.45rem 0.85rem;
-    font-size: 0.82rem;
-  }
-}
-
-/* 3. Ajuste para Teléfonos Celulares (600px o menos) */
-@media (max-width: 600px) {
-  html,
-  body {
-    overflow-x: hidden;
-    width: 100%;
-  }
-
-  .nav-container {
-    height: 60px;
-    padding: 0 0.8rem;
-  }
-
-  .logo-img {
-    height: 32px;
-  }
-
-  .nav-actions .btn {
-    padding: 0.35rem 0.65rem;
-    font-size: 0.75rem;
-    border-radius: 10px;
-  }
-
-  .hero-container {
-    grid-template-columns: 1fr !important;
-    gap: 2rem;
-    text-align: center;
-  }
-
-  .hero {
-    padding: 1.5rem 0 2rem;
-  }
-
-  .hero-content h1 {
-    font-size: 1.65rem;
-    line-height: 1.25;
-  }
-
-  .hero-content p {
-    font-size: 0.9rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .hero-buttons {
-    justify-content: center;
-    gap: 0.8rem;
-  }
-
-  .hero-buttons .btn {
-    padding: 0.6rem 1rem;
-    font-size: 0.85rem;
-  }
-
-  .card-preview {
-    padding: 1rem;
-    margin: 0 auto;
-    max-width: 100%;
-  }
-
-  .bg-icon {
-    opacity: 0.3;
-    transform: scale(0.7);
-  }
-}
-
-/* ==========================================
    FONDO ANIMADO DE ICONOS FLOTANTES
    ========================================== */
 .background-floating-icons {
@@ -761,21 +643,17 @@ a {
   width: 100%;
   height: 100vh;
   pointer-events: none;
-  /* No bloquea clics en los botones o texto */
   z-index: -1;
-  /* Queda detrás de todo el contenido */
   overflow: hidden;
 }
 
 .bg-icon {
   position: absolute;
   opacity: 0.35;
-  /* Transparencia suave para no distraer */
   filter: drop-shadow(0 10px 15px rgba(0, 102, 255, 0.08));
   user-select: none;
 }
 
-/* Animación de elevación sutil */
 @keyframes floatSlow {
   0% {
     transform: translateY(0px) rotate(0deg);
@@ -804,7 +682,6 @@ a {
   }
 }
 
-/* Ubicación estratégica de los iconos en los laterales */
 .icon-1 {
   top: 18%;
   left: 10%;
@@ -896,8 +773,88 @@ a {
   animation: floatSlowReverse 11s ease-in-out infinite;
 }
 
-/* En celulares reducimos la visibilidad para que no sature la pantalla móvil */
-@media (max-width: 768px) {
+/* ==========================================
+   DISEÑO RESPONSIVO Y ADAPTATIVO
+   ========================================== */
+
+@media (max-width: 1024px) {
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .nav-actions .btn {
+    padding: 0.55rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .logo-img {
+    height: 38px;
+  }
+
+  .nav-actions .btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-container {
+    height: 60px;
+    padding: 0 0.8rem;
+  }
+
+  .logo-img {
+    height: 32px;
+  }
+
+  .nav-actions .btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+    border-radius: 10px;
+  }
+
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .hero {
+    padding: 1.5rem 0 2rem;
+  }
+
+  .hero-content h1 {
+    font-size: 1.65rem;
+    line-height: 1.25;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+    gap: 0.8rem;
+  }
+
+  .hero-buttons .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .card-preview {
+    padding: 1rem;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
   .bg-icon {
     opacity: 0.3;
     transform: scale(0.7);

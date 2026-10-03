@@ -6,23 +6,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NoteCore</title>
   <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Estilos Principales -->
   <link rel="stylesheet" href="style.css">
+
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Open Graph / Meta etiquetas para compartir en redes y chats -->
+
+  <!-- Open Graph / Meta etiquetas -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://xaxyt1404.github.io/NoteCore/">
   <meta property="og:title" content="NoteCore | Control total de tus notas del semestre">
-  <meta property="og:description" content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI.">
+  <meta property="og:description"
+    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI.">
   <meta property="og:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png">
 
   <!-- Twitter Cards -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="NoteCore | Control total de tus notas del semestre">
-  <meta name="twitter:description" content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI.">
+  <meta name="twitter:description"
+    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI.">
   <meta name="twitter:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png">
 </head>
 
@@ -49,27 +57,24 @@
     </div>
   </header>
 
-<!-- SIDEBAR / BARRA LATERAL DESPLEGABLE -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <img src="logotipo.png" alt="NoteCore Logo" class="logo-img">
-    <button class="close-btn" id="closeSidebar" aria-label="Cerrar menú">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-  </div>
-  <nav class="sidebar-links">
-    <a href="#caracteristicas" class="sidebar-link">
-      <i class="fa-solid fa-star"></i> Características
-    </a>
-    <a href="#como-funciona" class="sidebar-link">
-      <i class="fa-solid fa-circle-info"></i> ¿Cómo funciona?
-    </a>
-    <a href="#contacto" class="sidebar-link">
-      <i class="fa-solid fa-envelope"></i> Contacto
-    </a>
-  </nav>
-</aside>
+  <!-- SIDEBAR / BARRA LATERAL DESPLEGABLE -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="logotipo.png" alt="NoteCore Logo" class="logo-img">
+      <button class="close-btn" id="closeSidebar" aria-label="Cerrar menú">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <nav class="sidebar-links">
+      <a href="#caracteristicas" class="sidebar-link">
+        <i class="fa-solid fa-star"></i> Características
+      </a>
+      <a href="#contacto" class="sidebar-link">
+        <i class="fa-solid fa-envelope"></i> Contacto
+      </a>
+    </nav>
+  </aside>
 
   <!-- HERO SECTION -->
   <section class="hero">
@@ -83,7 +88,7 @@
         </p>
         <div class="hero-buttons">
           <a href="register.html" class="btn btn-primary btn-lg">Comenzar</a>
-          <a href="#como-funciona" class="btn btn-outline btn-lg">Ver simulación</a>
+          <button type="button" id="openSimModal" class="btn btn-outline btn-lg">Ver simulación</button>
         </div>
       </div>
       <div class="hero-preview">
@@ -124,13 +129,14 @@
       <article class="feature-card">
         <div class="feature-icon">🤖</div>
         <h3>Asistente CoreAI</h3>
-        <p>Diagnósticos en tiempo real y planes de estudio ajustados a tu meta académica para enfocarte en lo que más importa.</p>
+        <p>Diagnósticos en tiempo real y planes de estudio ajustados a tu meta académica para enfocarte en lo que más
+          importa.</p>
       </article>
     </div>
   </section>
 
-  <!--CONTACTO-->
-  <section id="contact" class="contact">
+  <!-- CONTACTO -->
+  <section id="contacto" class="contact">
     <div class="contact-header">
       <h2>Contáctame</h2>
       <p class="contact-subtitle">
@@ -172,7 +178,7 @@
         <!-- Opción 1: Formulario / Enlace WhatsApp Directo -->
         <form class="contact-form ws-form" id="whatsappForm" onsubmit="sendToWhatsApp(event)">
           <h3><i class="fa-brands fa-whatsapp"></i> Chat de WhatsApp</h3>
-          
+
           <div class="form-group">
             <label for="ws-name">Nombre</label>
             <input type="text" id="ws-name" placeholder="Tu nombre" required>
@@ -189,11 +195,11 @@
             </button>
           </div>
         </form>
-        
+
         <!-- Opción 2: Formulario Correo -->
         <form class="contact-form" id="emailForm">
           <h3><i class="fa-solid fa-paper-plane"></i> Envío por Email</h3>
-          
+
           <div class="form-group">
             <label for="name">Nombre</label>
             <input type="text" id="name" name="name" placeholder="Tu nombre" autocomplete="name" required>
@@ -226,20 +232,20 @@
   </footer>
 
   <!-- Fondo Animado de Iconos 3D -->
-  <div class="background-floating-icons">
-    <img src="fondo\iconosfondo_01.png" class="bg-icon icon-1" alt="">
-    <img src="fondo\iconosfondo_02.png" class="bg-icon icon-2" alt="">
-    <img src="fondo\iconosfondo_03.png" class="bg-icon icon-3" alt="">
-    <img src="fondo\iconosfondo_04.png" class="bg-icon icon-4" alt="">
-    <img src="fondo\iconosfondo_05.png" class="bg-icon icon-5" alt="">
-    <img src="fondo\iconosfondo_06.png" class="bg-icon icon-6" alt="">
-    <img src="fondo\iconosfondo_07.png" class="bg-icon icon-7" alt="">
-    <img src="fondo\iconosfondo_08.png" class="bg-icon icon-8" alt="">
-    <img src="fondo\iconosfondo_09.png" class="bg-icon icon-9" alt="">
-    <img src="fondo\iconosfondo_10.png" class="bg-icon icon-10" alt="">
-    <img src="fondo\iconosfondo_11.png" class="bg-icon icon-11" alt="">
-    <img src="fondo\iconosfondo_12.png" class="bg-icon icon-12" alt="">
-    <img src="fondo\iconosfondo_13.png" class="bg-icon icon-13" alt="">
+  <div class="background-floating-icons" aria-hidden="true">
+    <img src="fondo/iconosfondo_01.png" class="bg-icon icon-1" alt="">
+    <img src="fondo/iconosfondo_02.png" class="bg-icon icon-2" alt="">
+    <img src="fondo/iconosfondo_03.png" class="bg-icon icon-3" alt="">
+    <img src="fondo/iconosfondo_04.png" class="bg-icon icon-4" alt="">
+    <img src="fondo/iconosfondo_05.png" class="bg-icon icon-5" alt="">
+    <img src="fondo/iconosfondo_06.png" class="bg-icon icon-6" alt="">
+    <img src="fondo/iconosfondo_07.png" class="bg-icon icon-7" alt="">
+    <img src="fondo/iconosfondo_08.png" class="bg-icon icon-8" alt="">
+    <img src="fondo/iconosfondo_09.png" class="bg-icon icon-9" alt="">
+    <img src="fondo/iconosfondo_10.png" class="bg-icon icon-10" alt="">
+    <img src="fondo/iconosfondo_11.png" class="bg-icon icon-11" alt="">
+    <img src="fondo/iconosfondo_12.png" class="bg-icon icon-12" alt="">
+    <img src="fondo/iconosfondo_13.png" class="bg-icon icon-13" alt="">
   </div>
 
   <script src="script.js"></script>
