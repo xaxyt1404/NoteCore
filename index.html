@@ -107,7 +107,9 @@
         </p>
         <div class="hero-buttons">
           <a href="register.html" class="btn btn-primary btn-lg">Comenzar</a>
-          <button type="button" id="openSimModal" class="btn btn-outline btn-lg">Ver simulación</button>
+          <button class="btn btn-primary btn-lg" onclick="openSimulationModal()">
+            <i class="fa-solid fa-play" style="margin-right: 8px;"></i> Ver simulación
+          </button>
         </div>
       </div>
       <div class="hero-preview">
@@ -127,7 +129,8 @@
             <ul class="ai-steps">
               <li>
                 <span class="step-num">1</span>
-                <span><strong>Configura:</strong> Agrega tus asignaturas y los porcentajes establecidos para tus notas.</span>
+                <span><strong>Configura:</strong> Agrega tus asignaturas y los porcentajes establecidos para tus
+                  notas.</span>
               </li>
               <li>
                 <span class="step-num">2</span>
@@ -285,6 +288,117 @@
     <img src="fondo/iconosfondo_11.png" class="bg-icon icon-11" alt="">
     <img src="fondo/iconosfondo_12.png" class="bg-icon icon-12" alt="">
     <img src="fondo/iconosfondo_13.png" class="bg-icon icon-13" alt="">
+  </div>
+
+  <!-- MODAL DE SIMULACIÓN INTERACTIVA -->
+  <div class="modal-overlay" id="simulationModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-calculator highlight"></i>
+          <span>Simulador de Asignaturas</span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="subject-tag">
+          <span class="badge">Escenario Hipotético</span>
+          <h3>Producción Textual</h3>
+          <p class="cuts-summary">
+            Desglose de Cortes: <strong>Corte 1 (30%)</strong> • <strong>Corte 2 (30%)</strong> • <strong>Corte 3
+              (40%)</strong>
+          </p>
+        </div>
+
+        <!-- Selector de Modos de Simulación -->
+        <div class="sim-tabs">
+          <button class="tab-btn active" id="tabOptionA" onclick="switchSimTab('A')">Calcular Parcial (Corte 1)</button>
+          <button class="tab-btn" id="tabOptionB" onclick="switchSimTab('B')">Escenarios Cortes 2 y 3</button>
+        </div>
+
+        <!-- VISTA OPCIÓN A: Nota del Parcial Corte 1 -->
+        <div class="sim-content" id="contentOptionA">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="tallerInput">Taller (30% del corte):</label>
+              <div class="input-number-wrapper">
+                <input type="number" id="tallerInput" value="0" min="0" max="5" step="0.1">
+                <div class="spin-buttons">
+                  <button type="button" class="spin-btn" onclick="adjustValue('tallerInput', 0.1)">▲</button>
+                  <button type="button" class="spin-btn" onclick="adjustValue('tallerInput', -0.1)">▼</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="quizInput">Quiz (20% del corte):</label>
+              <div class="input-number-wrapper">
+                <input type="number" id="quizInput" value="0" min="0" max="5" step="0.1">
+                <div class="spin-buttons">
+                  <button type="button" class="spin-btn" onclick="adjustValue('quizInput', 0.1)">▲</button>
+                  <button type="button" class="spin-btn" onclick="adjustValue('quizInput', -0.1)">▼</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bonusInput">Puntos Clase (Suma Directa):</label>
+              <div class="input-number-wrapper">
+                <input type="number" id="bonusInput" value="0" min="0" max="5" step="0.1" placeholder="0">
+                <div class="spin-buttons">
+                  <button type="button" class="spin-btn" onclick="adjustValue('bonusInput', 0.1)">▲</button>
+                  <button type="button" class="spin-btn" onclick="adjustValue('bonusInput', -0.1)">▼</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-box">
+            <span class="result-label">
+              Nota necesaria en el Parcial (50% del corte) para aprobar el Corte 1 con 3.0:
+            </span>
+            <div class="result-value" id="parcialNeededResult">0.0</div>
+          </div>
+        </div>
+
+        <!-- VISTA OPCIÓN B: Proyectar 5 Escenarios Dinámicos -->
+        <div class="sim-content d-none" id="contentOptionB">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label for="corte1Input">Nota Definitiva del Corte 1 (30%):</label>
+            <div class="input-number-wrapper">
+              <input type="number" id="corte1Input" min="0" max="5" step="0.1" value="0" placeholder="0.0 - 5.0"
+                oninput="validateAndCalculateB(this)">
+              <div class="spin-buttons">
+                <button type="button" class="spin-btn" onclick="adjustValue('corte1Input', 0.1)">▲</button>
+                <button type="button" class="spin-btn" onclick="adjustValue('corte1Input', -0.1)">▼</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="sim-instruction" id="c1SummaryText">
+            Ingresa tu nota del Corte 1 para calcular los escenarios necesarios en los Cortes 2 y 3 para aprobar en
+            <strong>3.0</strong>.
+          </p>
+
+          <div class="scenarios-grid" id="scenariosContainer">
+            <!-- Se cargan dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Retroalimentación CoreAI -->
+        <div class="ai-feedback-box">
+          <div class="ai-header">
+            <i class="fa-solid fa-robot highlight"></i>
+            <strong>CoreAI Smart Insight:</strong>
+          </div>
+          <p id="coreAIFeedbackText" class="ai-message">Cargando diagnóstico inteligente...</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeSimulationModal()">Cerrar</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
