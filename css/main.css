@@ -366,7 +366,7 @@ a {
    HERO SECTION
    ========================================== */
 .hero {
-  padding: 4rem 0 5rem;
+  padding: 4rem 0 3rem;
 }
 
 .hero-container {
@@ -506,7 +506,7 @@ a {
    CARACTERÍSTICAS
    ========================================== */
 .features {
-  padding: 3rem 1.5rem 5rem;
+  padding: 1rem 1.5rem 5rem;
 }
 
 .section-title {
