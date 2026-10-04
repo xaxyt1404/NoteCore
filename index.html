@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NoteCore</title>
   <link rel="icon" type="image/png" href="assets/favicon.png">
-  <!-- Aplicación del tema -->
+
   <script src="js/theme.js"></script>
 
   <!-- Font Awesome -->
@@ -47,7 +47,7 @@
         <button class="hamburger-btn" id="menuToggle" aria-label="Abrir menú">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <a href="#" class="logo">
+        <a href="#inicio" class="logo">
           <img src="assets/logotipo.png" alt="NoteCore Logo" class="logo-img">
         </a>
       </div>
@@ -89,6 +89,9 @@
       </button>
     </div>
     <nav class="sidebar-links">
+      <a href="#inicio" class="sidebar-link">
+        <i class="fa-solid fa-house"></i> Inicio
+      </a>
       <a href="#herramientas" class="sidebar-link">
         <i class="fa-solid fa-toolbox"></i> Herramientas
       </a>
@@ -99,7 +102,7 @@
   </aside>
 
   <!-- HERO SECTION -->
-  <section class="hero">
+  <section id="inicio" class="hero">
     <div class="container hero-container">
       <div class="hero-content">
         <span class="badge">Seguimiento Universitario Inteligente</span>
@@ -315,7 +318,7 @@
       <div class="modal-body">
         <div class="subject-tag">
           <span class="badge">Escenario Hipotético</span>
-          <h3>Asignatura: Producción Textual</h3>
+          <h3>Producción Textual</h3>
           <p class="cuts-summary">
             Desglose de Cortes: <strong>Corte 1 (30%)</strong> • <strong>Corte 2 (30%)</strong> • <strong>Corte 3
               (40%)</strong>
@@ -354,7 +357,7 @@
             </div>
 
             <div class="form-group">
-              <label for="bonusInput">Puntos de Clase (Suma Directa):</label>
+              <label for="bonusInput">Puntos Clase (Suma Directa):</label>
               <div class="input-number-wrapper">
                 <input type="number" id="bonusInput" value="0" min="0" max="5" step="0.1" placeholder="0">
                 <div class="spin-buttons">

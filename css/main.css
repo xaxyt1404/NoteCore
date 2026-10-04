@@ -14,6 +14,11 @@ section[id] {
   scroll-margin-top: 50px;
 }
 
+/* El hero es el inicio de la página: el enlace "Inicio" debe llevar a su borde superior */
+#inicio {
+  scroll-margin-top: 50px;
+}
+
 /* Transición suave para elementos interactivos al cambiar de tema o hover */
 body,
 .navbar,
@@ -242,6 +247,11 @@ a {
 
 .sidebar-header .logo-img {
   height: 36px;
+}
+
+/* Sin zoom al pasar el ratón sobre el logo del panel lateral */
+.sidebar-header .logo-img:hover {
+  transform: none;
 }
 
 .close-btn {
