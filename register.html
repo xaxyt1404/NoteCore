@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrarse | NoteCore</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+
+  <!-- Script de tema al inicio para evitar parpadeos -->
+  <script src="js/theme.js"></script>
+
+  <!-- Font Awesome para los iconos de los inputs -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Estilos en orden -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+
+  <!-- Fondo Animado de Iconos Flotantes -->
+  <div class="background-floating-icons">
+    <img src="assets/fondo/iconosfondo_01.png" class="bg-icon icon-1" alt="Icono">
+    <img src="assets/fondo/iconosfondo_02.png" class="bg-icon icon-2" alt="Icono">
+    <img src="assets/fondo/iconosfondo_03.png" class="bg-icon icon-3" alt="Icono">
+    <img src="assets/fondo/iconosfondo_04.png" class="bg-icon icon-4" alt="Icono">
+    <img src="assets/fondo/iconosfondo_05.png" class="bg-icon icon-5" alt="Icono">
+    <img src="assets/fondo/iconosfondo_06.png" class="bg-icon icon-6" alt="Icono">
+    <img src="assets/fondo/iconosfondo_07.png" class="bg-icon icon-7" alt="Icono">
+    <img src="assets/fondo/iconosfondo_08.png" class="bg-icon icon-8" alt="Icono">
+    <img src="assets/fondo/iconosfondo_09.png" class="bg-icon icon-9" alt="Icono">
+    <img src="assets/fondo/iconosfondo_10.png" class="bg-icon icon-10" alt="Icono">
+    <img src="assets/fondo/iconosfondo_11.png" class="bg-icon icon-11" alt="Icono">
+    <img src="assets/fondo/iconosfondo_12.png" class="bg-icon icon-12" alt="Icono">
+    <img src="assets/fondo/iconosfondo_13.png" class="bg-icon icon-13" alt="Icono">
+  </div>
+
+  <!-- Contenedor Principal de Autenticación -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+
+      <!-- COLUMNA IZQUIERDA: Formulario -->
+      <div class="auth-col-form">
+        <a href="index.html" class="back-link">
+          <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+        </a>
+
+        <div class="auth-header">
+          <h2>Crear Cuenta</h2>
+          <p>Únete a NoteCore y gestiona tus notas de forma inteligente.</p>
+        </div>
+
+        <!-- Alerta general para estado de envío / carga -->
+        <div id="authAlert" class="auth-alert" aria-live="polite"></div>
+
+        <form id="registerForm" class="auth-form" novalidate>
+          <!-- Campo: Correo Electrónico -->
+          <div class="form-group">
+            <label for="regEmail">Correo Electrónico</label>
+            <div class="input-icon-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="regEmail" placeholder="tu@correo.com" autocomplete="email" required>
+            </div>
+            <span class="error-message" id="regEmailError"></span>
+          </div>
+
+          <!-- Campo: Nombre Completo -->
+          <div class="form-group">
+            <label for="regName">Nombre y Apellido</label>
+            <div class="input-icon-wrapper">
+              <i class="fa-regular fa-user input-icon"></i>
+              <input type="text" id="regName" placeholder="Ej. Estiben Martinez" autocomplete="name" required>
+            </div>
+            <span class="error-message" id="regNameError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="regPassword">Contraseña</label>
+            <div class="input-icon-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" minlength="6"
+                pattern="(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}" title="Mínimo 6 caracteres, un número y un carácter especial"
+                required>
+              <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña"
+                onclick="togglePasswordVisibility('regPassword', this)">
+                <i class="fa-regular fa-eye-slash"></i>
+              </button>
+            </div>
+            <span class="error-message" id="regPasswordError"></span>
+          </div>
+
+          <!-- Checkbox Términos -->
+          <div class="form-group">
+            <div class="form-checkbox">
+              <input type="checkbox" id="regTerms" required>
+              <label for="regTerms">Acepto los <a href="#" class="terms-link"
+                  onclick="openTermsModal(); return false;">Términos y Condiciones</a></label>
+            </div>
+            <span class="error-message" id="regTermsError"></span>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="auth-buttons-group">
+            <button type="submit" id="btnRegisterSubmit" class="btn btn-primary btn-auth">
+              <span class="btn-text">Crear Cuenta</span>
+              <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
+            </button>
+            <a href="login.html" class="btn btn-outline btn-auth">Iniciar Sesión</a>
+          </div>
+        </form>
+
+        <!-- Divisor OR -->
+        <div class="auth-divider">
+          <span>O continúa con</span>
+        </div>
+
+        <!-- Botones de Redes Sociales -->
+        <div class="social-auth-grid">
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-google"></i>
+            <span>Google</span>
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-apple"></i>
+            <span>Apple</span>
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-microsoft"></i>
+            <span>Microsoft</span>
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-github"></i>
+            <span>GitHub</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: Imagen -->
+      <div class="auth-col-image">
+        <img src="assets/register-banner.png" alt="Ilustración NoteCore" class="auth-media-img">
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODAL DE TÉRMINOS Y CONDICIONES -->
+  <div class="modal-overlay" id="termsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-file-contract highlight"></i>
+          <span>Términos y Condiciones</span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Bienvenido a NoteCore.</strong> Al registrarte y utilizar nuestra plataforma, aceptas cumplir con los
+          siguientes términos y condiciones:</p>
+
+        <h4>1. Uso de la Cuenta</h4>
+        <p>Eres responsable de mantener la confidencialidad de las credenciales de tu cuenta y de todas las actividades
+          que ocurran bajo ella.</p>
+
+        <h4>2. Privacidad y Datos</h4>
+        <p>Tus datos personales y la información de tus notas serán procesados y almacenados de forma segura con el
+          único propósito de brindarte el servicio.</p>
+
+        <h4>3. Propiedad Intelectual</h4>
+        <p>Todo el contenido, marcas y diseños dentro de NoteCore son propiedad de la plataforma. Tus notas personales
+          siguen siendo 100% de tu propiedad.</p>
+
+        <h4>4. Modificaciones del Servicio</h4>
+        <p>Nos reservamos el derecho de actualizar la plataforma y sus términos para mejorar la experiencia académica
+          del usuario.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeTermsModal()">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="acceptTermsAndClose()">Aceptar Términos</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script exclusivo de autenticación -->
+  <script src="js/auth.js"></script>
+</body>
+
+</html>

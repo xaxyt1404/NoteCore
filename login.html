@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión | NoteCore</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+
+  <!-- Script de tema al inicio para evitar parpadeos -->
+  <script src="js/theme.js"></script>
+
+  <!-- Font Awesome para los iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Estilos en orden -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+
+<body>
+
+  <!-- Fondo Animado de Iconos Flotantes -->
+  <div class="background-floating-icons">
+    <img src="assets/fondo/iconosfondo_01.png" class="bg-icon icon-1" alt="Icono">
+    <img src="assets/fondo/iconosfondo_02.png" class="bg-icon icon-2" alt="Icono">
+    <img src="assets/fondo/iconosfondo_03.png" class="bg-icon icon-3" alt="Icono">
+    <img src="assets/fondo/iconosfondo_04.png" class="bg-icon icon-4" alt="Icono">
+    <img src="assets/fondo/iconosfondo_05.png" class="bg-icon icon-5" alt="Icono">
+    <img src="assets/fondo/iconosfondo_06.png" class="bg-icon icon-6" alt="Icono">
+    <img src="assets/fondo/iconosfondo_07.png" class="bg-icon icon-7" alt="Icono">
+    <img src="assets/fondo/iconosfondo_08.png" class="bg-icon icon-8" alt="Icono">
+    <img src="assets/fondo/iconosfondo_09.png" class="bg-icon icon-9" alt="Icono">
+    <img src="assets/fondo/iconosfondo_10.png" class="bg-icon icon-10" alt="Icono">
+    <img src="assets/fondo/iconosfondo_11.png" class="bg-icon icon-11" alt="Icono">
+    <img src="assets/fondo/iconosfondo_12.png" class="bg-icon icon-12" alt="Icono">
+    <img src="assets/fondo/iconosfondo_13.png" class="bg-icon icon-13" alt="Icono">
+  </div>
+
+  <!-- Contenedor Principal de Autenticación -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+
+      <!-- COLUMNA IZQUIERDA: Formulario -->
+      <div class="auth-col-form">
+        <a href="index.html" class="back-link">
+          <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+        </a>
+
+        <div class="auth-header">
+          <h2>¡Hola de nuevo!</h2>
+          <p>Ingresa tus datos para continuar.</p>
+        </div>
+
+        <!-- Alerta general para estado de envío / carga -->
+        <div id="authAlert" class="auth-alert" aria-live="polite"></div>
+
+        <form id="loginForm" class="auth-form" novalidate>
+          <!-- Campo: Correo Electrónico -->
+          <div class="form-group">
+            <label for="loginEmail">Correo Electrónico</label>
+            <div class="input-icon-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="username" required>
+            </div>
+            <span class="error-message" id="loginEmailError"></span>
+          </div>
+
+          <!-- Campo: Contraseña -->
+          <div class="form-group">
+            <label for="loginPassword">Contraseña</label>
+            <div class="input-icon-wrapper">
+              <i class="fa-solid fa-lock input-icon"></i>
+              <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
+              <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña"
+                onclick="togglePasswordVisibility('loginPassword', this)">
+                <i class="fa-regular fa-eye-slash"></i>
+              </button>
+            </div>
+            <span class="error-message" id="loginPasswordError"></span>
+          </div>
+
+          <div class="form-checkbox form-checkbox-between">
+            <label style="display: flex; align-items: center; gap: 6px;">
+              <input type="checkbox" id="rememberMe">
+              <span>Recordarme</span>
+            </label>
+            <a href="forgot-password.html" class="terms-link forgot-link">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="auth-buttons-group">
+            <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-auth">
+              <span class="btn-text">Iniciar Sesión</span>
+              <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
+            </button>
+            <a href="register.html" class="btn btn-outline btn-auth">Crear Cuenta</a>
+          </div>
+        </form>
+
+        <!-- Divisor OR -->
+        <div class="auth-divider">
+          <span>O continúa con</span>
+        </div>
+
+        <!-- Botones de Redes Sociales -->
+        <div class="social-auth-grid">
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-google"></i>
+            <span>Google</span>
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-apple"></i>
+            <span>Apple</span>
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-microsoft"></i>
+            <span>Microsoft</span>
+          </button>
+          <button type="button" class="social-btn">
+            <i class="fa-brands fa-github"></i>
+            <span>GitHub</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: Imagen -->
+      <div class="auth-col-image">
+        <img src="assets/register-banner.png" alt="Ilustración NoteCore" class="auth-media-img">
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Script exclusivo de autenticación -->
+  <script src="js/auth.js"></script>
+</body>
+
+</html>
