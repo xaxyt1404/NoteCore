@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NoteCore</title>
   <link rel="icon" type="image/png" href="assets/favicon.png">
-
+  <!-- Aplicación del tema -->
   <script src="js/theme.js"></script>
 
   <!-- Font Awesome -->
@@ -89,8 +89,8 @@
       </button>
     </div>
     <nav class="sidebar-links">
-      <a href="#caracteristicas" class="sidebar-link">
-        <i class="fa-solid fa-star"></i> Características
+      <a href="#herramientas" class="sidebar-link">
+        <i class="fa-solid fa-toolbox"></i> Herramientas
       </a>
       <a href="#contacto" class="sidebar-link">
         <i class="fa-solid fa-envelope"></i> Contacto
@@ -115,68 +115,77 @@
           </button>
         </div>
       </div>
-      <div class="hero-preview">
-        <!-- Tarjeta CoreAI: Guía Paso a Paso -->
-        <div class="card-preview ai-guide-card">
-          <div class="card-preview-header">
-            <span class="ai-badge">
-              <i class="fa-solid fa-robot"></i> CoreAI
-            </span>
-            <span class="status-badge info">Cómo funciona</span>
-          </div>
-          <div class="card-preview-body">
-            <p class="ai-greeting">
-              ¡Hola! Soy CoreAI, te ayudaré a controlar tu progreso en el semestre.
-            </p>
-
-            <ul class="ai-steps">
-              <li>
-                <span class="step-num">1</span>
-                <span><strong>Configura:</strong> Agrega tus asignaturas y los porcentajes establecidos para tus
-                  notas.</span>
-              </li>
-              <li>
-                <span class="step-num">2</span>
-                <span><strong>Registra:</strong> Guarda tus notas a medida que avanza el semestre.</span>
-              </li>
-              <li>
-                <span class="step-num">3</span>
-                <span><strong>Proyecta:</strong> Calcula cuánto necesitas exactamente para aprobar.</span>
-              </li>
-            </ul>
-
-            <div class="ai-footer-tag">
-              <i class="fa-solid fa-sparkles"></i> Recibe recomendaciones inteligentes con CoreAI
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
-  <!-- CARACTERÍSTICAS -->
-  <section id="caracteristicas" class="features container">
-    <h2 class="section-title">Diseñado para la vida universitaria</h2>
-    <div class="features-grid">
-      <article class="feature-card">
-        <div class="feature-icon">⚙️</div>
-        <h3>Esquemas Personalizables</h3>
-        <p>Adapta los porcentajes de los cortes y asignaturas como necesites, o bien, elige uno de los esquemas
-          predeterminados.</p>
-      </article>
+  <!-- HERRAMIENTAS -->
+  <section id="herramientas" class="features container">
+    <h2 class="section-title">Herramientas</h2>
+    <div class="tools-layout">
+      <!-- Tarjeta CoreAI: Guía Paso a Paso (¿Cómo funciona?) -->
+      <div class="card-preview ai-guide-card">
+        <div class="card-preview-header">
+          <span class="ai-badge">
+            <i class="fa-solid fa-robot"></i> CoreAI
+          </span>
+          <span class="status-badge info">Cómo funciona</span>
+        </div>
+        <div class="card-preview-body">
+          <p class="ai-greeting">
+            ¡Hola! Soy CoreAI, te ayudaré a controlar tu progreso en el semestre.
+          </p>
 
-      <article class="feature-card">
-        <div class="feature-icon">🎯</div>
-        <h3>Simulador Metodológico</h3>
-        <p>Calcula múltiples escenarios de calificación para tus notas finales según las obtenidas.</p>
-      </article>
+          <ul class="ai-steps">
+            <li>
+              <span class="step-num">1</span>
+              <span><strong>Configura:</strong> Agrega tus asignaturas y los porcentajes establecidos para tus
+                notas.</span>
+            </li>
+            <li>
+              <span class="step-num">2</span>
+              <span><strong>Registra:</strong> Guarda tus notas a medida que avanza el semestre.</span>
+            </li>
+            <li>
+              <span class="step-num">3</span>
+              <span><strong>Proyecta:</strong> Calcula cuánto necesitas exactamente para aprobar.</span>
+            </li>
+          </ul>
 
-      <article class="feature-card">
-        <div class="feature-icon">🤖</div>
-        <h3>Asistente CoreAI</h3>
-        <p>Diagnósticos en tiempo real y planes de estudio ajustados a tu meta académica para enfocarte en lo que más
-          importa.</p>
-      </article>
+          <div class="ai-footer-tag">
+            <i class="fa-solid fa-sparkles"></i> Recibe recomendaciones inteligentes con CoreAI
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de herramientas -->
+      <div class="tools-list">
+        <article class="feature-card tool-card">
+          <div class="feature-icon">⚙️</div>
+          <div class="tool-info">
+            <h3>Esquemas Personalizables</h3>
+            <p>Adapta los porcentajes de los cortes y asignaturas como necesites, o bien, elige uno de los esquemas
+              predeterminados.</p>
+          </div>
+        </article>
+
+        <article class="feature-card tool-card">
+          <div class="feature-icon">🎯</div>
+          <div class="tool-info">
+            <h3>Simulador Metodológico</h3>
+            <p>Calcula múltiples escenarios de calificación para tus notas finales según las obtenidas.</p>
+            <button class="btn btn-primary" onclick="openSimulationModal()">Probar simulador</button>
+          </div>
+        </article>
+
+        <article class="feature-card tool-card">
+          <div class="feature-icon">🤖</div>
+          <div class="tool-info">
+            <h3>Asistente CoreAI</h3>
+            <p>Diagnósticos en tiempo real y planes de estudio ajustados a tu meta académica para enfocarte en lo que
+              más importa.</p>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -306,7 +315,7 @@
       <div class="modal-body">
         <div class="subject-tag">
           <span class="badge">Escenario Hipotético</span>
-          <h3>Producción Textual</h3>
+          <h3>Asignatura: Producción Textual</h3>
           <p class="cuts-summary">
             Desglose de Cortes: <strong>Corte 1 (30%)</strong> • <strong>Corte 2 (30%)</strong> • <strong>Corte 3
               (40%)</strong>
@@ -345,7 +354,7 @@
             </div>
 
             <div class="form-group">
-              <label for="bonusInput">Puntos Clase (Suma Directa):</label>
+              <label for="bonusInput">Puntos de Clase (Suma Directa):</label>
               <div class="input-number-wrapper">
                 <input type="number" id="bonusInput" value="0" min="0" max="5" step="0.1" placeholder="0">
                 <div class="spin-buttons">

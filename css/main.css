@@ -361,9 +361,13 @@ a {
 
 .hero-container {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 3.5rem;
-  align-items: center;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 760px;
 }
 
 .hero-content h1 {
@@ -382,6 +386,7 @@ a {
 
 .hero-buttons {
   display: flex;
+  justify-content: center;
   gap: 1.2rem;
 }
 
@@ -530,6 +535,58 @@ a {
 .feature-card p {
   color: var(--text-muted);
   font-size: 0.98rem;
+}
+
+/* --- Herramientas: tarjeta "¿Cómo funciona?" + lista de herramientas --- */
+.tools-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.tool-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1.6rem;
+}
+
+.tool-card .feature-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.tool-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.tool-card .btn {
+  margin-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .tools-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .tool-card {
+    padding: 1.2rem;
+    gap: 0.9rem;
+  }
+
+  .tool-card .feature-icon {
+    font-size: 1.8rem;
+  }
 }
 
 /* ==========================================
