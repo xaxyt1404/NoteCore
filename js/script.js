@@ -1,3 +1,18 @@
+/* ==========================================
+   SCRIPT.JS
+   Script principal del landing.
+   Incluye: navbar, sidebar, contacto por WhatsApp, modal de simulación
+   NOTA: la gestión del tema (claro/oscuro/sistema) vive en js/theme.js
+   ========================================== */
+
+// Constantes globales
+const WHATSAPP_PHONE = '573136297041';
+const TARGET_GRADE = 3.0;
+let calculatedCorte1Grade = 0.0; // Estado global para conectar la Opción A con la Opción B
+
+// Helper abreviado para document.getElementById
+const $ = (id) => document.getElementById(id);
+
 // NOTA: la gestión del tema (claro/oscuro/sistema) vive en js/theme.js
 document.addEventListener('DOMContentLoaded', () => {
   // ==========================================
@@ -48,6 +63,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // ==========================================
+  // LISTENERS DEL MODAL DE SIMULACIÓN
+  // ==========================================
+  // Recalcular en vivo al escribir en los inputs de la Opción A
+  ['tallerInput', 'quizInput', 'bonusInput'].forEach((id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
+    if (id === 'bonusInput') input.max = 2; // los puntos de clase llegan hasta 2.0
+    input.addEventListener('input', () => validateAndCalculateA(input));
+  });
+
+  // Listener del input numérico de la Opción B
+  const corte1Input = document.getElementById('corte1Input');
+  corte1Input?.addEventListener('input', () => validateAndCalculateB(corte1Input));
 });
 
 // ==========================================
@@ -61,7 +91,6 @@ function sendToWhatsApp(event) {
 
   const name = nameInput ? nameInput.value.trim() : '';
   const message = messageInput ? messageInput.value.trim() : '';
-  const phone = '573136297041'; // Número de destino
 
   if (!name || !message) return;
 
@@ -70,7 +99,7 @@ function sendToWhatsApp(event) {
   const encodedText = encodeURIComponent(text);
 
   // URL universal de WhatsApp
-  const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedText}`;
+  const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodedText}`;
 
   // Abre WhatsApp
   window.open(whatsappUrl, '_blank');
@@ -82,19 +111,22 @@ function sendToWhatsApp(event) {
 // ==========================================
 // LÓGICA Y VALIDACIÓN DEL MODAL DE SIMULACIÓN
 // ==========================================
-const simulationModal = document.getElementById('simulationModal');
-let calculatedCorte1Grade = 0.0; // Estado global para conectar la Opción A con la Opción B
+const simulationModal = () => document.getElementById('simulationModal');
 
 function openSimulationModal() {
-  if (simulationModal) {
-    simulationModal.classList.add('active');
+  const modal = simulationModal();
+  if (modal) {
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
     calculateOptionA();
   }
 }
 
 function closeSimulationModal() {
-  if (simulationModal) {
-    simulationModal.classList.remove('active');
+  const modal = simulationModal();
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
 
     // Reiniciar inputs Opción A a 0
     const tallerInput = document.getElementById('tallerInput');
@@ -113,27 +145,13 @@ function closeSimulationModal() {
     calculatedCorte1Grade = 0.0;
 
     // Volver al inicio del scroll del modal
-    const modalBody = simulationModal.querySelector('.modal-body');
+    const modalBody = modal.querySelector('.modal-body');
     if (modalBody) modalBody.scrollTop = 0;
 
     // Regresar a la pestaña principal (Opción A) y recalculamos el estado limpio
     switchSimTab('A');
   }
 }
-
-if (simulationModal) {
-  simulationModal.addEventListener('click', (e) => {
-    if (e.target === simulationModal) closeSimulationModal();
-  });
-}
-
-// Recalcular en vivo al escribir en los inputs de la Opción A
-['tallerInput', 'quizInput', 'bonusInput'].forEach((id) => {
-  const input = document.getElementById(id);
-  if (!input) return;
-  if (id === 'bonusInput') input.max = 2; // los puntos de clase llegan hasta 2.0
-  input.addEventListener('input', () => validateAndCalculateA(input));
-});
 
 // Ajuste rápido de botones (+ / -) en inputs numéricos
 function adjustValue(inputId, step) {
@@ -156,23 +174,24 @@ function adjustValue(inputId, step) {
   }
 }
 
+// Helper: clamp de valor numérico en un input
+function clampInput(input, min, max) {
+  let val = parseFloat(input.value);
+  if (val > max) input.value = max;
+  if (val < min) input.value = min;
+  return parseFloat(input.value) || 0;
+}
+
 // Validar límites de los Inputs en Opción A (0.0 a 5.0 para notas, 0.0 a 2.0 para puntos)
 function validateAndCalculateA(input) {
-  let val = parseFloat(input.value);
   const maxVal = input.id === 'bonusInput' ? 2.0 : 5.0;
-
-  if (val > maxVal) input.value = maxVal;
-  if (val < 0) input.value = 0;
-
+  clampInput(input, 0, maxVal);
   calculateOptionA();
 }
 
 // Validar input de la Opción B (0.0 a 5.0)
 function validateAndCalculateB(input) {
-  let val = parseFloat(input.value);
-  if (val > 5.0) input.value = 5.0;
-  if (val < 0) input.value = 0;
-
+  clampInput(input, 0, 5.0);
   // Actualiza la variable global con la nota ingresada manualmente en la Opción B
   calculatedCorte1Grade = parseFloat(input.value) || 0.0;
   calculateOptionB();
@@ -214,7 +233,6 @@ function calculateOptionA() {
   const quiz = parseFloat(quizInput) || 0;
   const bonus = parseFloat(bonusInput) || 0;
 
-  const targetCutGrade = 3.0;
   const resultDisplay = document.getElementById('parcialNeededResult');
   const aiFeedback = document.getElementById('coreAIFeedbackText');
 
@@ -230,35 +248,35 @@ function calculateOptionA() {
   }
 
   // Fórmula para el Parcial (50% del corte)
-  const parcialNeeded = (targetCutGrade - (taller * 0.3) - (quiz * 0.2) - bonus) / 0.5;
+  const parcialNeeded = (TARGET_GRADE - (taller * 0.3) - (quiz * 0.2) - bonus) / 0.5;
   let finalParcial = Math.max(0, parcialNeeded);
 
   // MÚLTIPLES ESCENARIOS DE RETROALIMENTACIÓN - OPCIÓN A
   if (parcialNeeded > 5.0) {
     resultDisplay.textContent = "> 5.0";
     resultDisplay.style.color = "var(--warning)";
-    calculatedCorte1Grade = Math.min(5.0, (taller * 0.3) + (quiz * 0.2) + (5.0 * 0.5) + bonus);
+    calculatedCorte1Grade = Math.min(5.0, (taller * 0.3) + (quiz * 0.2) + 2.5 + bonus);
 
     aiFeedback.innerHTML = `⚠️ <strong>CoreAI:</strong> Matemáticamente necesitarías un <strong>${parcialNeeded.toFixed(1)}</strong> en el parcial para llegar a 3.0. Si sacas 5.0, tu Corte 1 se cerrará en <strong>${calculatedCorte1Grade.toFixed(2)}</strong>. ¡Tranquilo, aún quedan el Corte 2 y 3 para recuperar!`;
 
   } else if (parcialNeeded > 4.0) {
     resultDisplay.textContent = finalParcial.toFixed(2);
     resultDisplay.style.color = "var(--warning)";
-    calculatedCorte1Grade = 3.0;
+    calculatedCorte1Grade = TARGET_GRADE;
 
     aiFeedback.innerHTML = `🔥 <strong>CoreAI:</strong> ¡A apretar el acelerador! Necesitas un <strong>${finalParcial.toFixed(2)}</strong> en el parcial. Con los puntos adicionales amortiguaste bastante, pero requiere estudio enfocado.`;
 
-  } else if (parcialNeeded > 3.0) {
+  } else if (parcialNeeded > TARGET_GRADE) {
     resultDisplay.textContent = finalParcial.toFixed(2);
     resultDisplay.style.color = "var(--primary)";
-    calculatedCorte1Grade = 3.0;
+    calculatedCorte1Grade = TARGET_GRADE;
 
     aiFeedback.innerHTML = `📈 <strong>CoreAI:</strong> Tienes un panorama muy alcanzable. Sacando un <strong>${finalParcial.toFixed(2)}</strong> en el parcial aseguras el 3.0 del Corte 1. ¡Un repaso de los temas claves y lo tienes!`;
 
   } else if (parcialNeeded > 0) {
     resultDisplay.textContent = finalParcial.toFixed(2);
     resultDisplay.style.color = "var(--success)";
-    calculatedCorte1Grade = 3.0;
+    calculatedCorte1Grade = TARGET_GRADE;
 
     aiFeedback.innerHTML = `😎 <strong>CoreAI:</strong> ¡Excelente margen! Con solo un <strong>${finalParcial.toFixed(2)}</strong> apruebas el Corte 1. Tus evaluaciones previas y puntos en clase te dejaron súper bien posicionado.`;
 
@@ -287,7 +305,7 @@ function calculateOptionB() {
 
   const c1Val = parseFloat(c1Input ? c1Input.value : 0) || calculatedCorte1Grade;
   const c1Contribution = c1Val * 0.3;
-  const pendingNeeded = Math.max(0, 3.0 - c1Contribution);
+  const pendingNeeded = Math.max(0, TARGET_GRADE - c1Contribution);
 
   // Mensaje de resumen dinámico
   if (c1Val === 0) {
@@ -298,23 +316,19 @@ function calculateOptionB() {
 
   // Generación de los 5 escenarios variando el Corte 2
   const baseC2List = [3.0, 2.0, 4.0, 2.5, 4.5];
-  let htmlScenarios = "";
+  scenariosContainer.innerHTML = baseC2List.map((c2Val, idx) => {
+    const neededC3 = (pendingNeeded - (c2Val * 0.3)) / 0.4;
+    const c3Text = neededC3 <= 0 ? "0.0 (Ganas la materia)" : neededC3 > 5.0 ? "> 5.0 (Inalcanzable)" : neededC3.toFixed(2);
+    const c3Color = neededC3 > 5.0 ? "color: var(--warning);" : "color: var(--text-main);";
 
-  baseC2List.forEach((c2Val, idx) => {
-    let neededC3 = (pendingNeeded - (c2Val * 0.3)) / 0.4;
-    let c3Text = neededC3 <= 0 ? "0.0 (Ganas la materia)" : neededC3 > 5.0 ? "> 5.0 (Inalcanzable)" : neededC3.toFixed(2);
-    let c3Color = neededC3 > 5.0 ? "color: var(--warning);" : "color: var(--text-main);";
-
-    htmlScenarios += `
+    return `
       <div class="scenario-card">
         <strong>Escenario ${idx + 1}</strong>
         <span>C2 (30%): ${c2Val.toFixed(1)}</span><br>
         <span style="${c3Color}">C3 (40%): ${c3Text}</span>
       </div>
     `;
-  });
-
-  scenariosContainer.innerHTML = htmlScenarios;
+  }).join('');
 
   // MULTI-ESCENARIOS DE COREAI SEGÚN LA NOTA INGRESADA
   if (c1Val === 0) {
