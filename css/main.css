@@ -8,6 +8,12 @@ html {
   scroll-behavior: smooth;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+}
+
 /* Offset para que los enlaces internos no queden ocultos tras la navbar pegajosa */
 section[id] {
   scroll-margin-top: 50px;
@@ -589,6 +595,16 @@ a {
   .tool-card .feature-icon {
     font-size: 1.8rem;
   }
+
+  @media (max-width: 600px) {
+  .nav-container {
+    height: 60px;
+    padding: 0 0.8rem; /* Reducido de 1rem a 0.8rem para evitar scroll lateral en móviles pequeños */
+    gap: 0.3rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
 }
 
 /* ==========================================
