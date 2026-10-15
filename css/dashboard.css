@@ -1,8 +1,12 @@
 /* ==========================================
    DASHBOARD.CSS
-   Estilos específicos para la aplicación dashboard.
+   Estilos específicos para la aplicación SPA (dashboard-user.html).
+   Complementa main.css y variables.css.
    ========================================== */
-/* --- LAYOUT GENERAL (DESKTOP FIRST) --- */
+
+/* ==========================================
+   1. LAYOUT BASE Y ESTRUCTURA GENERAL
+   ========================================== */
 .dashboard-body {
    background-color: var(--bg-main);
    color: var(--text-main);
@@ -16,7 +20,58 @@
    width: 100%;
 }
 
-/* --- SIDEBAR REUTILIZADA Y ALINEADA --- */
+/* Área principal de vistas SPA */
+.dash-viewport {
+   padding: 2rem;
+   flex: 1;
+}
+
+.dash-view {
+   display: flex;
+   flex-direction: column;
+   gap: 1.8rem;
+   max-width: 1350px;
+   margin: 0 auto;
+}
+
+/* Encabezado superior de las vistas */
+.view-welcome-bar {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.welcome-heading h1 {
+   font-size: 2rem;
+   font-weight: 800;
+   margin-bottom: 0.3rem;
+}
+
+.welcome-heading p {
+   color: var(--text-muted);
+   font-size: 0.95rem;
+}
+
+.semester-selector-btn {
+   height: 42px;
+   display: inline-flex;
+   align-items: center;
+   gap: 8px;
+   padding: 0 1.2rem;
+   border-radius: var(--radius-md);
+   font-size: 0.88rem;
+   font-weight: 700;
+   box-shadow: 0 3px 0 var(--border-color);
+}
+
+.semester-chevron {
+   margin-left: 8px;
+   font-size: 0.8rem;
+}
+
+/* ==========================================
+   2. SIDEBAR LATERAL (DASHBOARD ESPECÍFICO)
+   ========================================== */
 @media (min-width: 1025px) {
    .sidebar.dash-sidebar {
       position: fixed;
@@ -35,12 +90,7 @@
       box-sizing: border-box;
    }
 
-   /* Ocultar botón cerrar en PC */
-   .sidebar.dash-sidebar .close-btn {
-      display: none;
-   }
-
-   /* Ocultar botón hamburguesa en PC */
+   .sidebar.dash-sidebar .close-btn,
    .mobile-only-btn {
       display: none;
    }
@@ -54,7 +104,6 @@
    }
 }
 
-/* --- ESTRUCTURA Y SEPARACIÓN DE LINKS EN SIDEBAR --- */
 .sidebar-links {
    display: flex;
    flex-direction: column;
@@ -68,7 +117,6 @@
    gap: 1.1rem;
 }
 
-/* Centrado vertical perfecto del grupo principal entre ambas líneas */
 .sidebar-group.main-links {
    margin-top: auto;
    margin-bottom: auto;
@@ -80,7 +128,6 @@
    border-top: 1px solid var(--border-color);
 }
 
-/* --- ILUSTRACIÓN DECORATIVA INFERIOR EN SIDEBAR --- */
 .sidebar-illustration {
    display: flex;
    align-items: flex-end;
@@ -114,7 +161,9 @@
    transform: rotate(3deg);
 }
 
-/* --- HEADER SUPERIOR DEL DASHBOARD --- */
+/* ==========================================
+   3. HEADER SUPERIOR Y CONTROLES
+   ========================================== */
 .dash-header {
    height: 70px;
    background-color: rgba(234, 244, 254, 0.85);
@@ -180,14 +229,6 @@
    gap: 0.8rem;
 }
 
-.theme-dropdown-wrapper {
-   position: relative;
-   display: inline-flex;
-   align-items: center;
-   transform: none;
-}
-
-/* Estandarización de Altura para Botones del Header */
 .header-action-btn {
    height: 40px;
    display: inline-flex;
@@ -198,7 +239,6 @@
    margin: 0;
 }
 
-/* Notificaciones Badge */
 .notif-btn {
    position: relative;
    width: 40px;
@@ -216,7 +256,6 @@
    border: 2px solid var(--bg-card);
 }
 
-/* Perfil de Usuario */
 .profile-btn {
    display: flex;
    align-items: center;
@@ -257,39 +296,240 @@
    color: var(--text-muted);
 }
 
-/* --- ÁREA DE VISTAS (VIEWPORT) --- */
-.dash-viewport {
-   padding: 2rem;
-   flex: 1;
+/* ==========================================
+   4. MENÚS DESPLEGABLES Y POPOVERS
+   ========================================== */
+.custom-dropdown,
+.header-dropdown-wrapper {
+   position: relative;
+   display: inline-flex;
 }
 
-.dash-view {
+.dropdown-trigger {
+   display: inline-flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 10px;
+   background-color: var(--bg-card);
+   border: 1px solid var(--border-color);
+   color: var(--text-main);
+   padding: 0.45rem 0.9rem;
+   border-radius: var(--radius-md);
+   font-size: 0.82rem;
+   font-weight: 700;
+   cursor: pointer;
+   transition: var(--transition);
+   box-shadow: 0 3px 0 var(--border-color);
+}
+
+.dropdown-trigger:hover {
+   border-color: var(--primary);
+   color: var(--primary);
+}
+
+.dropdown-trigger .arrow-icon {
+   font-size: 0.7rem;
+   transition: transform 0.25s ease;
+}
+
+.custom-dropdown.active .dropdown-trigger .arrow-icon {
+   transform: rotate(180deg);
+}
+
+.custom-dropdown .dropdown-menu,
+.header-popover-menu {
+   position: absolute;
+   top: calc(100% + 6px);
+   right: 0;
+   background-color: var(--bg-card);
+   border: 1px solid var(--border-color);
+   border-radius: var(--radius-md);
+   box-shadow: var(--shadow-hover);
+   padding: 6px;
    display: flex;
    flex-direction: column;
-   gap: 1.8rem;
-   max-width: 1350px;
-   margin: 0 auto;
+   gap: 4px;
+   opacity: 0;
+   visibility: hidden;
+   transform: translateY(-8px);
+   transition: var(--transition);
+   z-index: 100;
 }
 
-/* Encabezado de la Vista */
-.view-welcome-bar {
+.custom-dropdown .dropdown-menu {
+   min-width: 130px;
+}
+
+.header-popover-menu {
+   top: calc(100% + 10px);
+   border-radius: var(--radius-lg);
+   width: 300px;
+   z-index: 120;
+   overflow: hidden;
+   padding: 0;
+}
+
+.custom-dropdown.active .dropdown-menu,
+.header-popover-menu.active {
+   opacity: 1;
+   visibility: visible;
+   transform: translateY(0);
+}
+
+.dropdown-item {
+   background: transparent;
+   border: none;
+   color: var(--text-main);
+   padding: 8px 12px;
+   border-radius: 10px;
+   font-size: 0.82rem;
+   font-weight: 700;
+   cursor: pointer;
+   transition: var(--transition);
+   width: 100%;
+   text-align: left;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+   background-color: var(--bg-card-hover);
+   color: var(--primary);
+}
+
+/* Popover Notificaciones & Perfil */
+.popover-header {
+   padding: 0.85rem 1rem;
+   border-bottom: 1px solid var(--border-color);
    display: flex;
-   justify-content: space-between;
    align-items: center;
+   justify-content: space-between;
 }
 
-.welcome-heading h1 {
-   font-size: 2rem;
+.popover-header h4 {
+   font-size: 0.88rem;
    font-weight: 800;
-   margin-bottom: 0.3rem;
 }
 
-.welcome-heading p {
+.btn-text-action {
+   background: none;
+   border: none;
+   color: var(--primary);
+   font-size: 0.78rem;
+   font-weight: 700;
+   cursor: pointer;
+}
+
+.popover-body {
+   max-height: 260px;
+   overflow-y: auto;
+}
+
+.notif-item {
+   display: flex;
+   gap: 10px;
+   padding: 0.8rem 1rem;
+   border-bottom: 1px solid var(--border-color);
+   transition: var(--transition);
+}
+
+.notif-item:hover {
+   background-color: var(--bg-main);
+}
+
+.notif-item.unread {
+   background-color: rgba(0, 163, 255, 0.05);
+}
+
+.notif-icon {
+   width: 30px;
+   height: 30px;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 0.82rem;
+   flex-shrink: 0;
+}
+
+.notif-icon.danger {
+   background-color: rgba(239, 68, 68, 0.15);
+   color: #ef4444;
+}
+
+.notif-icon.primary {
+   background-color: rgba(0, 163, 255, 0.15);
+   color: var(--primary);
+}
+
+.notif-content p {
+   font-size: 0.78rem;
+   line-height: 1.35;
+}
+
+.notif-time {
+   font-size: 0.68rem;
    color: var(--text-muted);
-   font-size: 0.95rem;
+   margin-top: 2px;
+   display: block;
 }
 
-/* --- GRID 1: TARJETAS KPI --- */
+.profile-popover {
+   width: 220px;
+   padding: 0.5rem;
+}
+
+.user-info-head {
+   padding: 0.4rem 0.5rem;
+}
+
+.user-full-name {
+   font-weight: 800;
+   font-size: 0.88rem;
+}
+
+.user-email {
+   font-size: 0.75rem;
+   color: var(--text-muted);
+}
+
+.popover-divider {
+   height: 1px;
+   background-color: var(--border-color);
+   margin: 0.35rem 0;
+}
+
+.popover-item {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   width: 100%;
+   padding: 0.5rem 0.6rem;
+   border: none;
+   background: transparent;
+   color: var(--text-main);
+   font-size: 0.82rem;
+   font-weight: 600;
+   border-radius: var(--radius-md);
+   cursor: pointer;
+   transition: var(--transition);
+}
+
+.popover-item:hover {
+   background-color: var(--bg-main);
+   color: var(--primary);
+}
+
+.popover-item.logout-item {
+   color: #ef4444;
+}
+
+.popover-item.logout-item:hover {
+   background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* ==========================================
+   5. GRID Y TARJETAS DE MÉTRICAS (KPIs)
+   ========================================== */
 .kpi-grid {
    display: grid;
    grid-template-columns: repeat(4, 1fr);
@@ -424,7 +664,9 @@
    border-radius: 10px;
 }
 
-/* --- GRID 2 Y 3: TARJETAS DE 2 COLUMNAS --- */
+/* ==========================================
+   6. TARJETAS Y CONTENEDORES DE 2 COLUMNAS
+   ========================================== */
 .dash-grid-2col {
    display: grid;
    grid-template-columns: 1.3fr 1fr;
@@ -470,7 +712,6 @@
    margin-top: 2px;
 }
 
-/* --- SELECTORES DESPLEGABLES NATIVOS --- */
 .dash-select {
    appearance: none;
    -webkit-appearance: none;
@@ -522,7 +763,6 @@
    transform: translateX(3px);
 }
 
-/* --- CONTENEDORES DE GRÁFICOS --- */
 .chart-container {
    position: relative;
    width: 100%;
@@ -535,7 +775,9 @@
    height: 100%;
 }
 
-/* --- GRÁFICO DE DONA Y LEYENDA --- */
+/* ==========================================
+   7. GRÁFICO DE DONA Y LEYENDAS
+   ========================================== */
 .donut-layout {
    display: flex;
    align-items: center;
@@ -598,15 +840,15 @@
 }
 
 .legend-dot.excelente {
-   background-color: #10b981;
+   background-color: var(--success);
 }
 
 .legend-dot.bueno {
-   background-color: #00a3ff;
+   background-color: var(--primary);
 }
 
 .legend-dot.regular {
-   background-color: #f59e0b;
+   background-color: var(--warning);
 }
 
 .legend-dot.en-riesgo {
@@ -629,7 +871,9 @@
    font-size: 0.8rem;
 }
 
-/* --- LISTA DE ASIGNATURAS EN ATENCIÓN --- */
+/* ==========================================
+   8. LISTA DE ATENCIÓN Y EVALUACIONES
+   ========================================== */
 .attention-subjects-list {
    display: flex;
    flex-direction: column;
@@ -719,7 +963,7 @@
    background-color: var(--success);
 }
 
-/* --- LISTA DE EVALUACIONES --- */
+/* Próximas Evaluaciones */
 .upcoming-evals-list {
    display: flex;
    flex-direction: column;
@@ -784,7 +1028,155 @@
    color: var(--text-muted);
 }
 
-/* --- BANNER COREAI RECOMENDACIÓN --- */
+/* ==========================================
+   9. VISTA ASIGNATURAS: GRID COMPACTO 3-COL
+   ========================================== */
+#view-asignaturas .view-welcome-bar {
+   margin-bottom: 0.6rem;
+}
+
+.subjects-grid-3col {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap: 0.75rem;
+}
+
+.dash-card.subject-card-compact {
+   padding: 0.75rem 0.9rem;
+}
+
+.subject-card-compact .dash-card-header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding-bottom: 0.35rem;
+   border-bottom: 1px solid var(--border-color);
+}
+
+.subject-card-compact .dash-card-header h3 {
+   font-size: 0.92rem;
+}
+
+.subject-card-title {
+   display: flex;
+   align-items: center;
+   gap: 0.5rem;
+}
+
+.btn-icon-more {
+   background: transparent;
+   border: 1px solid transparent;
+   color: var(--text-muted);
+   cursor: pointer;
+   padding: 0.2rem 0.4rem;
+   border-radius: var(--radius-md);
+   transition: var(--transition);
+}
+
+.btn-icon-more:hover {
+   color: var(--primary);
+   background-color: var(--bg-card-hover);
+   border-color: var(--border-color);
+   transform: translateY(-2px);
+}
+
+.btn-icon-more:active {
+   transform: translateY(0);
+}
+
+.subject-card-top-info {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin: 0.35rem 0;
+}
+
+.grade-display {
+   display: flex;
+   align-items: baseline;
+   gap: 0.15rem;
+   font-weight: 800;
+}
+
+.subject-card-compact .grade-val {
+   font-size: 1.1rem;
+}
+
+.subject-card-compact .grade-val.red-text {
+   color: #ef4444;
+}
+
+.subject-card-compact .grade-val.yellow-text {
+   color: var(--warning);
+}
+
+.subject-card-compact .grade-val.green-text {
+   color: var(--success);
+}
+
+.subject-card-compact .grade-max {
+   font-size: 0.72rem;
+   color: var(--text-muted);
+}
+
+.cuts-info-text {
+   font-size: 0.74rem;
+   color: var(--text-muted);
+   margin-bottom: 0.4rem;
+}
+
+.subject-card-footer {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding-top: 0.35rem;
+   border-top: 1px solid var(--border-color);
+   font-size: 0.73rem;
+}
+
+.next-eval-tag {
+   color: var(--text-muted);
+}
+
+.sim-tabs {
+   display: flex;
+   gap: 8px;
+   background-color: var(--bg-main);
+   padding: 6px;
+   border-radius: var(--radius-md);
+   border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+   flex: 1;
+   padding: 0.6rem;
+   border: 1px solid transparent;
+   background: transparent;
+   color: var(--text-muted);
+   font-weight: 700;
+   font-size: 0.82rem;
+   border-radius: 10px;
+   cursor: pointer;
+   transition: var(--transition);
+}
+
+.tab-btn.active {
+   background-color: var(--bg-card);
+   color: var(--primary);
+   border-color: var(--border-color);
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sim-tabs .tab-btn:not(.active):hover {
+   color: var(--primary);
+   background-color: var(--bg-card-hover);
+   border-color: var(--border-color);
+   transform: translateY(-2px);
+}
+
+/* ==========================================
+   10. BANNER COREAI, FAB Y CHAT DRAWER
+   ========================================== */
 .ai-recommendation-card {
    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-main) 100%);
    border: 1px solid var(--border-color);
@@ -835,7 +1227,6 @@
    line-height: 1.4;
 }
 
-/* --- BOTÓN FLOTANTE FAB Y CHAT DE CoreAI --- */
 .ai-fab-btn {
    position: fixed;
    bottom: 2rem;
@@ -860,7 +1251,6 @@
    transform: scale(1.08) translateY(-2px);
 }
 
-/* Drawer / Chat Modal de CoreAI */
 .ai-chat-drawer {
    position: fixed;
    bottom: 5.5rem;
@@ -955,303 +1345,9 @@
    justify-content: center;
 }
 
-/* --- ESTILO DE BOTÓN DE PERIODO/SEMESTRE --- */
-.semester-selector-btn {
-   height: 42px;
-   display: inline-flex;
-   align-items: center;
-   gap: 8px;
-   padding: 0 1.2rem;
-   border-radius: var(--radius-md);
-   font-size: 0.88rem;
-   font-weight: 700;
-   box-shadow: 0 3px 0px var(--border-color);
-}
-
-.semester-chevron {
-   margin-left: 8px;
-   font-size: 0.8rem;
-}
-
-/* --- ESTADOS DE FOCO ACCESIBLE --- */
-.sidebar-link:focus-visible,
-.card-link-action:focus-visible,
-.attention-subject-item:focus-visible,
-.ai-fab-btn:focus-visible,
-.btn-send:focus-visible,
-.profile-btn:focus-visible,
-.dropdown-trigger:focus-visible,
-.dropdown-item:focus-visible,
-.semester-selector-btn:focus-visible {
-   outline: 3px solid rgba(0, 163, 255, 0.35);
-   outline-offset: 2px;
-}
-
 /* ==========================================
-   MENÚ DESPLEGABLE PERSONALIZADO (CUSTOM DROPDOWN)
+   11. MODAL PERFIL Y CONTROLES ACCESIBLES
    ========================================== */
-.custom-dropdown {
-   position: relative;
-   display: inline-block;
-}
-
-.dropdown-trigger {
-   display: inline-flex;
-   align-items: center;
-   justify-content: space-between;
-   gap: 10px;
-   background-color: var(--bg-card);
-   border: 1px solid var(--border-color);
-   color: var(--text-main);
-   padding: 0.45rem 0.9rem;
-   border-radius: var(--radius-md);
-   font-size: 0.82rem;
-   font-weight: 700;
-   cursor: pointer;
-   transition: var(--transition);
-   box-shadow: 0 3px 0px var(--border-color);
-}
-
-.dropdown-trigger:hover {
-   border-color: var(--primary);
-   color: var(--primary);
-}
-
-.dropdown-trigger .arrow-icon {
-   font-size: 0.7rem;
-   transition: transform 0.25s ease;
-}
-
-.custom-dropdown.active .dropdown-trigger .arrow-icon {
-   transform: rotate(180deg);
-}
-
-/* Menú flotante desplegado */
-.custom-dropdown .dropdown-menu {
-   position: absolute;
-   top: calc(100% + 6px);
-   right: 0;
-   background-color: var(--bg-card);
-   border: 1px solid var(--border-color);
-   border-radius: var(--radius-md);
-   box-shadow: var(--shadow-hover);
-   padding: 6px;
-   display: flex;
-   flex-direction: column;
-   gap: 4px;
-   min-width: 130px;
-   opacity: 0;
-   visibility: hidden;
-   transform: translateY(-8px);
-   transition: var(--transition);
-   z-index: 100;
-}
-
-.custom-dropdown.active .dropdown-menu {
-   opacity: 1;
-   visibility: visible;
-   transform: translateY(0);
-}
-
-.dropdown-item {
-   background: transparent;
-   border: none;
-   color: var(--text-main);
-   padding: 8px 12px;
-   border-radius: 10px;
-   font-size: 0.82rem;
-   font-weight: 700;
-   cursor: pointer;
-   transition: var(--transition);
-   width: 100%;
-   text-align: left;
-}
-
-.dropdown-item:hover {
-   background-color: var(--bg-card-hover);
-   color: var(--primary);
-}
-
-.dropdown-item.active {
-   color: var(--primary);
-   background-color: var(--bg-card-hover);
-}
-
-/* --- PREFERENCIA DE MOVIMIENTO REDUCIDO --- */
-@media (prefers-reduced-motion: reduce) {
-
-   .dashboard-body *,
-   .dashboard-body *::before,
-   .dashboard-body *::after {
-      scroll-behavior: auto;
-      transition-duration: 0.01ms;
-      animation-duration: 0.01ms;
-      animation-iteration-count: 1;
-   }
-}
-
-/* --- ESTILOS EXCLUSIVOS: PANELS HEADER Y MODAL PERFIL --- */
-.header-dropdown-wrapper {
-   position: relative;
-   display: inline-flex;
-}
-
-.header-popover-menu {
-   position: absolute;
-   top: calc(100% + 10px);
-   right: 0;
-   background-color: var(--bg-card);
-   border: 1px solid var(--border-color);
-   border-radius: var(--radius-lg);
-   box-shadow: var(--shadow-hover);
-   width: 300px;
-   opacity: 0;
-   visibility: hidden;
-   transform: translateY(-8px);
-   transition: var(--transition);
-   z-index: 120;
-   overflow: hidden;
-}
-
-.header-popover-menu.active {
-   opacity: 1;
-   visibility: visible;
-   transform: translateY(0);
-}
-
-/* Header Popovers */
-.popover-header {
-   padding: 0.85rem 1rem;
-   border-bottom: 1px solid var(--border-color);
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-}
-
-.popover-header h4 {
-   font-size: 0.88rem;
-   font-weight: 800;
-}
-
-.btn-text-action {
-   background: none;
-   border: none;
-   color: var(--primary);
-   font-size: 0.78rem;
-   font-weight: 700;
-   cursor: pointer;
-}
-
-.popover-body {
-   max-height: 260px;
-   overflow-y: auto;
-}
-
-.notif-item {
-   display: flex;
-   gap: 10px;
-   padding: 0.8rem 1rem;
-   border-bottom: 1px solid var(--border-color);
-   transition: var(--transition);
-}
-
-.notif-item:hover {
-   background-color: var(--bg-main);
-}
-
-.notif-item.unread {
-   background-color: rgba(0, 163, 255, 0.05);
-}
-
-.notif-icon {
-   width: 30px;
-   height: 30px;
-   border-radius: 50%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-size: 0.82rem;
-   flex-shrink: 0;
-}
-
-.notif-icon.danger {
-   background-color: rgba(239, 68, 68, 0.15);
-   color: #ef4444;
-}
-
-.notif-icon.primary {
-   background-color: rgba(0, 163, 255, 0.15);
-   color: var(--primary);
-}
-
-.notif-content p {
-   font-size: 0.78rem;
-   line-height: 1.35;
-}
-
-.notif-time {
-   font-size: 0.68rem;
-   color: var(--text-muted);
-   margin-top: 2px;
-   display: block;
-}
-
-/* User Popover Limpio */
-.profile-popover {
-   width: 220px;
-   padding: 0.5rem;
-}
-
-.user-info-head {
-   padding: 0.4rem 0.5rem;
-}
-
-.user-full-name {
-   font-weight: 800;
-   font-size: 0.88rem;
-}
-
-.user-email {
-   font-size: 0.75rem;
-   color: var(--text-muted);
-}
-
-.popover-divider {
-   height: 1px;
-   background-color: var(--border-color);
-   margin: 0.35rem 0;
-}
-
-.popover-item {
-   display: flex;
-   align-items: center;
-   gap: 10px;
-   width: 100%;
-   padding: 0.5rem 0.6rem;
-   border: none;
-   background: transparent;
-   color: var(--text-main);
-   font-size: 0.82rem;
-   font-weight: 600;
-   border-radius: var(--radius-md);
-   cursor: pointer;
-   transition: var(--transition);
-}
-
-.popover-item:hover {
-   background-color: var(--bg-main);
-   color: var(--primary);
-}
-
-.popover-item.logout-item {
-   color: #ef4444;
-}
-
-.popover-item.logout-item:hover {
-   background-color: rgba(239, 68, 68, 0.1);
-}
-
-/* --- MODAL PERFIL - MARCO Y EDICIÓN --- */
 .profile-modal-card {
    max-width: 580px;
 }
@@ -1264,7 +1360,6 @@
    border-bottom: 1px solid var(--border-color);
 }
 
-/* Marco para la foto */
 .profile-frame-avatar {
    position: relative;
    width: 72px;
@@ -1321,7 +1416,6 @@
    margin-top: 0.5rem;
 }
 
-/* Estilo para inputs cuando están en modo lectura (readonly) */
 .profile-form input[readonly] {
    background-color: var(--bg-main);
    border-color: var(--border-color);
@@ -1330,7 +1424,34 @@
    box-shadow: none;
 }
 
-/* Distribución footer: Editar a la izquierda, Cerrar a la derecha */
 .modal-footer-between {
    justify-content: space-between !important;
+}
+
+/* Foco Accesible */
+.sidebar-link:focus-visible,
+.card-link-action:focus-visible,
+.attention-subject-item:focus-visible,
+.ai-fab-btn:focus-visible,
+.btn-send:focus-visible,
+.profile-btn:focus-visible,
+.dropdown-trigger:focus-visible,
+.dropdown-item:focus-visible,
+.semester-selector-btn:focus-visible,
+.btn-icon-more:focus-visible {
+   outline: 3px solid rgba(0, 163, 255, 0.35);
+   outline-offset: 2px;
+}
+
+/* Preferencia de Movimiento Reducido */
+@media (prefers-reduced-motion: reduce) {
+
+   .dashboard-body *,
+   .dashboard-body *::before,
+   .dashboard-body *::after {
+      scroll-behavior: auto;
+      transition-duration: 0.01ms;
+      animation-duration: 0.01ms;
+      animation-iteration-count: 1;
+   }
 }

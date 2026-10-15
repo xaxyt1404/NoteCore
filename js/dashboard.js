@@ -277,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const notifPopover = document.getElementById('notifPopover');
   const userMenuBtn = document.getElementById('userMenuBtn');
   const userPopover = document.getElementById('userPopover');
+  const themeMenu = document.getElementById('theme-menu');
 
   const openProfileModalBtn = document.getElementById('openProfileModalBtn');
   const closeProfileModalBtn = document.getElementById('closeProfileModalBtn');
@@ -295,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cerrar ambos popovers antes de abrir uno nuevo
     if (notifPopover) notifPopover.classList.remove('active');
     if (userPopover) userPopover.classList.remove('active');
+    if (themeMenu) themeMenu.classList.remove('active');
 
     if (!isActive) {
       popover.classList.add('active');
@@ -353,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setProfileMode(false); // Siempre abre en modo lectura
     if (profileModal) {
       profileModal.classList.add('active');
+      document.documentElement.classList.add('modal-open'); // Bloquea el scroll del elemento html
       document.body.classList.add('modal-open');
     }
   }
@@ -360,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function closeProfileModal() {
     if (profileModal) {
       profileModal.classList.remove('active');
+      document.documentElement.classList.remove('modal-open'); // Reactiva el scroll del elemento html
       document.body.classList.remove('modal-open');
       setProfileMode(false);
     }

@@ -49,87 +49,133 @@
   <main class="auth-wrapper">
     <div class="auth-card">
 
-      <!-- COLUMNA IZQUIERDA: Formulario -->
+      <!-- COLUMNA IZQUIERDA: Vistas Dinámicas SPA -->
       <div class="auth-col-form">
-        <a href="index.html" class="back-link">
-          <i class="fa-solid fa-arrow-left"></i> Volver al inicio
-        </a>
 
-        <div class="auth-header">
-          <h2>¡Hola de nuevo!</h2>
-          <p>Ingresa tus datos para continuar.</p>
-        </div>
+        <!-- ==========================================
+             VISTA 1: INICIAR SESIÓN (#view-login)
+             ========================================== -->
+        <div id="view-login" class="auth-wizard-view">
+          <a href="index.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+          </a>
 
-        <!-- Alerta general para estado de envío / carga -->
-        <div id="authAlert" class="auth-alert" aria-live="polite"></div>
-
-        <form id="loginForm" class="auth-form" novalidate>
-          <!-- Campo: Correo Electrónico -->
-          <div class="form-group">
-            <label for="loginEmail">Correo Electrónico</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-regular fa-envelope input-icon"></i>
-              <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="username" required>
-            </div>
-            <span class="error-message" id="loginEmailError"></span>
+          <div class="auth-header">
+            <h2>¡Hola de nuevo!</h2>
+            <p>Ingresa tus datos para continuar.</p>
           </div>
 
-          <!-- Campo: Contraseña -->
-          <div class="form-group">
-            <label for="loginPassword">Contraseña</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-lock input-icon"></i>
-              <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required>
-              <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña"
-                onclick="togglePasswordVisibility('loginPassword', this)">
-                <i class="fa-regular fa-eye-slash"></i>
+          <!-- Alerta general -->
+          <div id="authAlert" class="auth-alert" aria-live="polite"></div>
+
+          <form id="loginForm" class="auth-form" novalidate>
+            <!-- Campo: Correo Electrónico -->
+            <div class="form-group">
+              <label for="loginEmail">Correo Electrónico</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-regular fa-envelope input-icon"></i>
+                <input type="email" id="loginEmail" placeholder="tu@correo.com" autocomplete="username" required>
+              </div>
+              <span class="error-message" id="loginEmailError"></span>
+            </div>
+
+            <!-- Campo: Contraseña -->
+            <div class="form-group">
+              <label for="loginPassword">Contraseña</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"
+                  required>
+                <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña"
+                  onclick="togglePasswordVisibility('loginPassword', this)">
+                  <i class="fa-regular fa-eye-slash"></i>
+                </button>
+              </div>
+              <span class="error-message" id="loginPasswordError"></span>
+            </div>
+
+            <div class="form-checkbox form-checkbox-between">
+              <label style="display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="rememberMe">
+                <span>Recordarme</span>
+              </label>
+              <a href="#" class="terms-link forgot-link"
+                onclick="switchAuthStep('view-login', 'view-forgot-password'); return false;">¿Olvidaste tu
+                contraseña?</a>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="auth-buttons-group">
+              <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-auth">
+                <span class="btn-text">Iniciar Sesión</span>
+                <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
               </button>
+              <a href="register.html" class="btn btn-outline btn-auth">Crear Cuenta</a>
             </div>
-            <span class="error-message" id="loginPasswordError"></span>
+          </form>
+
+          <!-- Divisor OR -->
+          <div class="auth-divider">
+            <span>O continúa con</span>
           </div>
 
-          <div class="form-checkbox form-checkbox-between">
-            <label style="display: flex; align-items: center; gap: 6px;">
-              <input type="checkbox" id="rememberMe">
-              <span>Recordarme</span>
-            </label>
-            <a href="forgot-password.html" class="terms-link forgot-link">¿Olvidaste tu contraseña?</a>
-          </div>
-
-          <!-- Botones de Acción -->
-          <div class="auth-buttons-group">
-            <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-auth">
-              <span class="btn-text">Iniciar Sesión</span>
-              <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
+          <!-- Botones de Redes Sociales -->
+          <div class="social-auth-grid">
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-google"></i>
+              <span>Google</span>
             </button>
-            <a href="register.html" class="btn btn-outline btn-auth">Crear Cuenta</a>
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-apple"></i>
+              <span>Apple</span>
+            </button>
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-microsoft"></i>
+              <span>Microsoft</span>
+            </button>
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-github"></i>
+              <span>GitHub</span>
+            </button>
           </div>
-        </form>
-
-        <!-- Divisor OR -->
-        <div class="auth-divider">
-          <span>O continúa con</span>
         </div>
 
-        <!-- Botones de Redes Sociales -->
-        <div class="social-auth-grid">
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-google"></i>
-            <span>Google</span>
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-apple"></i>
-            <span>Apple</span>
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-microsoft"></i>
-            <span>Microsoft</span>
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-github"></i>
-            <span>GitHub</span>
-          </button>
+        <!-- ==========================================
+             VISTA 2: RECUPERAR CONTRASEÑA (#view-forgot-password)
+             ========================================== -->
+        <div id="view-forgot-password" class="auth-wizard-view d-none">
+          <a href="#" class="back-link" onclick="switchAuthStep('view-forgot-password', 'view-login'); return false;">
+            <i class="fa-solid fa-arrow-left"></i> Volver a Iniciar Sesión
+          </a>
+
+          <div class="auth-header">
+            <h2>¿Olvidaste tu contraseña?</h2>
+            <p>Ingresa tu correo registrado y te enviaremos las instrucciones para restablecerla.</p>
+          </div>
+
+          <form id="forgotPasswordForm" class="auth-form" novalidate>
+            <!-- Campo: Correo Electrónico -->
+            <div class="form-group">
+              <label for="resetEmail">Correo Electrónico</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-regular fa-envelope input-icon"></i>
+                <input type="email" id="resetEmail" placeholder="tu@correo.com" autocomplete="email" required>
+              </div>
+              <span class="error-message" id="resetEmailError"></span>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="auth-buttons-group">
+              <button type="submit" id="btnForgotSubmit" class="btn btn-primary btn-auth">
+                <span class="btn-text">Enviar Enlace</span>
+                <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
+              </button>
+              <button type="button" class="btn btn-outline btn-auth"
+                onclick="switchAuthStep('view-forgot-password', 'view-login')">Cancelar</button>
+            </div>
+          </form>
         </div>
+
       </div>
 
       <!-- COLUMNA DERECHA: Imagen -->

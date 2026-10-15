@@ -62,6 +62,13 @@
     if (themeBtn && themeMenu) {
       themeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+
+        // Cerrar los otros popovers del header si están abiertos
+        const notifPopover = document.getElementById('notifPopover');
+        const userPopover = document.getElementById('userPopover');
+        if (notifPopover) notifPopover.classList.remove('active');
+        if (userPopover) userPopover.classList.remove('active');
+
         themeMenu.classList.toggle('active');
       });
     }

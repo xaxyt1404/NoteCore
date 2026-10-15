@@ -49,100 +49,241 @@
   <main class="auth-wrapper">
     <div class="auth-card">
 
-      <!-- COLUMNA IZQUIERDA: Formulario -->
+      <!-- COLUMNA IZQUIERDA: Vistas Dinámicas (SPA) reutilizando clases de auth.css -->
       <div class="auth-col-form">
         <a href="index.html" class="back-link">
           <i class="fa-solid fa-arrow-left"></i> Volver al inicio
         </a>
 
-        <div class="auth-header">
-          <h2>Crear Cuenta</h2>
-          <p>Únete a NoteCore y gestiona tus notas de forma inteligente.</p>
-        </div>
-
-        <!-- Alerta general para estado de envío / carga -->
-        <div id="authAlert" class="auth-alert" aria-live="polite"></div>
-
-        <form id="registerForm" class="auth-form" novalidate>
-          <!-- Campo: Correo Electrónico -->
-          <div class="form-group">
-            <label for="regEmail">Correo Electrónico</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-regular fa-envelope input-icon"></i>
-              <input type="email" id="regEmail" placeholder="tu@correo.com" autocomplete="email" required>
-            </div>
-            <span class="error-message" id="regEmailError"></span>
+        <!-- ==========================================
+             VISTA 0: REGISTRO BASE
+             ========================================== -->
+        <div id="step-register" class="auth-wizard-view">
+          <div class="auth-header">
+            <h2>Crear Cuenta</h2>
+            <p>Únete a NoteCore y gestiona tus notas de forma inteligente.</p>
           </div>
 
-          <!-- Campo: Nombre Completo -->
-          <div class="form-group">
-            <label for="regName">Nombre y Apellido</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-regular fa-user input-icon"></i>
-              <input type="text" id="regName" placeholder="Ej. Estiben Martinez" autocomplete="name" required>
-            </div>
-            <span class="error-message" id="regNameError"></span>
-          </div>
+          <!-- Alerta general para estado de envío / carga -->
+          <div id="authAlert" class="auth-alert" aria-live="polite"></div>
 
-          <div class="form-group">
-            <label for="regPassword">Contraseña</label>
-            <div class="input-icon-wrapper">
-              <i class="fa-solid fa-lock input-icon"></i>
-              <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" minlength="6"
-                pattern="(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}" title="Mínimo 6 caracteres, un número y un carácter especial"
-                required>
-              <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña"
-                onclick="togglePasswordVisibility('regPassword', this)">
-                <i class="fa-regular fa-eye-slash"></i>
+          <form id="registerForm" class="auth-form" novalidate>
+            <!-- Campo: Correo Electrónico -->
+            <div class="form-group">
+              <label for="regEmail">Correo Electrónico</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-regular fa-envelope input-icon"></i>
+                <input type="email" id="regEmail" placeholder="tu@correo.com" autocomplete="email" required>
+              </div>
+              <span class="error-message" id="regEmailError"></span>
+            </div>
+
+            <!-- Campo: Nombre Completo -->
+            <div class="form-group">
+              <label for="regName">Nombre y Apellido</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-regular fa-user input-icon"></i>
+                <input type="text" id="regName" placeholder="Ej. Estiben Martinez" autocomplete="name" required>
+              </div>
+              <span class="error-message" id="regNameError"></span>
+            </div>
+
+            <!-- Campo: Contraseña -->
+            <div class="form-group">
+              <label for="regPassword">Contraseña</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-solid fa-lock input-icon"></i>
+                <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" minlength="6"
+                  pattern="(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}"
+                  title="Mínimo 6 caracteres, un número y un carácter especial" required>
+                <button type="button" class="toggle-password" aria-label="Mostrar u ocultar contraseña"
+                  onclick="togglePasswordVisibility('regPassword', this)">
+                  <i class="fa-regular fa-eye-slash"></i>
+                </button>
+              </div>
+              <span class="error-message" id="regPasswordError"></span>
+            </div>
+
+            <!-- Checkbox Términos -->
+            <div class="form-group">
+              <div class="form-checkbox">
+                <input type="checkbox" id="regTerms" required>
+                <label for="regTerms">Acepto los <a href="#" class="terms-link"
+                    onclick="openTermsModal(); return false;">Términos y Condiciones</a></label>
+              </div>
+              <span class="error-message" id="regTermsError"></span>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="auth-buttons-group">
+              <button type="submit" id="btnRegisterSubmit" class="btn btn-primary btn-auth">
+                <span class="btn-text">Continuar</span>
+                <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
               </button>
+              <a href="login.html" class="btn btn-outline btn-auth">Iniciar Sesión</a>
             </div>
-            <span class="error-message" id="regPasswordError"></span>
+          </form>
+
+          <!-- Divisor OR -->
+          <div class="auth-divider">
+            <span>O continúa con</span>
           </div>
 
-          <!-- Checkbox Términos -->
-          <div class="form-group">
-            <div class="form-checkbox">
-              <input type="checkbox" id="regTerms" required>
-              <label for="regTerms">Acepto los <a href="#" class="terms-link"
-                  onclick="openTermsModal(); return false;">Términos y Condiciones</a></label>
-            </div>
-            <span class="error-message" id="regTermsError"></span>
-          </div>
-
-          <!-- Botones de Acción -->
-          <div class="auth-buttons-group">
-            <button type="submit" id="btnRegisterSubmit" class="btn btn-primary btn-auth">
-              <span class="btn-text">Crear Cuenta</span>
-              <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
+          <!-- Botones de Redes Sociales -->
+          <div class="social-auth-grid">
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-google"></i>
+              <span>Google</span>
             </button>
-            <a href="login.html" class="btn btn-outline btn-auth">Iniciar Sesión</a>
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-apple"></i>
+              <span>Apple</span>
+            </button>
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-microsoft"></i>
+              <span>Microsoft</span>
+            </button>
+            <button type="button" class="social-btn">
+              <i class="fa-brands fa-github"></i>
+              <span>GitHub</span>
+            </button>
           </div>
-        </form>
-
-        <!-- Divisor OR -->
-        <div class="auth-divider">
-          <span>O continúa con</span>
         </div>
 
-        <!-- Botones de Redes Sociales -->
-        <div class="social-auth-grid">
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-google"></i>
-            <span>Google</span>
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-apple"></i>
-            <span>Apple</span>
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-microsoft"></i>
-            <span>Microsoft</span>
-          </button>
-          <button type="button" class="social-btn">
-            <i class="fa-brands fa-github"></i>
-            <span>GitHub</span>
-          </button>
+        <!-- ==========================================
+             VISTA 1: PERFIL ACADÉMICO (WIZARD PASO 1)
+             ========================================== -->
+        <div id="step-profile" class="auth-wizard-view d-none">
+          <div class="auth-header">
+            <span class="badge">Paso 1 de 3</span>
+            <h2>Perfil Académico</h2>
+            <p>Cuéntanos un poco sobre tu institución y programa de estudio.</p>
+          </div>
+
+          <form id="profileFormStep" class="auth-form" novalidate>
+            <div class="form-group">
+              <label for="setupUniversity">Universidad / Institución</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-solid fa-building-columns input-icon"></i>
+                <input type="text" id="setupUniversity" placeholder="Ej. Universidad de Cartagena" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="setupDegree">Carrera / Programa Académico</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-solid fa-graduation-cap input-icon"></i>
+                <input type="text" id="setupDegree" placeholder="Ej. Ingeniería de Sistemas" required>
+              </div>
+            </div>
+
+            <div class="auth-buttons-group" style="margin-top: 1.5rem;">
+              <button type="button" class="btn btn-outline btn-auth"
+                onclick="switchAuthStep('step-profile', 'step-register')">Atrás</button>
+              <button type="submit" class="btn btn-primary btn-auth">Siguiente</button>
+            </div>
+          </form>
         </div>
+
+        <!-- ==========================================
+             VISTA 2: SEMESTRE Y CORTES (WIZARD PASO 2)
+             ========================================== -->
+        <div id="step-semester" class="auth-wizard-view d-none">
+          <div class="auth-header">
+            <span class="badge">Paso 2 de 3</span>
+            <h2>Semestre y Cortes</h2>
+            <p>Define el periodo actual y cómo se distribuyen las calificaciones.</p>
+          </div>
+
+          <form id="semesterFormStep" class="auth-form" novalidate>
+            <div class="form-group">
+              <label for="setupSemesterName">Nombre del Periodo / Semestre</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-regular fa-calendar input-icon"></i>
+                <input type="text" id="setupSemesterName" value="Semestre 2026-2" required>
+              </div>
+            </div>
+
+            <!-- Campo: Esquema de Evaluación -->
+            <div class="form-group">
+              <label>Esquema de Evaluación</label>
+              <div class="custom-dropdown" id="dropdownCutsSchema">
+                <button type="button" class="dropdown-trigger" aria-expanded="false" aria-haspopup="menu">
+                  <span class="dropdown-selected-text">3 Cortes Standard (30% - 30% - 40%)</span>
+                  <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </button>
+                <div class="dropdown-menu" role="menu">
+                  <button type="button" class="dropdown-item active" role="menuitem" data-value="30-30-40">
+                    3 Cortes Standard (30% - 30% - 40%)
+                  </button>
+                  <button type="button" class="dropdown-item" role="menuitem" data-value="33-33-34">
+                    3 Cortes Iguales (~33.3% c/u)
+                  </button>
+                  <button type="button" class="dropdown-item" role="menuitem" data-value="25-25-25-25">
+                    4 Cortes Iguales (25% c/u)
+                  </button>
+                </div>
+                <!-- Input oculto para conectar con onboardingPayload en auth.js -->
+                <input type="hidden" id="setupCutsSchema" value="30-30-40">
+              </div>
+            </div>
+
+            <div class="auth-buttons-group" style="margin-top: 1.5rem;">
+              <button type="button" class="btn btn-outline btn-auth"
+                onclick="switchAuthStep('step-semester', 'step-profile')">Atrás</button>
+              <button type="submit" class="btn btn-primary btn-auth">Siguiente</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ==========================================
+             VISTA 3: ASIGNATURAS INICIALES (WIZARD PASO 3)
+             ========================================== -->
+        <div id="step-subjects" class="auth-wizard-view d-none">
+          <div class="auth-header">
+            <span class="badge">Paso 3 de 3</span>
+            <h2>Asignaturas</h2>
+            <p>Agrega un par de materias para no iniciar con el panel vacío.</p>
+          </div>
+
+          <form id="subjectsFormStep" class="auth-form" novalidate>
+            <div class="form-group">
+              <label for="setupSubjectName">Nombre de la Asignatura</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-solid fa-book input-icon"></i>
+                <input type="text" id="setupSubjectName" placeholder="Ej. Producción Textual">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="setupSubjectCredits">Créditos</label>
+              <div class="input-icon-wrapper">
+                <i class="fa-solid fa-award input-icon"></i>
+                <input type="number" id="setupSubjectCredits" min="1" max="6" value="3">
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-outline" style="width: 100%; margin-bottom: 1rem;"
+              onclick="addTemporarySubject()">
+              <i class="fa-solid fa-plus icon-left"></i> Añadir a la lista
+            </button>
+
+            <!-- Contenedor visual de asignaturas agregadas -->
+            <div id="tempSubjectsList"
+              style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; max-height: 110px; overflow-y: auto;">
+              <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;" id="noSubjectsMsg">Aún no
+                has agregado materias (puedes omitir o agregar al menos una).</span>
+            </div>
+
+            <div class="auth-buttons-group">
+              <button type="button" class="btn btn-outline btn-auth"
+                onclick="switchAuthStep('step-subjects', 'step-semester')">Atrás</button>
+              <button type="button" class="btn btn-primary btn-auth"
+                onclick="completeOnboardingFlow()">Finalizar</button>
+            </div>
+          </form>
+        </div>
+
       </div>
 
       <!-- COLUMNA DERECHA: Imagen -->

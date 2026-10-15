@@ -8,7 +8,8 @@ html {
   scroll-behavior: smooth;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
   max-width: 100%;
   width: 100%;
@@ -597,14 +598,15 @@ a {
   }
 
   @media (max-width: 600px) {
-  .nav-container {
-    height: 60px;
-    padding: 0 0.8rem; /* Reducido de 1rem a 0.8rem para evitar scroll lateral en móviles pequeños */
-    gap: 0.3rem;
-    max-width: 100%;
-    box-sizing: border-box;
+    .nav-container {
+      height: 60px;
+      padding: 0 0.8rem;
+      /* Reducido de 1rem a 0.8rem para evitar scroll lateral en móviles pequeños */
+      gap: 0.3rem;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
   }
-}
 }
 
 /* ==========================================
@@ -1082,9 +1084,21 @@ a {
   visibility: visible;
 }
 
-/* Bloquea el scroll de la página mientras hay un modal abierto */
-body.modal-open {
-  overflow: hidden;
+/* Bloquea el scroll de la página de fondo en PC y móviles */
+html.modal-open,
+body.modal-open,
+html:has(body.modal-open) {
+  overflow: hidden !important;
+  height: 100% !important;
+  touch-action: none;
+  /* Bloquea gestos táctiles de fondo en móviles */
+}
+
+/* Permite el scroll vertical únicamente dentro de los cuerpos de las modales y popovers */
+.modal-body,
+.ai-chat-body,
+.popover-body {
+  touch-action: pan-y;
 }
 
 .modal-card {

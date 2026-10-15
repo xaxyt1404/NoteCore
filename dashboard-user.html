@@ -29,7 +29,7 @@
   <div class="dashboard-container">
 
     <!-- ==========================================
-         SIDEBAR (BARRA LATERAL DE NAVEGACIÓN)
+         SIDEBAR (BARRA LATERAL DE NAVEGACIÓN) - FIJA
          ========================================== -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <aside class="sidebar dash-sidebar" id="sidebar">
@@ -47,19 +47,19 @@
       <!-- Links Principales del Dashboard -->
       <nav class="sidebar-links">
         <div class="sidebar-group main-links">
-          <a href="#inicio" class="sidebar-link active" data-view="view-inicio">
+          <a href="#view-inicio" class="sidebar-link active" data-view="view-inicio">
             <i class="fa-solid fa-house"></i>
             <span>Inicio</span>
           </a>
-          <a href="#asignaturas" class="sidebar-link" data-view="view-asignaturas">
+          <a href="#view-asignaturas" class="sidebar-link" data-view="view-asignaturas">
             <i class="fa-solid fa-book-open"></i>
             <span>Asignaturas</span>
           </a>
-          <a href="#herramientas" class="sidebar-link" data-view="view-screwdriver-wrench"></i>
+          <a href="#view-herramientas" class="sidebar-link" data-view="view-herramientas">
             <i class="fa-solid fa-screwdriver-wrench"></i>
             <span>Herramientas</span>
           </a>
-          <a href="#estadisticas" class="sidebar-link" data-view="view-estadisticas">
+          <a href="#view-estadisticas" class="sidebar-link" data-view="view-estadisticas">
             <i class="fa-solid fa-chart-simple"></i>
             <span>Estadísticas</span>
           </a>
@@ -67,11 +67,11 @@
 
         <!-- Grupo Inferior: Ajustes y Soporte -->
         <div class="sidebar-group bottom-links">
-          <a href="#ajustes" class="sidebar-link" data-view="view-ajustes">
+          <a href="#view-ajustes" class="sidebar-link" data-view="view-ajustes">
             <i class="fa-solid fa-gear"></i>
             <span>Ajustes</span>
           </a>
-          <a href="#soporte" class="sidebar-link" data-view="view-soporte">
+          <a href="#view-soporte" class="sidebar-link" data-view="view-soporte">
             <i class="fa-solid fa-headset"></i>
             <span>Soporte</span>
           </a>
@@ -91,7 +91,7 @@
          ========================================== -->
     <div class="dashboard-main">
 
-      <!-- HEADER SUPERIOR -->
+      <!-- HEADER SUPERIOR - FIJO -->
       <header class="dash-header">
         <div class="header-left">
           <!-- Oculto en PC por CSS -->
@@ -343,7 +343,8 @@
                     atención</h3>
                   <p class="dash-card-sub">Estas asignaturas están en riesgo o cerca del mínimo.</p>
                 </div>
-                <a href="#asignaturas" class="card-link-action">Ver todas <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="#view-asignaturas" class="card-link-action">Ver todas <i
+                    class="fa-solid fa-arrow-right"></i></a>
               </div>
               <div class="dash-card-body">
                 <div class="attention-subjects-list">
@@ -469,15 +470,175 @@
 
         </section>
 
-        <!-- SECCIÓN 2: ASIGNATURAS (#view-asignaturas) -->
+        <!-- ============================================================ -->
+        <!-- SECCIÓN 2: VISTA ASIGNATURAS (#view-asignaturas)             -->
+        <!-- ============================================================ -->
         <section id="view-asignaturas" class="dash-view d-none">
+
+          <!-- Encabezado de la Vista con CTA Agregar -->
+          <div class="view-welcome-bar">
+            <div class="welcome-heading">
+              <h1>Asignaturas 📚</h1>
+              <p>Gestiona tus materias, consulta el desglose de cortes y proyecta tus calificaciones del semestre.</p>
+            </div>
+            <button type="button" class="btn btn-primary">
+              <i class="fa-solid fa-plus icon-left"></i> Agregar asignatura
+            </button>
+          </div>
+
+          <!-- Barra de Filtros (Pestañas) -->
+          <div class="sim-tabs" style="margin-bottom: 1rem;">
+            <button type="button" class="tab-btn active">Todas (6)</button>
+            <button type="button" class="tab-btn">En curso (5)</button>
+            <button type="button" class="tab-btn">En riesgo (1)</button>
+            <button type="button" class="tab-btn">Aprobadas (0)</button>
+          </div>
+
+          <!-- GRID DE TARJETAS COMPACTAS (3 POR FILA EN ESCRITORIO) -->
+          <div class="subjects-grid-3col">
+
+            <!-- Tarjeta 1: Física -->
+            <div class="dash-card subject-card-compact">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-atom card-icon text-danger"></i>
+                  <h3>Física</h3>
+                </div>
+                <button type="button" class="btn-icon-more" aria-label="Opciones de asignatura">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div class="subject-card-top-info">
+                  <span class="subject-grade-badge red">En riesgo</span>
+                  <div class="grade-display">
+                    <span class="grade-val red-text">2.8</span>
+                    <span class="grade-max">/ 5.0</span>
+                  </div>
+                </div>
+                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+                <div class="subject-card-footer">
+                  <span class="next-eval-tag">Siguiente: <strong>Trabajo grupal (18 OCT)</strong></span>
+                  <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta 2: Cálculo -->
+            <div class="dash-card subject-card-compact">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-calculator card-icon"></i>
+                  <h3>Cálculo</h3>
+                </div>
+                <button type="button" class="btn-icon-more" aria-label="Opciones de asignatura">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div class="subject-card-top-info">
+                  <span class="subject-grade-badge yellow">En buen estado</span>
+                  <div class="grade-display">
+                    <span class="grade-val yellow-text">3.6</span>
+                    <span class="grade-max">/ 5.0</span>
+                  </div>
+                </div>
+                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+                <div class="subject-card-footer">
+                  <span class="next-eval-tag">Siguiente: <strong>Parcial 2 (22 OCT)</strong></span>
+                  <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta 3: Programación -->
+            <div class="dash-card subject-card-compact">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-code card-icon text-success"></i>
+                  <h3>Programación</h3>
+                </div>
+                <button type="button" class="btn-icon-more" aria-label="Opciones de asignatura">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div class="subject-card-top-info">
+                  <span class="subject-grade-badge green">En buen estado</span>
+                  <div class="grade-display">
+                    <span class="grade-val green-text">4.5</span>
+                    <span class="grade-max">/ 5.0</span>
+                  </div>
+                </div>
+                <p class="cuts-info-text">Cortes: C1 (25%) • C2 (35%) • C3 (40%)</p>
+                <div class="subject-card-footer">
+                  <span class="next-eval-tag">Siguiente: <strong>Proyecto Final (05 NOV)</strong></span>
+                  <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta 4: Matemáticas -->
+            <div class="dash-card subject-card-compact">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-square-root-variable card-icon text-success"></i>
+                  <h3>Matemáticas</h3>
+                </div>
+                <button type="button" class="btn-icon-more" aria-label="Opciones de asignatura">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div class="subject-card-top-info">
+                  <span class="subject-grade-badge green">En buen estado</span>
+                  <div class="grade-display">
+                    <span class="grade-val green-text">4.2</span>
+                    <span class="grade-max">/ 5.0</span>
+                  </div>
+                </div>
+                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+                <div class="subject-card-footer">
+                  <span class="next-eval-tag">Siguiente: <strong>Parcial 2 (15 OCT)</strong></span>
+                  <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjeta 5: Producción Textual -->
+            <div class="dash-card subject-card-compact">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-pen-nib card-icon text-success"></i>
+                  <h3>Producción Textual</h3>
+                </div>
+                <button type="button" class="btn-icon-more" aria-label="Opciones de asignatura">
+                  <i class="fa-solid fa-ellipsis-vertical"></i>
+                </button>
+              </div>
+              <div class="dash-card-body">
+                <div class="subject-card-top-info">
+                  <span class="subject-grade-badge green">En buen estado</span>
+                  <div class="grade-display">
+                    <span class="grade-val green-text">4.8</span>
+                    <span class="grade-max">/ 5.0</span>
+                  </div>
+                </div>
+                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+                <div class="subject-card-footer">
+                  <span class="next-eval-tag">Siguiente: <strong>Ensayo Final (12 NOV)</strong></span>
+                  <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
         </section>
 
         <!-- SECCIÓN SOPORTE (#view-soporte) -->
         <section id="view-soporte" class="dash-view d-none">
         </section>
-
-
 
       </main>
     </div>
