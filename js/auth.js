@@ -115,6 +115,36 @@ function completeOnboardingFlow() {
   window.location.href = 'dashboard-user.html';
 }
 
+/* ==========================================
+   MODAL TÉRMINOS Y CONDICIONES (Con bloqueo de scroll)
+   ========================================== */
+
+function openTermsModal() {
+  const termsModal = document.getElementById('termsModal');
+  if (termsModal) {
+    termsModal.classList.add('active');
+    document.documentElement.classList.add('modal-open'); // Bloquea el scroll del elemento html
+    document.body.classList.add('modal-open'); // Bloquea el scroll del body
+  }
+}
+
+function closeTermsModal() {
+  const termsModal = document.getElementById('termsModal');
+  if (termsModal) {
+    termsModal.classList.remove('active');
+    document.documentElement.classList.remove('modal-open'); // Reactiva el scroll del elemento html
+    document.body.classList.remove('modal-open'); // Reactiva el scroll del body
+  }
+}
+
+function acceptTermsAndClose() {
+  const regTermsCheckbox = document.getElementById('regTerms');
+  if (regTermsCheckbox) {
+    regTermsCheckbox.checked = true;
+  }
+  closeTermsModal();
+}
+
 // Eventos de los formularios
 document.addEventListener('DOMContentLoaded', () => {
   // Función helper DRY: valida el formulario y ejecuta onValid si pasa
@@ -174,36 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Regresa a la vista principal de login
     switchAuthStep('view-forgot-password', 'view-login');
   });
-
-  /* ==========================================
-   MODAL TÉRMINOS Y CONDICIONES (Con bloqueo de scroll)
-   ========================================== */
-
-  function openTermsModal() {
-    const termsModal = document.getElementById('termsModal');
-    if (termsModal) {
-      termsModal.classList.add('active');
-      document.documentElement.classList.add('modal-open'); // Bloquea el scroll del elemento html
-      document.body.classList.add('modal-open'); // Bloquea el scroll del body
-    }
-  }
-
-  function closeTermsModal() {
-    const termsModal = document.getElementById('termsModal');
-    if (termsModal) {
-      termsModal.classList.remove('active');
-      document.documentElement.classList.remove('modal-open'); // Reactiva el scroll del elemento html
-      document.body.classList.remove('modal-open'); // Reactiva el scroll del body
-    }
-  }
-
-  function acceptTermsAndClose() {
-    const regTermsCheckbox = document.getElementById('regTerms');
-    if (regTermsCheckbox) {
-      regTermsCheckbox.checked = true;
-    }
-    closeTermsModal();
-  }
 
   /* ---------------------------
      DROPDOWNS PERSONALIZADOS

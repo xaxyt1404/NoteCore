@@ -109,7 +109,8 @@
               <div class="form-checkbox">
                 <input type="checkbox" id="regTerms" required>
                 <label for="regTerms">Acepto los <a href="#" class="terms-link"
-                    onclick="openTermsModal(); return false;">Términos y Condiciones</a></label>
+                    onclick="event.stopPropagation(); openTermsModal(); return false;">Términos y
+                    Condiciones</a></label>
               </div>
               <span class="error-message" id="regTermsError"></span>
             </div>
@@ -332,7 +333,7 @@
     </div>
   </div>
 
-  <!-- Script exclusivo de autenticación -->
+  <!-- Script de autenticación -->
   <script src="js/auth.js"></script>
 </body>
 
