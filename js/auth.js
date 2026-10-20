@@ -17,13 +17,23 @@ function togglePasswordVisibility(inputId, btn) {
   icon.classList.toggle('fa-eye', isPassword);
 }
 
-// Helper reutilizable para validar y enviar formularios
+// Helper reutilizable para mostrar alertas dentro de las vistas de autenticación
 function showAuthAlert(elementId, message, type = 'info') {
   const alert = document.getElementById(elementId);
   if (!alert) return;
   alert.textContent = message;
   alert.className = `auth-alert auth-alert-${type}`;
   alert.style.display = 'block';
+}
+
+// Helper para alternar el estado de carga de un botón con spinner
+function setButtonLoading(btn, isLoading) {
+  if (!btn) return;
+  const text = btn.querySelector('.btn-text');
+  const spinner = btn.querySelector('.btn-spinner');
+  btn.disabled = isLoading;
+  if (text) text.hidden = isLoading;
+  if (spinner) spinner.hidden = !isLoading;
 }
 
 // ==========================================
@@ -72,6 +82,25 @@ function saveUserDataService(data) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
+  });
+  */
+}
+
+// Servicio de inicio de sesión (Desacoplado: preparado para cambiar por fetch/axios al backend)
+function loginUserService(email, password) {
+  // HOY: Simula la validación de credenciales y persiste la sesión localmente
+  localStorage.setItem('notecore_active_user', JSON.stringify({ email }));
+
+  /* MAÑANA (Backend Integration):
+  // Aquí el backend valida email + password y responde el perfil del usuario.
+  return fetch('/api/v1/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  }).then((res) => {
+    // Si las credenciales son inválidas, se lanzará el error correspondiente
+    if (!res.ok) throw new Error('Credenciales inválidas');
+    return res.json();
   });
   */
 }
@@ -187,13 +216,24 @@ document.addEventListener('DOMContentLoaded', () => {
     switchAuthStep('step-semester', 'step-subjects');
   });
 
-  // Manejo de Login
+  // Manejo de Login ➔ Validar credenciales e ingresar al Dashboard
   validateAndSubmit(document.getElementById('loginForm'), () => {
     const email = document.getElementById('loginEmail')?.value;
+    const password = document.getElementById('loginPassword')?.value;
+    const submitBtn = document.getElementById('btnLoginSubmit');
+
+    // Muestra el spinner del botón mientras se valida el inicio de sesión
+    setButtonLoading(submitBtn, true);
+
+    // Validación de credenciales (hoy simulada por loginUserService)
+    loginUserService(email, password);
 
     console.log('Login intentado:', email);
-    showAuthAlert('success', '¡Inicio de sesión exitoso!');
-    window.location.href = 'index.html';
+    showAuthAlert('authAlert', '¡Inicio de sesión exitoso!', 'success');
+
+    // Redirige al panel del usuario
+    // MAÑANA: mover esta redirección dentro del .then() de la promesa real del backend
+    window.location.href = 'dashboard-user.html';
   });
 
   // Manejo de Recuperación de Contraseña (Ajustado para SPA)
