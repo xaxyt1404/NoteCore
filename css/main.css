@@ -29,14 +29,22 @@ body,
 .theme-menu,
 .form-group input,
 .form-group textarea {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 body {
@@ -768,7 +776,9 @@ a {
 
 .ws-btn {
   background-color: #25d366;
-  box-shadow: 0 5px 0px #1ba850, 0 8px 15px rgba(37, 211, 102, 0.25);
+  box-shadow:
+    0 5px 0px #1ba850,
+    0 8px 15px rgba(37, 211, 102, 0.25);
 }
 
 .ws-btn:hover {
