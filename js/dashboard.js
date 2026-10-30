@@ -1,6 +1,6 @@
-/* ==========================================
-   DASHBOARD.JS - LÓGICA DE INTERFAZ & GRÁFICOS
-   ========================================== */
+/* =============================================
+LÓGICA DE INTERFAZ & GRÁFICOS PARA EL DASHBOARD
+   ============================================= */
 document.addEventListener("DOMContentLoaded", () => {
   /* ------------------------------------------
      1. NAVEGACIÓN SPA (SIDEBAR LINKS & VIEWS)
@@ -8,26 +8,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const sidebarLinks = document.querySelectorAll(".sidebar-link[data-view]");
   const dashViews = document.querySelectorAll(".dash-view");
 
+  // Oculta todas las vistas y muestra la indicada
+  function showView(viewId) {
+    const targetView = document.getElementById(viewId);
+    if (!targetView) return false;
+
+    dashViews.forEach((v) => {
+      v.classList.remove("active");
+      v.classList.add("d-none");
+    });
+
+    targetView.classList.remove("d-none");
+    targetView.classList.add("active");
+    return true;
+  }
+
   sidebarLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
 
-      const targetViewId = link.getAttribute("data-view");
-      const targetView = document.getElementById(targetViewId);
+      if (!showView(link.getAttribute("data-view"))) return;
 
-      if (!targetView) return;
-
-      // Desactivar links y vistas activas
+      // Activar link clicado
       sidebarLinks.forEach((l) => l.classList.remove("active"));
-      dashViews.forEach((v) => {
-        v.classList.remove("active");
-        v.classList.add("d-none");
-      });
-
-      // Activar link clicado y mostrar vista seleccionada
       link.classList.add("active");
-      targetView.classList.remove("d-none");
-      targetView.classList.add("active");
 
       // Cerrar sidebar automáticamente en pantallas pequeñas
       if (window.innerWidth <= 1024) {
@@ -35,6 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  // Enlaces internos que también cambian de vista (p. ej. "Ver todas" en Inicio)
+  document
+    .querySelectorAll("[data-view]:not(.sidebar-link)")
+    .forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        showView(link.getAttribute("data-view"));
+      });
+    });
 
   /* ------------------------------------------
      2. CONTROL DE SIDEBAR MÓVIL (DRAWER)
@@ -159,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const colors = getChartColors();
 
     // Crear degradado azul bajo la línea
-    const gradient = ctx.createLinearGradient(0, 0, 0, 140);
+    const gradient = ctx.createLinearGradient(0, 0, 0, 240);
     gradient.addColorStop(0, "rgba(0, 163, 255, 0.3)");
     gradient.addColorStop(1, "rgba(0, 163, 255, 0.0)");
 
@@ -212,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
             max: 5.0,
             grid: { color: colors.borderColor },
             ticks: {
-              stepSize: 1.0,
+              stepSize: 0.5,
               color: colors.textColor,
               font: { family: "Inter", size: 11, weight: "600" },
             },
@@ -285,8 +299,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ------------------------------------------
-   POPOVERS DE HEADER & MODAL DE PERFIL
-   ------------------------------------------ */
+     POPOVERS DE HEADER & MODAL DE PERFIL
+     ------------------------------------------ */
   const notifMenuBtn = document.getElementById("notifMenuBtn");
   const notifPopover = document.getElementById("notifPopover");
   const userMenuBtn = document.getElementById("userMenuBtn");
@@ -417,4 +431,232 @@ document.addEventListener("DOMContentLoaded", () => {
     if (notifPopover) notifPopover.classList.remove("active");
     if (userPopover) userPopover.classList.remove("active");
   });
+
+  /* ------------------------------------------
+     7. LÓGICA DE HERRAMIENTAS ACADÉMICAS & MODALES
+     ------------------------------------------ */
+  function lockScroll() {
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
+  }
+
+  function unlockScroll() {
+    document.documentElement.classList.remove("modal-open");
+    document.body.classList.remove("modal-open");
+  }
+
+  // --- Modal 1: Calculadora de Nota Sencilla ---
+  const openCalcSencillaBtn = document.getElementById("openCalcSencillaBtn");
+  const closeSimpleCalcBtn = document.getElementById("closeSimpleCalcBtn");
+  const modalCalcSencilla = document.getElementById("modalCalcSencilla");
+  const resetSimpleCalcBtn = document.getElementById("resetSimpleCalcBtn");
+  const btnModeSimple = document.getElementById("btnModeSimple");
+  const btnModeWeighted = document.getElementById("btnModeWeighted");
+  const simpleCalcRows = document.getElementById("simpleCalcRows");
+
+  let isWeightedMode = false;
+
+  function openModalSencilla() {
+    if (modalCalcSencilla) {
+      modalCalcSencilla.classList.add("active");
+      lockScroll();
+      calculateSimpleScore();
+    }
+  }
+
+  function closeModalSencilla() {
+    if (modalCalcSencilla) {
+      modalCalcSencilla.classList.remove("active");
+      unlockScroll();
+    }
+  }
+
+  if (openCalcSencillaBtn)
+    openCalcSencillaBtn.addEventListener("click", openModalSencilla);
+  if (closeSimpleCalcBtn)
+    closeSimpleCalcBtn.addEventListener("click", closeModalSencilla);
+
+  if (btnModeSimple && btnModeWeighted) {
+    btnModeSimple.addEventListener("click", () => {
+      isWeightedMode = false;
+      btnModeSimple.classList.add("active");
+      btnModeWeighted.classList.remove("active");
+      document
+        .querySelectorAll(".row-weight-group")
+        .forEach((el) => el.classList.add("d-none"));
+      calculateSimpleScore();
+    });
+
+    btnModeWeighted.addEventListener("click", () => {
+      isWeightedMode = true;
+      btnModeWeighted.classList.add("active");
+      btnModeSimple.classList.remove("active");
+      document
+        .querySelectorAll(".row-weight-group")
+        .forEach((el) => el.classList.remove("d-none"));
+      calculateSimpleScore();
+    });
+  }
+
+  function calculateSimpleScore() {
+    if (!simpleCalcRows) return;
+    const rows = simpleCalcRows.querySelectorAll(".form-grid");
+    let totalScore = 0;
+    let validCount = 0;
+
+    rows.forEach((row) => {
+      const inputs = row.querySelectorAll("input");
+      const grade = parseFloat(inputs[1]?.value) || 0;
+
+      if (isWeightedMode) {
+        const weight = parseFloat(inputs[2]?.value) || 0;
+        totalScore += grade * (weight / 100);
+      } else {
+        totalScore += grade;
+        validCount++;
+      }
+    });
+
+    const resultVal = modalCalcSencilla?.querySelector(".result-value");
+    if (resultVal) {
+      if (isWeightedMode) {
+        resultVal.textContent = totalScore.toFixed(2);
+      } else {
+        const finalAvg = validCount > 0 ? totalScore / validCount : 0;
+        resultVal.textContent = finalAvg.toFixed(2);
+      }
+    }
+  }
+
+  if (simpleCalcRows) {
+    simpleCalcRows.addEventListener("input", calculateSimpleScore);
+  }
+
+  if (resetSimpleCalcBtn) {
+    resetSimpleCalcBtn.addEventListener("click", () => {
+      if (simpleCalcRows) {
+        simpleCalcRows.querySelectorAll("input").forEach((input) => {
+          if (input.type === "number") input.value = "";
+        });
+        calculateSimpleScore();
+      }
+    });
+  }
+
+  // --- Modal 2: Calculadora para un Corte ---
+  const openCalcCorteBtn = document.getElementById("openCalcCorteBtn");
+  const closeCalcCorteBtn = document.getElementById("closeCalcCorteBtn");
+  const modalCalcCorte = document.getElementById("modalCalcCorte");
+  const corteWeightInput = document.getElementById("corteWeightInput");
+  const bonusPointsInput = document.getElementById("bonusPointsInput");
+  const corteEvalRows = document.getElementById("corteEvalRows");
+
+  function openModalCorte() {
+    if (modalCalcCorte) {
+      modalCalcCorte.classList.add("active");
+      lockScroll();
+      calculateCorteScore();
+    }
+  }
+
+  function closeModalCorte() {
+    if (modalCalcCorte) {
+      modalCalcCorte.classList.remove("active");
+      unlockScroll();
+    }
+  }
+
+  if (openCalcCorteBtn)
+    openCalcCorteBtn.addEventListener("click", openModalCorte);
+  if (closeCalcCorteBtn)
+    closeCalcCorteBtn.addEventListener("click", closeModalCorte);
+
+  function calculateCorteScore() {
+    if (!modalCalcCorte) return;
+    const cortePct = (parseFloat(corteWeightInput?.value) || 30) / 100;
+    const bonus = parseFloat(bonusPointsInput?.value) || 0;
+
+    let corteGrade = 0;
+    if (corteEvalRows) {
+      const rows = corteEvalRows.querySelectorAll(".form-grid");
+      rows.forEach((row) => {
+        const inputs = row.querySelectorAll("input");
+        const grade = parseFloat(inputs[1]?.value) || 0;
+        const weightPct = (parseFloat(inputs[2]?.value) || 0) / 100;
+        corteGrade += grade * weightPct;
+      });
+    }
+
+    corteGrade = Math.min(5.0, corteGrade + bonus);
+    const contribution = (corteGrade * cortePct).toFixed(2);
+
+    const resultVal = modalCalcCorte.querySelector(".result-value");
+    const resultSub = modalCalcCorte.querySelector(".result-subtext strong");
+
+    if (resultVal) resultVal.textContent = corteGrade.toFixed(2);
+    if (resultSub) resultSub.textContent = `${contribution} puntos`;
+  }
+
+  if (modalCalcCorte) {
+    modalCalcCorte.addEventListener("input", calculateCorteScore);
+  }
+
+  // --- Modal 3: Simulador de Asignatura Completa ---
+  const openCalcAsignaturaBtn = document.getElementById(
+    "openCalcAsignaturaBtn",
+  );
+  const closeCalcAsignaturaBtn = document.getElementById(
+    "closeCalcAsignaturaBtn",
+  );
+  const modalCalcAsignatura = document.getElementById("modalCalcAsignatura");
+  const c1GradeInput = document.getElementById("c1GradeInput");
+  const c2GradeInput = document.getElementById("c2GradeInput");
+
+  function openModalAsignatura() {
+    if (modalCalcAsignatura) {
+      modalCalcAsignatura.classList.add("active");
+      lockScroll();
+      calculateAsignaturaScore();
+    }
+  }
+
+  function closeModalAsignatura() {
+    if (modalCalcAsignatura) {
+      modalCalcAsignatura.classList.remove("active");
+      unlockScroll();
+    }
+  }
+
+  if (openCalcAsignaturaBtn)
+    openCalcAsignaturaBtn.addEventListener("click", openModalAsignatura);
+  if (closeCalcAsignaturaBtn)
+    closeCalcAsignaturaBtn.addEventListener("click", closeModalAsignatura);
+
+  function calculateAsignaturaScore() {
+    if (!modalCalcAsignatura) return;
+    const c1 = parseFloat(c1GradeInput?.value) || 0;
+    const c2 = parseFloat(c2GradeInput?.value) || 0;
+
+    // Fórmula para esquema 30% - 30% - 40% (aprobar en 3.0):
+    // 3.0 - (c1*0.3 + c2*0.3) = c3 * 0.4
+    const neededC3 = (3.0 - (c1 * 0.3 + c2 * 0.3)) / 0.4;
+    const resultVal = modalCalcAsignatura.querySelector(".result-value");
+
+    if (resultVal) {
+      if (neededC3 <= 0) {
+        resultVal.textContent = "0.0 (Aprobada)";
+        resultVal.style.color = "var(--success)";
+      } else if (neededC3 > 5.0) {
+        resultVal.textContent = "> 5.0 (Inalcanzable)";
+        resultVal.style.color = "#ef4444";
+      } else {
+        resultVal.textContent = neededC3.toFixed(2);
+        resultVal.style.color = "var(--primary)";
+      }
+    }
+  }
+
+  if (modalCalcAsignatura) {
+    modalCalcAsignatura.addEventListener("input", calculateAsignaturaScore);
+  }
 });

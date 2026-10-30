@@ -1,8 +1,6 @@
-/* ==========================================
-   MAIN.CSS
+/* ========================================
    Base global y componentes compartidos.
-   Requiere variables.css.
-   ========================================== */
+   ======================================== */
 
 html {
   scroll-behavior: smooth;
@@ -91,11 +89,6 @@ a {
   display: block;
   object-fit: contain;
   filter: drop-shadow(0 4px 8px rgba(0, 102, 255, 0.15));
-  transition: var(--transition);
-}
-
-.logo-img:hover {
-  transform: scale(1.03);
 }
 
 /* Botones 3D (Interactividad Exclusiva) */
@@ -260,11 +253,6 @@ a {
 
 .sidebar-header .logo-img {
   height: 36px;
-}
-
-/* Sin zoom al pasar el ratón sobre el logo del panel lateral */
-.sidebar-header .logo-img:hover {
-  transform: none;
 }
 
 .close-btn {

@@ -1,5 +1,4 @@
 /* ==========================================
-   AUTH.JS
    Lógica de interacción y validación para
    login.html, register.html y forgot-password.html
    ========================================== */

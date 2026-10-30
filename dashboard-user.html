@@ -36,9 +36,9 @@
 
       <!-- Logo y Botón Cerrar (Móvil) -->
       <div class="sidebar-header">
-        <a href="#inicio" class="logo">
+        <div class="logo">
           <img src="assets/logotipo.png" alt="NoteCore Logo" class="logo-img">
-        </a>
+        </div>
         <button type="button" class="close-btn" id="closeSidebar" aria-label="Cerrar menú">
           <i class="fa-solid fa-xmark"></i>
         </button>
@@ -188,7 +188,9 @@
       <!-- CONTENIDO DE VISTAS (SPA) -->
       <main class="dash-viewport">
 
-        <!-- SECCIÓN 1: VISTA INICIO (#view-inicio) -->
+        <!-- ============================= -->
+        <!-- SECCIÓN 1: VISTA INICIO       -->
+        <!-- ============================= -->
         <section id="view-inicio" class="dash-view active">
 
           <!-- Encabezado de Bienvenida y Selector de Semestre -->
@@ -244,45 +246,48 @@
               </div>
             </div>
 
-            <div class="kpi-card">
-              <div class="kpi-icon-box ring">
-                <i class="fa-solid fa-chart-pie"></i>
-              </div>
-              <div class="kpi-content">
-                <span class="kpi-label">Progreso del semestre</span>
-                <span class="kpi-value">62%</span>
-                <div class="kpi-progress-bar">
-                  <div class="progress-fill" style="width: 62%;"></div>
-                </div>
-              </div>
-            </div>
-
           </div>
 
-          <!-- GRID 2: Gráficos de Rendimiento y Estado Académico -->
+          <!-- GRID 2: Asignaturas en Atención y Estado Académico -->
           <div class="dash-grid-2col">
 
             <div class="dash-card">
               <div class="dash-card-header">
                 <div>
-                  <h3><i class="fa-solid fa-chart-line card-icon"></i> Rendimiento académico</h3>
-                  <p class="dash-card-sub">Evolución de tu promedio general</p>
+                  <h3><i class="fa-solid fa-triangle-exclamation card-icon text-danger"></i> Asignaturas que requieren
+                    atención</h3>
+                  <p class="dash-card-sub">Estas asignaturas están en riesgo o cerca del mínimo.</p>
                 </div>
-                <div class="custom-dropdown" id="dropdownRendimiento">
-                  <button class="dropdown-trigger" type="button" aria-expanded="false" aria-haspopup="menu">
-                    <span class="dropdown-selected-text">Promedio</span>
-                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
-                  </button>
-                  <div class="dropdown-menu" role="menu">
-                    <button class="dropdown-item active" type="button" role="menuitem"
-                      data-value="promedio">Promedio</button>
-                    <button class="dropdown-item" type="button" role="menuitem" data-value="cortes">Por Cortes</button>
-                  </div>
-                </div>
+                <a href="#view-asignaturas" class="card-link-action" data-view="view-asignaturas">Ver todas <i
+                    class="fa-solid fa-arrow-right"></i></a>
               </div>
               <div class="dash-card-body">
-                <div class="chart-container">
-                  <canvas id="chartRendimiento"></canvas>
+                <div class="attention-subjects-list">
+
+                  <button type="button" class="attention-subject-item" aria-label="Abrir asignatura Física">
+                    <div class="subject-header-row">
+                      <span class="subject-name">Física</span>
+                      <span class="subject-grade-badge red">Nota actual <strong>2.8</strong> / 5.0</span>
+                      <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                    </div>
+                  </button>
+
+                  <button type="button" class="attention-subject-item" aria-label="Abrir asignatura Cálculo">
+                    <div class="subject-header-row">
+                      <span class="subject-name">Cálculo</span>
+                      <span class="subject-grade-badge yellow">Nota actual <strong>3.6</strong> / 5.0</span>
+                      <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                    </div>
+                  </button>
+
+                  <button type="button" class="attention-subject-item" aria-label="Abrir asignatura Programación">
+                    <div class="subject-header-row">
+                      <span class="subject-name">Programación</span>
+                      <span class="subject-grade-badge green">Nota actual <strong>4.5</strong> / 5.0</span>
+                      <i class="fa-solid fa-chevron-right arrow-indicator"></i>
+                    </div>
+                  </button>
+
                 </div>
               </div>
             </div>
@@ -333,119 +338,30 @@
 
           </div>
 
-          <!-- GRID 3: Asignaturas en Atención y Próximas Evaluaciones -->
-          <div class="dash-grid-2col">
-
-            <div class="dash-card">
-              <div class="dash-card-header">
-                <div>
-                  <h3><i class="fa-solid fa-triangle-exclamation card-icon text-danger"></i> Asignaturas que requieren
-                    atención</h3>
-                  <p class="dash-card-sub">Estas asignaturas están en riesgo o cerca del mínimo.</p>
-                </div>
-                <a href="#view-asignaturas" class="card-link-action">Ver todas <i
-                    class="fa-solid fa-arrow-right"></i></a>
+          <!-- GRID 3: Rendimiento Académico (ancho completo) -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div>
+                <h3><i class="fa-solid fa-chart-line card-icon"></i> Rendimiento académico</h3>
+                <p class="dash-card-sub">Evolución de tu promedio general</p>
               </div>
-              <div class="dash-card-body">
-                <div class="attention-subjects-list">
-
-                  <button type="button" class="attention-subject-item" aria-label="Abrir asignatura Física">
-                    <div class="subject-header-row">
-                      <span class="subject-name">Física</span>
-                      <span class="subject-grade-badge red">Nota actual <strong>2.8</strong> / 5.0</span>
-                      <i class="fa-solid fa-chevron-right arrow-indicator"></i>
-                    </div>
-                    <div class="subject-progress-track">
-                      <div class="track-fill red" style="width: 56%;"></div>
-                    </div>
-                  </button>
-
-                  <button type="button" class="attention-subject-item" aria-label="Abrir asignatura Cálculo">
-                    <div class="subject-header-row">
-                      <span class="subject-name">Cálculo</span>
-                      <span class="subject-grade-badge yellow">Nota actual <strong>3.6</strong> / 5.0</span>
-                      <i class="fa-solid fa-chevron-right arrow-indicator"></i>
-                    </div>
-                    <div class="subject-progress-track">
-                      <div class="track-fill yellow" style="width: 72%;"></div>
-                    </div>
-                  </button>
-
-                  <button type="button" class="attention-subject-item" aria-label="Abrir asignatura Programación">
-                    <div class="subject-header-row">
-                      <span class="subject-name">Programación</span>
-                      <span class="subject-grade-badge green">Nota actual <strong>4.5</strong> / 5.0</span>
-                      <i class="fa-solid fa-chevron-right arrow-indicator"></i>
-                    </div>
-                    <div class="subject-progress-track">
-                      <div class="track-fill green" style="width: 90%;"></div>
-                    </div>
-                  </button>
-
+              <div class="custom-dropdown" id="dropdownRendimiento">
+                <button class="dropdown-trigger" type="button" aria-expanded="false" aria-haspopup="menu">
+                  <span class="dropdown-selected-text">Promedio</span>
+                  <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </button>
+                <div class="dropdown-menu" role="menu">
+                  <button class="dropdown-item active" type="button" role="menuitem"
+                    data-value="promedio">Promedio</button>
+                  <button class="dropdown-item" type="button" role="menuitem" data-value="cortes">Por Cortes</button>
                 </div>
               </div>
             </div>
-
-            <div class="dash-card">
-              <div class="dash-card-header">
-                <div>
-                  <h3><i class="fa-regular fa-calendar-days card-icon"></i> Próximas evaluaciones</h3>
-                  <p class="dash-card-sub">No olvides las fechas importantes.</p>
-                </div>
-                <a href="#" class="card-link-action">Ver todas <i class="fa-solid fa-arrow-right"></i></a>
-              </div>
-              <div class="dash-card-body">
-                <div class="upcoming-evals-list">
-
-                  <div class="eval-item">
-                    <div class="eval-date-box">
-                      <span class="day">15</span>
-                      <span class="month">OCT</span>
-                    </div>
-                    <div class="eval-info">
-                      <h4>Matemáticas</h4>
-                      <p>Parcial 2</p>
-                    </div>
-                    <div class="eval-meta">
-                      <span class="topic">Tema: Integrales</span>
-                      <span class="room">Aula 102</span>
-                    </div>
-                  </div>
-
-                  <div class="eval-item">
-                    <div class="eval-date-box">
-                      <span class="day">18</span>
-                      <span class="month">OCT</span>
-                    </div>
-                    <div class="eval-info">
-                      <h4>Física</h4>
-                      <p>Trabajo grupal</p>
-                    </div>
-                    <div class="eval-meta">
-                      <span class="topic">Tema: Movimiento</span>
-                      <span class="room">Entrega: 11:59 p.m.</span>
-                    </div>
-                  </div>
-
-                  <div class="eval-item">
-                    <div class="eval-date-box">
-                      <span class="day">22</span>
-                      <span class="month">OCT</span>
-                    </div>
-                    <div class="eval-info">
-                      <h4>Cálculo</h4>
-                      <p>Parcial 2</p>
-                    </div>
-                    <div class="eval-meta">
-                      <span class="topic">Tema: Límites</span>
-                      <span class="room">Aula 204</span>
-                    </div>
-                  </div>
-
-                </div>
+            <div class="dash-card-body">
+              <div class="chart-container">
+                <canvas id="chartRendimiento"></canvas>
               </div>
             </div>
-
           </div>
 
           <!-- BANNER: Recomendación de CoreAI -->
@@ -470,9 +386,9 @@
 
         </section>
 
-        <!-- ============================================================ -->
-        <!-- SECCIÓN 2: VISTA ASIGNATURAS (#view-asignaturas)             -->
-        <!-- ============================================================ -->
+        <!-- ============================= -->
+        <!-- SECCIÓN 2: VISTA ASIGNATURAS  -->
+        <!-- ============================= -->
         <section id="view-asignaturas" class="dash-view d-none">
 
           <!-- Encabezado de la Vista con CTA Agregar -->
@@ -516,9 +432,8 @@
                     <span class="grade-max">/ 5.0</span>
                   </div>
                 </div>
-                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+
                 <div class="subject-card-footer">
-                  <span class="next-eval-tag">Siguiente: <strong>Trabajo grupal (18 OCT)</strong></span>
                   <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
               </div>
@@ -543,9 +458,8 @@
                     <span class="grade-max">/ 5.0</span>
                   </div>
                 </div>
-                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+
                 <div class="subject-card-footer">
-                  <span class="next-eval-tag">Siguiente: <strong>Parcial 2 (22 OCT)</strong></span>
                   <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
               </div>
@@ -570,9 +484,8 @@
                     <span class="grade-max">/ 5.0</span>
                   </div>
                 </div>
-                <p class="cuts-info-text">Cortes: C1 (25%) • C2 (35%) • C3 (40%)</p>
+
                 <div class="subject-card-footer">
-                  <span class="next-eval-tag">Siguiente: <strong>Proyecto Final (05 NOV)</strong></span>
                   <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
               </div>
@@ -597,9 +510,8 @@
                     <span class="grade-max">/ 5.0</span>
                   </div>
                 </div>
-                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+
                 <div class="subject-card-footer">
-                  <span class="next-eval-tag">Siguiente: <strong>Parcial 2 (15 OCT)</strong></span>
                   <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
               </div>
@@ -624,9 +536,8 @@
                     <span class="grade-max">/ 5.0</span>
                   </div>
                 </div>
-                <p class="cuts-info-text">Cortes: C1 (30%) • C2 (30%) • C3 (40%)</p>
+
                 <div class="subject-card-footer">
-                  <span class="next-eval-tag">Siguiente: <strong>Ensayo Final (12 NOV)</strong></span>
                   <a href="#" class="card-link-action">Ver detalles <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
               </div>
@@ -636,8 +547,247 @@
 
         </section>
 
-        <!-- SECCIÓN SOPORTE (#view-soporte) -->
+        <!-- ============================== -->
+        <!-- SECCIÓN 3: VISTA HERRAMIENTAS  -->
+        <!-- ============================== -->
+        <section id="view-herramientas" class="dash-view d-none">
+
+          <!-- Encabezado de la Vista -->
+          <div class="view-welcome-bar">
+            <div class="welcome-heading">
+              <h1>Herramientas Académicas 🛠️</h1>
+              <p>Calcula promedios rápidos, desglosa las evaluaciones de un corte y simula el rendimiento completo de
+                tus asignaturas.</p>
+            </div>
+          </div>
+
+          <!-- GRID DE TARJETAS DE HERRAMIENTAS (3 COLUMNAS) -->
+          <div class="subjects-grid-3col">
+
+            <!-- Tarjeta 1: Calculadora de Nota Sencilla -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-calculator card-icon"></i>
+                  <h3>Calculadora de Nota Sencilla</h3>
+                </div>
+              </div>
+              <div class="dash-card-body">
+                <p class="dash-card-sub" style="margin-bottom: 1.2rem;">
+                  Calcula rápidamente tu promedio simple o ponderado ingresando una lista de calificaciones y sus
+                  porcentajes.
+                </p>
+                <button type="button" class="btn btn-primary" style="width: 100%;" id="openCalcSencillaBtn">
+                  <i class="fa-solid fa-arrow-right icon-left"></i> Abrir calculadora
+                </button>
+              </div>
+            </div>
+
+            <!-- Tarjeta 2: Calculadora para un Corte -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-chart-pie card-icon"></i>
+                  <h3>Calculadora para un Corte</h3>
+                </div>
+              </div>
+              <div class="dash-card-body">
+                <p class="dash-card-sub" style="margin-bottom: 1.2rem;">
+                  Desglosa las evaluaciones de un solo corte (quices, talleres, parcial) e incluye puntos de
+                  bonificación.
+                </p>
+                <button type="button" class="btn btn-primary" style="width: 100%;" id="openCalcCorteBtn">
+                  <i class="fa-solid fa-arrow-right icon-left"></i> Abrir calculadora
+                </button>
+              </div>
+            </div>
+
+            <!-- Tarjeta 3: Calculadora para Asignatura Completa -->
+            <div class="dash-card">
+              <div class="dash-card-header">
+                <div class="subject-card-title">
+                  <i class="fa-solid fa-graduation-cap card-icon"></i>
+                  <h3>Simulador de Asignatura</h3>
+                </div>
+              </div>
+              <div class="dash-card-body">
+                <p class="dash-card-sub" style="margin-bottom: 1.2rem;">
+                  Proyecta tu nota final del semestre seleccionando el esquema de cortes y calcula la nota requerida
+                  para aprobar.
+                </p>
+                <button type="button" class="btn btn-primary" style="width: 100%;" id="openCalcAsignaturaBtn">
+                  <i class="fa-solid fa-arrow-right icon-left"></i> Abrir calculadora
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ============================== -->
+        <!-- SECCIÓN 4: VISTA ESTADÍSTICAS  -->
+        <!-- ============================== -->
+        <section id="view-estadisticas" class="dash-view d-none">
+
+          <!-- Encabezado de la Vista -->
+          <div class="view-welcome-bar">
+            <div class="welcome-heading">
+              <h1>Estadísticas Académicas 📊</h1>
+              <p>Tabla general de estado.</p>
+            </div>
+            <button type="button" class="btn btn-outline semester-selector-btn">
+              <i class="fa-regular fa-calendar icon-left"></i>
+              <span>Semestre 2026 - 2</span>
+              <i class="fa-solid fa-chevron-down semester-chevron" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <!-- CONTENEDOR DE LA TABLA DE ESTADÍSTICAS -->
+          <div class="dash-card stats-table-card">
+            <div class="dash-card-header">
+              <div>
+                <h3><i class="fa-solid fa-table-list card-icon"></i>Rendimiento General</h3>
+                <p class="dash-card-sub">Desglose acumulado de notas y avance del semestre</p>
+              </div>
+            </div>
+
+            <!-- Tabla de Estadísticas Tipo Liga -->
+            <div class="table-responsive">
+              <table class="stats-table">
+                <thead>
+                  <tr>
+                    <th class="col-pos">#</th>
+                    <th class="col-subject">Asignatura</th>
+                    <th class="col-cut">C1 (30%)</th>
+                    <th class="col-cut">C2 (30%)</th>
+                    <th class="col-cut">C3 (40%)</th>
+                    <th class="col-grade">Nota Actual</th>
+                    <th class="col-status">Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <!-- Fila 1 -->
+                  <tr>
+                    <td class="col-pos">1</td>
+                    <td class="col-subject">
+                      <i class="fa-solid fa-pen-nib card-icon text-success"></i> Producción Textual
+                    </td>
+                    <td class="col-cut">4.8</td>
+                    <td class="col-cut">4.8</td>
+                    <td class="col-cut">—</td>
+                    <td class="col-grade">
+                      <span class="subject-grade-badge green">4.8</span>
+                    </td>
+                    <td class="col-status">
+                      <span class="subject-grade-badge green">Excelente</span>
+                    </td>
+                  </tr>
+
+                  <!-- Fila 2 -->
+                  <tr>
+                    <td class="col-pos">2</td>
+                    <td class="col-subject">
+                      <i class="fa-solid fa-code card-icon text-success"></i> Programación
+                    </td>
+                    <td class="col-cut">4.5</td>
+                    <td class="col-cut">4.5</td>
+                    <td class="col-cut">—</td>
+                    <td class="col-grade">
+                      <span class="subject-grade-badge green">4.5</span>
+                    </td>
+                    <td class="col-status">
+                      <span class="subject-grade-badge green">Excelente</span>
+                    </td>
+                  </tr>
+
+                  <!-- Fila 3 -->
+                  <tr>
+                    <td class="col-pos">3</td>
+                    <td class="col-subject">
+                      <i class="fa-solid fa-square-root-variable card-icon text-success"></i> Matemáticas
+                    </td>
+                    <td class="col-cut">4.2</td>
+                    <td class="col-cut">4.2</td>
+                    <td class="col-cut">—</td>
+                    <td class="col-grade">
+                      <span class="subject-grade-badge green">4.2</span>
+                    </td>
+                    <td class="col-status">
+                      <span class="subject-grade-badge green">Bueno</span>
+                    </td>
+                  </tr>
+
+                  <!-- Fila 4 -->
+                  <tr>
+                    <td class="col-pos">4</td>
+                    <td class="col-subject">
+                      <i class="fa-solid fa-calculator card-icon"></i> Cálculo Diferencial
+                    </td>
+                    <td class="col-cut">3.6</td>
+                    <td class="col-cut">3.6</td>
+                    <td class="col-cut">—</td>
+                    <td class="col-grade">
+                      <span class="subject-grade-badge yellow">3.6</span>
+                    </td>
+                    <td class="col-status">
+                      <span class="subject-grade-badge yellow">Bueno</span>
+                    </td>
+                  </tr>
+
+                  <!-- Fila 5 -->
+                  <tr>
+                    <td class="col-pos">5</td>
+                    <td class="col-subject">
+                      <i class="fa-solid fa-atom card-icon text-danger"></i> Física I
+                    </td>
+                    <td class="col-cut">2.8</td>
+                    <td class="col-cut">2.8</td>
+                    <td class="col-cut">—</td>
+                    <td class="col-grade">
+                      <span class="subject-grade-badge red">2.8</span>
+                    </td>
+                    <td class="col-status">
+                      <span class="subject-grade-badge red">En Riesgo</span>
+                    </td>
+                  </tr>
+
+                </tbody>
+
+                <!-- Fila de Resumen General -->
+                <tfoot>
+                  <tr>
+                    <td colspan="2" class="summary-title">PROMEDIO GENERAL / TOTALES</td>
+                    <td class="col-cut">3.98</td>
+                    <td class="col-cut">3.98</td>
+                    <td class="col-cut">—</td>
+                    <td class="col-grade">
+                      <span class="subject-grade-badge green">4.10</span>
+                    </td>
+                    <td class="col-status">
+                      <span class="subject-grade-badge green">Bueno</span>gi
+                    </td>
+                  </tr>
+                </tfoot>
+
+              </table>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================ -->
+        <!-- SECCIÓN SOPORTE  -->
+        <!-- ================ -->
         <section id="view-soporte" class="dash-view d-none">
+        </section>
+
+        <!-- ======================= -->
+        <!-- SECCIÓN CONFIGURACIÓN   -->
+        <!-- ======================= -->
+        <section id="view-ajustes" class="dash-view d-none">
         </section>
 
       </main>
@@ -732,6 +882,170 @@
           <i class="fa-solid fa-pen-to-square icon-left"></i> Editar perfil
         </button>
         <button type="button" class="btn btn-primary" id="closeProfileModalBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: CALCULADORA DE NOTA SENCILLA -->
+  <div class="modal-overlay" id="modalCalcSencilla">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-calculator highlight"></i>
+          <span>Calculadora de Nota Sencilla</span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="sim-tabs" style="margin-bottom: 1rem;">
+          <button type="button" class="tab-btn active" id="btnModeSimple">Promedio Simple</button>
+          <button type="button" class="tab-btn" id="btnModeWeighted">Promedio Ponderado (%)</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.8rem;">
+          <label>Evaluaciones / Calificaciones:</label>
+        </div>
+
+        <div id="simpleCalcRows" style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1rem;">
+          <div class="form-grid" style="align-items: center;">
+            <div class="form-group" style="margin: 0;">
+              <input type="text" placeholder="Ej. Quiz 1" value="Quiz 1">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <input type="number" step="0.1" min="0" max="5" placeholder="Nota (0.0 - 5.0)" value="4.0">
+            </div>
+            <div class="form-group row-weight-group d-none" style="margin: 0;">
+              <input type="number" step="1" min="0" max="100" placeholder="Peso %" value="30">
+            </div>
+            <button type="button" class="btn-icon-more" aria-label="Eliminar fila"
+              style="height: 40px; color: #ef4444;">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-outline" style="margin-bottom: 1.2rem; width: 100%;">
+          <i class="fa-solid fa-plus icon-left"></i> Agregar nota
+        </button>
+
+        <div class="result-box">
+          <span class="result-label">Nota Final Calculada:</span>
+          <div class="result-value">4.0</div>
+        </div>
+      </div>
+
+      <div class="modal-footer modal-footer-between">
+        <button type="button" class="btn btn-outline" id="resetSimpleCalcBtn">
+          <i class="fa-solid fa-rotate-left icon-left"></i> Limpiar todo
+        </button>
+        <button type="button" class="btn btn-primary" id="closeSimpleCalcBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: CALCULADORA PARA UN CORTE -->
+  <div class="modal-overlay" id="modalCalcCorte">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-chart-pie highlight"></i>
+          <span>Calculadora para un Corte</span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label for="corteWeightInput">Porcentaje de este corte en la asignatura (%)</label>
+          <input type="number" id="corteWeightInput" value="30" min="1" max="100" placeholder="Ej. 30%">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.8rem;">
+          <label>Evaluaciones dentro del corte:</label>
+        </div>
+
+        <div id="corteEvalRows" style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1rem;">
+          <div class="form-grid" style="align-items: center;">
+            <div class="form-group" style="margin: 0;">
+              <input type="text" placeholder="Ej. Taller 1" value="Taller 1">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <input type="number" step="0.1" min="0" max="5" placeholder="Nota" value="3.5">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <input type="number" step="1" min="0" max="100" placeholder="% Interno" value="50">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.2rem;">
+          <label for="bonusPointsInput">Puntos adicionales / Bonos (Suma directa a la nota del corte)</label>
+          <input type="number" id="bonusPointsInput" step="0.1" min="0" max="2" value="0.0" placeholder="Ej. 0.3">
+        </div>
+
+        <div class="result-box">
+          <span class="result-label">Nota definitiva de este corte:</span>
+          <div class="result-value">3.5</div>
+          <span class="result-subtext"
+            style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-top: 4px;">
+            Aporte al promedio general de la asignatura: <strong>1.05 puntos</strong>
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="closeCalcCorteBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: CALCULADORA PARA ASIGNATURA COMPLETA -->
+  <div class="modal-overlay" id="modalCalcAsignatura">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fa-solid fa-graduation-cap highlight"></i>
+          <span>Simulador de Asignatura Completa</span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label for="schemeSelector">Esquema de Distribución de Cortes</label>
+          <select id="schemeSelector" class="dash-select" style="width: 100%;">
+            <option value="30-30-40" selected>3 Cortes: 30% • 30% • 40%</option>
+            <option value="25-25-25-25">4 Cortes: 25% • 25% • 25% • 25%</option>
+            <option value="50-50">2 Cortes: 50% • 50%</option>
+          </select>
+        </div>
+
+        <div class="sim-tabs" style="margin-bottom: 1rem;">
+          <button type="button" class="tab-btn active" id="btnAsigModeCurrent">Nota Acumulada Actual</button>
+          <button type="button" class="tab-btn" id="btnAsigModeRequired">Nota Requerida para Aprobar</button>
+        </div>
+
+        <div class="form-grid" style="margin-bottom: 1.2rem;">
+          <div class="form-group">
+            <label for="c1GradeInput">Corte 1 (30%)</label>
+            <input type="number" id="c1GradeInput" step="0.1" min="0" max="5" value="2.8" placeholder="0.0 - 5.0">
+          </div>
+          <div class="form-group">
+            <label for="c2GradeInput">Corte 2 (30%)</label>
+            <input type="number" id="c2GradeInput" step="0.1" min="0" max="5" value="3.2" placeholder="0.0 - 5.0">
+          </div>
+          <div class="form-group">
+            <label for="c3GradeInput">Corte 3 (40%)</label>
+            <input type="number" id="c3GradeInput" step="0.1" min="0" max="5" placeholder="Pendiente">
+          </div>
+        </div>
+
+        <div class="result-box">
+          <span class="result-label">Nota necesaria en el Corte 3 para aprobar con 3.0:</span>
+          <div class="result-value">3.0</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="closeCalcAsignaturaBtn">Cerrar</button>
       </div>
     </div>
   </div>

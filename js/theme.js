@@ -1,9 +1,8 @@
-/* ==========================================
-   THEME.JS
+/* ============================================================================
    Gestión del tema (claro, oscuro, sistema) compartida por todas las páginas.
-   Cargar en el <head>, SIN defer, para aplicar el tema antes de que se
+   Cargar en el <head>, para aplicar el tema antes de que se
    pinte la página y evitar el destello claro en modo oscuro.
-   ========================================== */
+   ============================================================================ */
 (function () {
   const STORAGE_KEY = "theme-preference";
   const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)");
