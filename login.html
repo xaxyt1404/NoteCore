@@ -104,14 +104,18 @@
                 contraseña?</a>
             </div>
 
-            <!-- Botones de Acción -->
-            <div class="auth-buttons-group">
-              <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-auth">
-                <span class="btn-text">Iniciar Sesión</span>
+            <!-- Botón de Acción -->
+            <div class="auth-buttons-group" style="grid-template-columns: 1fr;">
+              <button type="submit" id="btnRegisterSubmit" class="btn btn-primary btn-auth">
+                <span class="btn-text">Continuar</span>
                 <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
               </button>
-              <a href="register.html" class="btn btn-outline btn-auth">Crear Cuenta</a>
             </div>
+
+            <!-- Enlace a Register -->
+            <p class="auth-login-redirect">
+              ¿No tienes una cuenta? <a href="register.html" class="terms-link">Crear Cuenta</a>
+            </p>
           </form>
 
           <!-- Divisor OR -->

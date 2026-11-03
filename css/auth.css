@@ -1,8 +1,8 @@
-/* ===============================
-   Estilos para Login y Registro
-   =============================== */
+/* ==========================================================================
+   Manejo de Login, Registro, Wizard SPA y Componentes de Autenticación.
+   ========================================================================== */
 
-/* Contenedor principal sin scroll en pantalla completa */
+/* --- LAYOUT PRINCIPAL --- */
 .auth-wrapper {
   min-height: 100vh;
   display: flex;
@@ -13,7 +13,7 @@
   z-index: 10;
 }
 
-/* Tarjeta principal estilo Split Screen (Compacta) */
+/* Tarjeta principal Split Screen */
 .auth-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -21,18 +21,15 @@
   box-shadow: var(--shadow-card);
   width: 100%;
   max-width: 860px;
-  /* Reducido de 980px a 860px */
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  overflow: visible;
-  /* Permite que los custom-dropdowns sobresalgan sin cortarse */
+  overflow: visible; /* Permite que los custom-dropdowns sobresalgan sin cortarse */
   transition: var(--transition);
 }
 
-/* --- COLUMNA IZQUIERDA: Formulario --- */
+/* --- COLUMNA IZQUIERDA: FORMULARIO --- */
 .auth-col-form {
   padding: 1.5rem 2rem;
-  /* Reducido de 2.5rem 2.8rem */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -60,7 +57,6 @@
 
 .auth-header h2 {
   font-size: 1.5rem;
-  /* Reducido de 1.8rem */
   font-weight: 800;
   color: var(--text-main);
   margin-bottom: 0.2rem;
@@ -71,14 +67,48 @@
   font-size: 0.83rem;
 }
 
+/* --- ALERTAS GLOBALES DE FEEDBACK (#authAlert) --- */
+.auth-alert {
+  display: none;
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+  line-height: 1.4;
+}
+
+.auth-alert-info {
+  background-color: rgba(0, 163, 255, 0.12);
+  color: var(--primary);
+  border: 1px solid rgba(0, 163, 255, 0.25);
+}
+
+.auth-alert-success {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: var(--success, #10b981);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.auth-alert-danger {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.auth-alert-warning {
+  background-color: rgba(245, 158, 11, 0.12);
+  color: var(--warning, #f59e0b);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* --- FORMULARIO E INPUTS --- */
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  /* Reducido espacio entre inputs */
 }
 
-/* Labels más compactos */
 .auth-form .form-group label {
   display: block;
   font-size: 0.8rem;
@@ -87,7 +117,6 @@
   color: var(--text-main);
 }
 
-/* Wrappers para Inputs con Iconos */
 .input-icon-wrapper {
   position: relative;
   display: flex;
@@ -107,7 +136,6 @@
   padding-left: 38px;
   padding-right: 38px;
   height: 38px;
-  /* Reducido de 44px */
   font-size: 0.85rem;
 }
 
@@ -116,7 +144,7 @@
   color: var(--primary);
 }
 
-/* Botón Ojo para Contraseña */
+/* Botón Ojo Mostrar/Ocultar contraseña */
 .toggle-password {
   position: absolute;
   right: 10px;
@@ -136,7 +164,7 @@
   color: var(--primary);
 }
 
-/* Checkbox Términos */
+/* --- CHECKBOX Y TÉRMINOS --- */
 .form-checkbox {
   display: flex;
   align-items: center;
@@ -148,15 +176,6 @@
   cursor: pointer;
 }
 
-.form-checkbox-between {
-  justify-content: space-between;
-}
-
-.form-checkbox .forgot-link {
-  font-size: 0.8rem;
-}
-
-/* Checkbox personalizado con esquinas redondeadas (términos y "Recordarme") */
 .form-checkbox input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -168,7 +187,6 @@
   margin: 0;
   border: 2px solid var(--text-muted);
   border-radius: 6px;
-  /* Súbelo hacia 50% si lo prefieres casi circular */
   background-color: transparent;
   box-shadow: none;
   cursor: pointer;
@@ -211,22 +229,32 @@
   text-decoration: underline;
 }
 
-/* Grupo de Botones Principales (Crear Cuenta / Iniciar Sesión) */
+/* --- GRUPO DE BOTONES (WIZARD & AUTH) --- */
 .auth-buttons-group {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   margin-top: 0.3rem;
+}
+
+.auth-buttons-group.two-cols {
+  grid-template-columns: 1fr 1fr;
 }
 
 .btn-auth {
   width: 100%;
   height: 38px;
-  /* Reducido de 44px */
   font-size: 0.85rem;
 }
 
-/* Divisor OR */
+.auth-login-redirect {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 0.55rem;
+}
+
+/* --- DIVISOR "O CONTÍNUA CON" & REDES SOCIALES --- */
 .auth-divider {
   display: flex;
   align-items: center;
@@ -250,7 +278,6 @@
   padding: 0 10px;
 }
 
-/* Redes Sociales */
 .social-auth-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -260,7 +287,6 @@
 .social-btn {
   display: flex;
   flex-direction: row;
-  /* En horizontal ocupa menos espacio vertical */
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -286,7 +312,7 @@
   transform: translateY(-2px);
 }
 
-/* --- COLUMNA DERECHA: Imagen --- */
+/* --- COLUMNA DERECHA: BANNER / MEDIA --- */
 .auth-col-image {
   padding: 0.8rem;
   display: flex;
@@ -304,41 +330,18 @@
   border-radius: calc(var(--radius-lg) - 4px);
 }
 
-/* --- RESPONSIVO BÁSICO --- */
-@media (max-width: 820px) {
-  .auth-card {
-    grid-template-columns: 1fr;
-    max-width: 460px;
-  }
-
-  .auth-col-image {
-    display: none;
-    /* Se oculta la imagen en tabletas y móviles */
-  }
-
-  .auth-col-form {
-    padding: 1.5rem 1.4rem;
-  }
-}
-
-@media (max-width: 440px) {
-  .auth-buttons-group {
-    grid-template-columns: 1fr;
-  }
-
-  .social-auth-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ====================
-   CUSTOM DROPDOWN
-   ==================== */
+/* ==========================================
+   DESPLEGABLE PERSONALIZADO (CUSTOM DROPDOWN)
+   ========================================== */
 .custom-dropdown {
   position: relative;
   display: inline-block;
   width: 100%;
   z-index: 50;
+}
+
+.custom-dropdown.active {
+  z-index: 100;
 }
 
 .dropdown-trigger {
@@ -419,4 +422,104 @@
 .dropdown-item.active {
   background-color: var(--bg-card-hover);
   color: var(--primary);
+}
+
+/* ==========================================
+   DROPDOWN BUSCABLE (SEARCHABLE DROPDOWN)
+   ========================================== */
+
+/* Buscador interno dentro del desplegable */
+.dropdown-search-wrapper {
+  position: relative;
+  padding: 4px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 4px;
+}
+
+.dropdown-search-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  height: 34px;
+  padding-left: 38px !important; /* Margen izquierdo suficiente para despejar la lupa */
+  padding-right: 12px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 600;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.dropdown-search-input:focus {
+  border-color: var(--primary);
+}
+
+/* Lista con Scrollbar Limpia */
+.dropdown-options-list {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-options-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dropdown-options-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-options-list::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+/* ==========================================
+   BLOQUEO DE SCROLL EN MODAL (MODAL-OPEN)
+   ========================================== */
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+}
+
+/* ==========================================
+   RESPONSIVO PARA MÓVILES Y TABLETS
+   ========================================== */
+@media (max-width: 820px) {
+  .auth-card {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+  }
+
+  .auth-col-image {
+    display: none; /* Oculta la ilustración en dispositivos pequeños */
+  }
+
+  .auth-col-form {
+    padding: 1.5rem 1.4rem;
+  }
+}
+
+@media (max-width: 440px) {
+  .auth-buttons-group {
+    grid-template-columns: 1fr;
+  }
+
+  .social-auth-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

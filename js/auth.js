@@ -1,13 +1,84 @@
-/* ==========================================
-   Lógica de interacción y validación para
-   login.html, register.html y forgot-password.html
-   ========================================== */
+/* =================================================
+   AUTH.JS - NoteCore
+   Lógica de interacción, validación y asistente (SPA)
+   para login.html, register.html y forgot-password.html
+   ================================================= */
+
+// Objeto temporal en memoria para recolectar el Onboarding del usuario
+let onboardingPayload = {
+  email: "",
+  name: "",
+  password: "",
+  university: "",
+  degree: "",
+  semesterName: "",
+  cutsSchema: "30-30-40",
+  subjects: [],
+};
+
+// Catálogo estructurado de carreras por universidad (Desacoplado: listo para migrar a backend)
+const academicCatalog = {
+  "Universidad de Cartagena": [
+    "Administración de Empresas",
+    "Administración de Empresas Turísticas y Hoteleras",
+    "Administración de Servicios de Salud",
+    "Administración Financiera",
+    "Administración Industrial",
+    "Biología",
+    "Comunicación Social",
+    "Contaduría Pública",
+    "Derecho",
+    "Economía",
+    "Enfermería",
+    "Filosofía",
+    "Historia",
+    "Ingeniería Civil",
+    "Ingeniería de Alimentos",
+    "Ingeniería de Sistemas",
+    "Ingeniería de Software",
+    "Ingeniería Química",
+    "Licenciatura en Educación con Énfasis en Ciencias Sociales y Ambientales",
+    "Licenciatura en Educación Infantil",
+    "Lingüística y Literatura",
+    "Matemáticas",
+    "Medicina",
+    "Odontología",
+    "Profesional Universitario en Lenguas Extranjeras",
+    "Química",
+    "Química Farmacéutica",
+    "Seguridad y Salud en el Trabajo",
+    "Técnica Profesional en Operación de Procesos Petroquímicos",
+    "Técnica Profesional en Operación Turística",
+    "Técnica Profesional en Procesos de Gestión Pública",
+    "Técnica Profesional en Procesos Metrológicos",
+    "Tecnología Agroindustrial",
+    "Tecnología en Metrología Industrial",
+    "Tecnología en Procesos Industriales",
+    "Trabajo Social",
+  ],
+  "Institución Universitaria Mayor de Cartagena": [
+    "Administración de Empresas",
+    "Diseño Visual",
+    "Técnica Profesional en Operación Turística",
+    "Tecnología en Gestión Gastronómica",
+  ],
+  "Universidad Tecnológica de Bolívar": [
+    "Ingeniería de Sistemas",
+    "Ingeniería Industrial",
+    "Ingeniería Mecatrónica",
+    "Administración de Empresas",
+    "Finanzas y Negocios Internacionales",
+  ],
+};
+
+// ===========================
+// UTILIDADES Y HELPERS DE UI
+// ===========================
 
 // Mostrar / Ocultar Contraseña
 function togglePasswordVisibility(inputId, btn) {
   const input = document.getElementById(inputId);
-  const icon = btn.querySelector("i");
-
+  const icon = btn?.querySelector("i");
   if (!input || !icon) return;
 
   const isPassword = input.type === "password";
@@ -16,16 +87,16 @@ function togglePasswordVisibility(inputId, btn) {
   icon.classList.toggle("fa-eye", isPassword);
 }
 
-// Helper reutilizable para mostrar alertas dentro de las vistas de autenticación
-function showAuthAlert(elementId, message, type = "info") {
-  const alert = document.getElementById(elementId);
+// Alertas de feedback dentro del contenedor global #authAlert
+function showAuthAlert(message, type = "info") {
+  const alert = document.getElementById("authAlert");
   if (!alert) return;
   alert.textContent = message;
   alert.className = `auth-alert auth-alert-${type}`;
   alert.style.display = "block";
 }
 
-// Helper para alternar el estado de carga de un botón con spinner
+// Control del estado de carga del botón (Spinner)
 function setButtonLoading(btn, isLoading) {
   if (!btn) return;
   const text = btn.querySelector(".btn-text");
@@ -35,35 +106,37 @@ function setButtonLoading(btn, isLoading) {
   if (spinner) spinner.hidden = !isLoading;
 }
 
-// ==========================================
-// WIZARD DE ONBOARDING & PERFIL (SPA)
-// ==========================================
-
-// Objeto temporal en memoria para recolectar todo el wizard antes de guardarlo
-let onboardingPayload = {
-  email: "",
-  name: "",
-  password: "",
-  university: "",
-  degree: "",
-  semesterName: "Semestre 2026-2",
-  cutsSchema: "30-30-40",
-  subjects: [],
-};
-
-// Función auxiliar para cambiar de vista dentro de la misma tarjeta de registro
+// Transición de vistas SPA dentro del wizard
 function switchAuthStep(hideId, showId) {
   const hideEl = document.getElementById(hideId);
   const showEl = document.getElementById(showId);
+  const backLink = document.querySelector(".back-link");
+
   if (hideEl && showEl) {
     hideEl.classList.add("d-none");
     showEl.classList.remove("d-none");
   }
+
+  // Mostrar "Volver al inicio" únicamente en la Vista 0 (Registro Base)
+  if (backLink) {
+    if (showId === "step-register") {
+      backLink.classList.remove("d-none");
+    } else {
+      backLink.classList.add("d-none");
+    }
+  }
 }
 
-// Servicio de almacenamiento (Desacoplado: preparado para cambiar por fetch/axios al backend)
+// Cálculo automático del periodo/semestre por fecha
+function getAutoSemesterName() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const period = now.getMonth() < 6 ? 1 : 2; // Ene-Jun = 1, Jul-Dic = 2
+  return `Semestre ${year}-${period}`;
+}
+
+// Servicio de persistencia (Desacoplado: listo para cambiar por API/Fetch)
 function saveUserDataService(data) {
-  // HOY: Persistencia estructurada en localStorage
   localStorage.setItem(
     "notecore_active_user",
     JSON.stringify({
@@ -81,85 +154,23 @@ function saveUserDataService(data) {
     }),
   );
   localStorage.setItem("notecore_user_subjects", JSON.stringify(data.subjects));
-
-  /* MAÑANA (Backend Integration):
-  return fetch('/api/v1/auth/register-onboarding', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  */
 }
 
-// Servicio de inicio de sesión (Desacoplado: preparado para cambiar por fetch/axios al backend)
-function loginUserService(email, password) {
-  // HOY: Simula la validación de credenciales y persiste la sesión localmente
+// Servicio de inicio de sesión
+function loginUserService(email) {
   localStorage.setItem("notecore_active_user", JSON.stringify({ email }));
-
-  /* MAÑANA (Backend Integration):
-  // Aquí el backend valida email + password y responde el perfil del usuario.
-  return fetch('/api/v1/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  }).then((res) => {
-    // Si las credenciales son inválidas, se lanzará el error correspondiente
-    if (!res.ok) throw new Error('Credenciales inválidas');
-    return res.json();
-  });
-  */
 }
 
-// Función para añadir asignaturas temporalmente en el Paso 3
-function addTemporarySubject() {
-  const nameInput = document.getElementById("setupSubjectName");
-  const creditsInput = document.getElementById("setupSubjectCredits");
-  const listContainer = document.getElementById("tempSubjectsList");
-  const noMsg = document.getElementById("noSubjectsMsg");
-
-  const subName = nameInput.value.trim();
-  const subCredits = creditsInput.value;
-
-  if (!subName) {
-    alert("Por favor ingresa el nombre de la asignatura.");
-    nameInput.focus();
-    return;
-  }
-
-  if (noMsg) noMsg.remove();
-
-  // Agregar al array temporal
-  onboardingPayload.subjects.push({ name: subName, credits: subCredits });
-
-  // Renderizar píldora visual reutilizando variables y clases
-  const pill = document.createElement("div");
-  pill.style.cssText =
-    "display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); border: 1px solid var(--border-color); padding: 6px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700;";
-  pill.innerHTML = `<span>📚 ${subName} (${subCredits} Créditos)</span> <span style="color: var(--primary);">✔ Agregada</span>`;
-  listContainer.appendChild(pill);
-
-  // Limpiar inputs para la siguiente materia
-  nameInput.value = "";
-  creditsInput.value = "3";
-  nameInput.focus();
-}
-
-// Paso Final: Consolidar y Redirigir al Dashboard
-function completeOnboardingFlow() {
-  saveUserDataService(onboardingPayload);
-  window.location.href = "dashboard-user.html";
-}
-
-/* ==========================================
-   MODAL TÉRMINOS Y CONDICIONES (Con bloqueo de scroll)
-   ========================================== */
+// ================================================
+// MODAL TÉRMINOS Y CONDICIONES (Scroll-Lock Dual)
+// ================================================
 
 function openTermsModal() {
   const termsModal = document.getElementById("termsModal");
   if (termsModal) {
     termsModal.classList.add("active");
-    document.documentElement.classList.add("modal-open"); // Bloquea el scroll del elemento html
-    document.body.classList.add("modal-open"); // Bloquea el scroll del body
+    document.documentElement.classList.add("modal-open");
+    document.body.classList.add("modal-open");
   }
 }
 
@@ -167,8 +178,8 @@ function closeTermsModal() {
   const termsModal = document.getElementById("termsModal");
   if (termsModal) {
     termsModal.classList.remove("active");
-    document.documentElement.classList.remove("modal-open"); // Reactiva el scroll del elemento html
-    document.body.classList.remove("modal-open"); // Reactiva el scroll del body
+    document.documentElement.classList.remove("modal-open");
+    document.body.classList.remove("modal-open");
   }
 }
 
@@ -180,14 +191,178 @@ function acceptTermsAndClose() {
   closeTermsModal();
 }
 
-// Eventos de los formularios
+// ==========================================
+// PASO 2: GESTIÓN DE ASIGNATURAS INICIALES
+// ==========================================
+
+// Añadir asignatura clonando la plantilla <template>
+function addTemporarySubject() {
+  const nameInput = document.getElementById("setupSubjectName");
+  const listContainer = document.getElementById("tempSubjectsList");
+  const template = document.getElementById("subjectPillTemplate");
+  const noMsg = document.getElementById("noSubjectsMsg");
+
+  if (!nameInput || !listContainer || !template) return;
+
+  const subName = nameInput.value.trim();
+
+  if (!subName) {
+    showAuthAlert("Ingresa el nombre de la asignatura.", "warning");
+    nameInput.focus();
+    return;
+  }
+
+  const alertEl = document.getElementById("authAlert");
+  if (alertEl) alertEl.style.display = "none";
+
+  if (noMsg) noMsg.remove();
+
+  onboardingPayload.subjects.push({ name: subName });
+  const index = onboardingPayload.subjects.length - 1;
+
+  const clone = template.content.cloneNode(true);
+  const pillElement = clone.querySelector(".dropdown-item");
+  const nameSpan = clone.querySelector(".subject-name");
+  const editBtn = clone.querySelector(".subject-pill-edit");
+  const deleteBtn = clone.querySelector(".subject-pill-delete");
+
+  nameSpan.textContent = `📚 ${subName}`;
+
+  editBtn.onclick = function () {
+    editTemporarySubject(index, nameSpan);
+  };
+
+  deleteBtn.onclick = function () {
+    removeTemporarySubject(index, pillElement);
+  };
+
+  listContainer.appendChild(clone);
+
+  nameInput.value = "";
+  nameInput.focus();
+}
+
+// Editar el nombre de una asignatura existente
+function editTemporarySubject(index, nameSpan) {
+  const currentName = onboardingPayload.subjects[index]?.name || "";
+  const newName = prompt("Editar nombre de la asignatura:", currentName);
+
+  if (newName !== null && newName.trim() !== "") {
+    const trimmed = newName.trim();
+    onboardingPayload.subjects[index].name = trimmed;
+    nameSpan.textContent = `📚 ${trimmed}`;
+  }
+}
+
+// Eliminar asignatura de la lista
+function removeTemporarySubject(index, pillElement) {
+  onboardingPayload.subjects.splice(index, 1);
+
+  if (pillElement) pillElement.remove();
+
+  const listContainer = document.getElementById("tempSubjectsList");
+  const remainingPills = listContainer.querySelectorAll(".dropdown-item");
+
+  // Re-indexar los eventos onclick de los botones de editar y eliminar
+  remainingPills.forEach((pill, idx) => {
+    const nameSpan = pill.querySelector(".subject-name");
+    const editBtn = pill.querySelector(".subject-pill-edit");
+    const deleteBtn = pill.querySelector(".subject-pill-delete");
+
+    if (editBtn) {
+      editBtn.onclick = function () {
+        editTemporarySubject(idx, nameSpan);
+      };
+    }
+    if (deleteBtn) {
+      deleteBtn.onclick = function () {
+        removeTemporarySubject(idx, pill);
+      };
+    }
+  });
+
+  if (onboardingPayload.subjects.length === 0) {
+    listContainer.innerHTML = `
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;" id="noSubjectsMsg">
+        Aún no has agregado materias (se requiere al menos una).
+      </span>
+    `;
+  }
+}
+
+// Paso Final: Validar al menos 1 materia, consolidar y redirigir
+function completeOnboardingFlow() {
+  if (!onboardingPayload.subjects || onboardingPayload.subjects.length === 0) {
+    showAuthAlert(
+      "Debes agregar al menos una asignatura para poder continuar.",
+      "warning",
+    );
+    document.getElementById("setupSubjectName")?.focus();
+    return;
+  }
+
+  saveUserDataService(onboardingPayload);
+  window.location.href = "dashboard-user.html";
+}
+
+// ==========================================
+// DROPDOWNS Y FILTRADO DINÁMICO DE CARRERAS
+// ==========================================
+
+function updateDegreeDropdown(universityName) {
+  const degreeOptionsList = document.getElementById("degreeOptionsList");
+  const degreeSelectedText = document.querySelector(
+    "#dropdownDegree .dropdown-selected-text",
+  );
+  const setupDegreeInput = document.getElementById("setupDegree");
+  const searchInput = document.getElementById("degreeSearchInput");
+
+  if (!degreeOptionsList) return;
+
+  const degrees = academicCatalog[universityName] || [
+    "Otra Carrera / Programa",
+  ];
+
+  degreeOptionsList.innerHTML = "";
+  if (degreeSelectedText)
+    degreeSelectedText.textContent = "Selecciona tu Programa Académico";
+  if (setupDegreeInput) setupDegreeInput.value = "";
+  if (searchInput) searchInput.value = "";
+
+  degrees.forEach((degree) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "dropdown-item";
+    btn.setAttribute("role", "menuitem");
+    btn.setAttribute("data-value", degree);
+    btn.textContent = degree;
+
+    btn.addEventListener("click", () => {
+      degreeOptionsList
+        .querySelectorAll(".dropdown-item")
+        .forEach((item) => item.classList.remove("active"));
+      btn.classList.add("active");
+
+      if (degreeSelectedText) degreeSelectedText.textContent = degree;
+      if (setupDegreeInput) setupDegreeInput.value = degree;
+
+      document.getElementById("dropdownDegree")?.classList.remove("active");
+    });
+
+    degreeOptionsList.appendChild(btn);
+  });
+}
+
+// ===============================================
+// INICIALIZACIÓN DE EVENTOS (DOM CONTENT LOADED)
+// ===============================================
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Función helper DRY: valida el formulario y ejecuta onValid si pasa
+  // Helper DRY para formularios
   const validateAndSubmit = (form, onValid) => {
     if (!form) return;
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      // Validación nativa del navegador (usa los required / type / pattern del HTML)
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -196,69 +371,109 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Manejo de Registro Base (Paso 0) ➔ Avanzar al Paso 1 del Wizard
-  validateAndSubmit(document.getElementById("registerForm"), () => {
-    onboardingPayload.email = document.getElementById("regEmail")?.value || "";
-    onboardingPayload.name = document.getElementById("regName")?.value || "";
-    onboardingPayload.password =
-      document.getElementById("regPassword")?.value || "";
+  /* ------------------------------------------
+     1. SECUENCIA DE FOCUS CON TECLA ENTER (PASO 0)
+     ------------------------------------------ */
+  const regEmail = document.getElementById("regEmail");
+  const regName = document.getElementById("regName");
+  const regPassword = document.getElementById("regPassword");
+  const registerForm = document.getElementById("registerForm");
 
-    // Ocultar registro y mostrar Paso 1 (Perfil Académico)
+  if (regEmail) {
+    regEmail.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        regName?.focus();
+      }
+    });
+  }
+
+  if (regName) {
+    regName.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        regPassword?.focus();
+      }
+    });
+  }
+
+  // Al presionar Enter en contraseña, el submit nativo del formulario procesará el envío automáticamente.
+
+  /* ------------------------------------------
+     2. MANEJO DE PASOS DEL WIZARD DE REGISTRO
+     ------------------------------------------ */
+
+  // Paso 0: Registro Base ➔ Avanzar al Paso 1
+  validateAndSubmit(registerForm, () => {
+    onboardingPayload.email = regEmail?.value || "";
+    onboardingPayload.name = regName?.value || "";
+    onboardingPayload.password = regPassword?.value || "";
+
     switchAuthStep("step-register", "step-profile");
   });
 
-  // Manejo del Paso 1: Perfil Académico ➔ Avanzar al Paso 2
+  // Paso 1: Perfil Académico ➔ Avanzar al Paso 2 con validación estricta
   validateAndSubmit(document.getElementById("profileFormStep"), () => {
-    onboardingPayload.university =
-      document.getElementById("setupUniversity")?.value || "";
-    onboardingPayload.degree =
-      document.getElementById("setupDegree")?.value || "";
+    const uniVal = document.getElementById("setupUniversity")?.value.trim();
+    const degreeVal = document.getElementById("setupDegree")?.value.trim();
 
-    switchAuthStep("step-profile", "step-semester");
+    if (!uniVal) {
+      showAuthAlert("Por favor selecciona tu institución.", "warning");
+      return;
+    }
+
+    if (!degreeVal) {
+      showAuthAlert("Por favor selecciona tu programa académico.", "warning");
+      return;
+    }
+
+    // Ocultar alertas de error previas si todo está correcto
+    const alertEl = document.getElementById("authAlert");
+    if (alertEl) alertEl.style.display = "none";
+
+    onboardingPayload.university = uniVal;
+    onboardingPayload.degree = degreeVal;
+    onboardingPayload.semesterName = getAutoSemesterName();
+
+    switchAuthStep("step-profile", "step-subjects");
   });
 
-  // Manejo del Paso 2: Semestre y Cortes ➔ Avanzar al Paso 3
-  validateAndSubmit(document.getElementById("semesterFormStep"), () => {
-    onboardingPayload.semesterName =
-      document.getElementById("setupSemesterName")?.value || "Semestre 2026-2";
-    onboardingPayload.cutsSchema =
-      document.getElementById("setupCutsSchema")?.value || "30-30-40";
+  // Paso 2: Intercepción de tecla Enter al añadir asignaturas
+  const subjectsFormStep = document.getElementById("subjectsFormStep");
+  if (subjectsFormStep) {
+    subjectsFormStep.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTemporarySubject();
+      }
+    });
 
-    switchAuthStep("step-semester", "step-subjects");
-  });
+    validateAndSubmit(subjectsFormStep, () => {
+      completeOnboardingFlow();
+    });
+  }
 
-  // Manejo de Login ➔ Validar credenciales e ingresar al Dashboard
+  // Manejo de Login
   validateAndSubmit(document.getElementById("loginForm"), () => {
     const email = document.getElementById("loginEmail")?.value;
     const password = document.getElementById("loginPassword")?.value;
     const submitBtn = document.getElementById("btnLoginSubmit");
 
-    // Muestra el spinner del botón mientras se valida el inicio de sesión
     setButtonLoading(submitBtn, true);
-
-    // Validación de credenciales (hoy simulada por loginUserService)
     loginUserService(email, password);
-
-    console.log("Login intentado:", email);
-    showAuthAlert("authAlert", "¡Inicio de sesión exitoso!", "success");
-
-    // Redirige al panel del usuario
-    // MAÑANA: mover esta redirección dentro del .then() de la promesa real del backend
     window.location.href = "dashboard-user.html";
   });
 
-  // Manejo de Recuperación de Contraseña (Ajustado para SPA)
+  // Manejo de Recuperación de Contraseña
   validateAndSubmit(document.getElementById("forgotPasswordForm"), () => {
     const email = document.getElementById("resetEmail")?.value;
-
     alert(`Hemos enviado un enlace de recuperación a: ${email}`);
-    // Regresa a la vista principal de login
     switchAuthStep("view-forgot-password", "view-login");
   });
 
-  /* ---------------------------
-     DROPDOWNS PERSONALIZADOS
-     --------------------------- */
+  /* ------------------------------------------
+     3. LÓGICA GENERAL DE CUSTOM DROPDOWNS
+     ------------------------------------------ */
   const customDropdowns = document.querySelectorAll(".custom-dropdown");
 
   customDropdowns.forEach((dropdown) => {
@@ -286,11 +501,13 @@ document.addEventListener("DOMContentLoaded", () => {
         items.forEach((i) => i.classList.remove("active"));
         item.classList.add("active");
 
-        if (selectedText) {
-          selectedText.textContent = item.textContent.trim();
-        }
-        if (hiddenInput) {
-          hiddenInput.value = item.getAttribute("data-value");
+        const val = item.getAttribute("data-value");
+        if (selectedText) selectedText.textContent = item.textContent.trim();
+        if (hiddenInput) hiddenInput.value = val;
+
+        // Si es la universidad, actualizar dinámicamente sus carreras
+        if (dropdown.id === "dropdownUniversity") {
+          updateDegreeDropdown(val);
         }
 
         dropdown.classList.remove("active");
@@ -299,7 +516,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Cerrar dropdowns al hacer clic fuera
+  /* ------------------------------------------
+     4. BUSCADOR EN EL DROPDOWN DE CARRERAS
+     ------------------------------------------ */
+  const degreeSearchInput = document.getElementById("degreeSearchInput");
+  const degreeSearchWrapper = document.querySelector(
+    ".dropdown-search-wrapper",
+  );
+
+  if (degreeSearchWrapper) {
+    // Evita que el clic en la barra de búsqueda cierre el desplegable
+    degreeSearchWrapper.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  if (degreeSearchInput) {
+    degreeSearchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      const options = document.querySelectorAll(
+        "#degreeOptionsList .dropdown-item",
+      );
+
+      options.forEach((option) => {
+        const text = option.textContent.toLowerCase();
+        option.style.display = text.includes(searchTerm) ? "block" : "none";
+      });
+    });
+  }
+
+  // Cerrar cualquier dropdown al hacer clic afuera
   document.addEventListener("click", () => {
     customDropdowns.forEach((d) => d.classList.remove("active"));
   });
