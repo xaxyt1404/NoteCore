@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const sidebarLinks = document.querySelectorAll(".sidebar-link[data-view]");
   const dashViews = document.querySelectorAll(".dash-view");
 
-  // Oculta todas las vistas y muestra la indicada
   function showView(viewId) {
     const targetView = document.getElementById(viewId);
     if (!targetView) return false;
@@ -26,21 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
   sidebarLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-
       if (!showView(link.getAttribute("data-view"))) return;
 
-      // Activar link clicado
       sidebarLinks.forEach((l) => l.classList.remove("active"));
       link.classList.add("active");
 
-      // Cerrar sidebar automáticamente en pantallas pequeñas
       if (window.innerWidth <= 1024) {
         closeMobileSidebar();
       }
     });
   });
 
-  // Enlaces internos que también cambian de vista (p. ej. "Ver todas" en Inicio)
   document
     .querySelectorAll("[data-view]:not(.sidebar-link)")
     .forEach((link) => {
@@ -89,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (trigger) {
       trigger.addEventListener("click", (e) => {
         e.stopPropagation();
-        // Cerrar otros dropdowns abiertos
         customDropdowns.forEach((d) => {
           if (d !== dropdown) d.classList.remove("active");
         });
@@ -113,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
         dropdown.classList.remove("active");
         if (trigger) trigger.setAttribute("aria-expanded", "false");
 
-        // Disparar evento personalizado por si se desea cambiar los datos del gráfico
         const val = item.getAttribute("data-value");
         dropdown.dispatchEvent(
           new CustomEvent("changeValue", { detail: { value: val } }),
@@ -122,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Cerrar dropdowns si se hace clic afuera
   document.addEventListener("click", () => {
     customDropdowns.forEach((d) => d.classList.remove("active"));
   });
@@ -151,16 +143,23 @@ document.addEventListener("DOMContentLoaded", () => {
   let chartRendimientoInstance = null;
   let chartEstadoInstance = null;
 
-  function isDarkMode() {
-    return document.documentElement.getAttribute("data-theme") === "dark";
+  // Helper esencial: Extrae el valor real de cualquier variable CSS centralizada
+  function getCssVar(varName) {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue(varName)
+      .trim();
   }
 
   function getChartColors() {
-    const dark = isDarkMode();
     return {
-      textColor: dark ? "#94a3b8" : "#64748b",
-      borderColor: dark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-      primaryBlue: "#00a3ff",
+      primary: getCssVar("--primary"),
+      success: getCssVar("--success"),
+      warning: getCssVar("--warning"),
+      danger: getCssVar("--danger") || "#ef4444",
+      textColor: getCssVar("--text-muted"),
+      borderColor: getCssVar("--border-color"),
+      bgTooltip: getCssVar("--bg-tooltip") || getCssVar("--bg-card"),
+      textTooltip: getCssVar("--text-tooltip") || getCssVar("--text-main"),
     };
   }
 
@@ -172,10 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext("2d");
     const colors = getChartColors();
 
-    // Crear degradado azul bajo la línea
     const gradient = ctx.createLinearGradient(0, 0, 0, 240);
-    gradient.addColorStop(0, "rgba(0, 163, 255, 0.3)");
-    gradient.addColorStop(1, "rgba(0, 163, 255, 0.0)");
+    gradient.addColorStop(0, colors.primary + "4D"); // 30% Opacidad
+    gradient.addColorStop(1, colors.primary + "00"); // 0% Opacidad
 
     chartRendimientoInstance = new Chart(ctx, {
       type: "line",
@@ -185,10 +183,10 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             label: "Promedio",
             data: [3.8, 4.0, 3.9, 4.1],
-            borderColor: colors.primaryBlue,
+            borderColor: colors.primary,
             borderWidth: 3,
-            pointBackgroundColor: "#ffffff",
-            pointBorderColor: colors.primaryBlue,
+            pointBackgroundColor: getCssVar("--bg-card"),
+            pointBorderColor: colors.primary,
             pointBorderWidth: 2,
             pointRadius: 4,
             pointHoverRadius: 6,
@@ -204,9 +202,9 @@ document.addEventListener("DOMContentLoaded", () => {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: isDarkMode() ? "#0f172a" : "#ffffff",
-            titleColor: isDarkMode() ? "#f8fafc" : "#0f172a",
-            bodyColor: colors.primaryBlue,
+            backgroundColor: colors.bgTooltip,
+            titleColor: colors.textTooltip,
+            bodyColor: colors.primary,
             borderColor: colors.borderColor,
             borderWidth: 1,
             padding: 10,
@@ -242,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!canvas || typeof Chart === "undefined") return;
 
     const ctx = canvas.getContext("2d");
+    const colors = getChartColors();
 
     chartEstadoInstance = new Chart(ctx, {
       type: "doughnut",
@@ -251,10 +250,10 @@ document.addEventListener("DOMContentLoaded", () => {
           {
             data: [4, 1, 0, 1],
             backgroundColor: [
-              "#10b981", // Excelente (Verde)
-              "#00a3ff", // Bueno (Azul)
-              "#f59e0b", // Regular (Amarillo)
-              "#ef4444", // En riesgo (Rojo)
+              colors.success,
+              colors.primary,
+              colors.warning,
+              colors.danger,
             ],
             borderWidth: 0,
             hoverOffset: 4,
@@ -276,7 +275,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Inicializar ambos gráficos
   initChartRendimiento();
   initChartEstado();
 
@@ -284,12 +282,36 @@ document.addEventListener("DOMContentLoaded", () => {
      6. ACTUALIZAR COLORES DE GRÁFICOS AL CAMBIAR TEMA
      ------------------------------------------ */
   const observer = new MutationObserver(() => {
+    const colors = getChartColors();
+
     if (chartRendimientoInstance) {
-      const colors = getChartColors();
       chartRendimientoInstance.options.scales.x.ticks.color = colors.textColor;
       chartRendimientoInstance.options.scales.y.ticks.color = colors.textColor;
       chartRendimientoInstance.options.scales.y.grid.color = colors.borderColor;
+      chartRendimientoInstance.data.datasets[0].borderColor = colors.primary;
+      chartRendimientoInstance.data.datasets[0].pointBorderColor =
+        colors.primary;
+      chartRendimientoInstance.data.datasets[0].pointBackgroundColor =
+        getCssVar("--bg-card");
+      chartRendimientoInstance.options.plugins.tooltip.backgroundColor =
+        colors.bgTooltip;
+      chartRendimientoInstance.options.plugins.tooltip.titleColor =
+        colors.textTooltip;
+      chartRendimientoInstance.options.plugins.tooltip.bodyColor =
+        colors.primary;
+      chartRendimientoInstance.options.plugins.tooltip.borderColor =
+        colors.borderColor;
       chartRendimientoInstance.update();
+    }
+
+    if (chartEstadoInstance) {
+      chartEstadoInstance.data.datasets[0].backgroundColor = [
+        colors.success,
+        colors.primary,
+        colors.warning,
+        colors.danger,
+      ];
+      chartEstadoInstance.update();
     }
   });
 
@@ -316,12 +338,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let isEditingProfile = false;
 
-  // Alternar Popovers del Header (Notificaciones / Perfil)
   function togglePopover(btn, popover) {
     if (!btn || !popover) return;
     const isActive = popover.classList.contains("active");
 
-    // Cerrar ambos popovers antes de abrir uno nuevo
     if (notifPopover) notifPopover.classList.remove("active");
     if (userPopover) userPopover.classList.remove("active");
     if (themeMenu) themeMenu.classList.remove("active");
@@ -348,7 +368,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Control de Modos (Solo Lectura / Edición)
   function setProfileMode(editing) {
     isEditingProfile = editing;
     profileInputs.forEach((input) => {
@@ -379,13 +398,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Abrir / Cerrar Modal de Perfil
   function openProfileModal() {
     if (userPopover) userPopover.classList.remove("active");
-    setProfileMode(false); // Siempre abre en modo lectura
+    setProfileMode(false);
     if (profileModal) {
       profileModal.classList.add("active");
-      document.documentElement.classList.add("modal-open"); // Bloquea el scroll del elemento html
+      document.documentElement.classList.add("modal-open");
       document.body.classList.add("modal-open");
     }
   }
@@ -393,7 +411,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeProfileModal() {
     if (profileModal) {
       profileModal.classList.remove("active");
-      document.documentElement.classList.remove("modal-open"); // Reactiva el scroll del elemento html
+      document.documentElement.classList.remove("modal-open");
       document.body.classList.remove("modal-open");
       setProfileMode(false);
     }
@@ -406,16 +424,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (toggleEditProfileBtn) {
     toggleEditProfileBtn.addEventListener("click", () => {
-      if (!isEditingProfile) {
-        setProfileMode(true);
-      } else {
-        // Guardar cambios y regresar a modo lectura
-        setProfileMode(false);
-      }
+      setProfileMode(!isEditingProfile);
     });
   }
 
-  // Prevenir cierre de modal con la tecla Escape
   document.addEventListener("keydown", (e) => {
     if (
       e.key === "Escape" &&
@@ -426,7 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Cerrar unicamente los popovers del header al hacer clic afuera (La modal no se cierra afuera)
   document.addEventListener("click", () => {
     if (notifPopover) notifPopover.classList.remove("active");
     if (userPopover) userPopover.classList.remove("active");
@@ -637,26 +648,56 @@ document.addEventListener("DOMContentLoaded", () => {
     const c1 = parseFloat(c1GradeInput?.value) || 0;
     const c2 = parseFloat(c2GradeInput?.value) || 0;
 
-    // Fórmula para esquema 30% - 30% - 40% (aprobar en 3.0):
-    // 3.0 - (c1*0.3 + c2*0.3) = c3 * 0.4
     const neededC3 = (3.0 - (c1 * 0.3 + c2 * 0.3)) / 0.4;
     const resultVal = modalCalcAsignatura.querySelector(".result-value");
 
     if (resultVal) {
       if (neededC3 <= 0) {
         resultVal.textContent = "0.0 (Aprobada)";
-        resultVal.style.color = "var(--success)";
+        resultVal.style.color = getCssVar("--success");
       } else if (neededC3 > 5.0) {
         resultVal.textContent = "> 5.0 (Inalcanzable)";
-        resultVal.style.color = "#ef4444";
+        resultVal.style.color = getCssVar("--danger") || "#ef4444";
       } else {
         resultVal.textContent = neededC3.toFixed(2);
-        resultVal.style.color = "var(--primary)";
+        resultVal.style.color = getCssVar("--primary");
       }
     }
   }
 
   if (modalCalcAsignatura) {
     modalCalcAsignatura.addEventListener("input", calculateAsignaturaScore);
+  }
+
+  // --- Modal para Importar Respaldo de Datos (JSON) ---
+  const openImportDataModalBtn = document.getElementById(
+    "openImportDataModalBtn",
+  );
+  const cancelImportBtn = document.getElementById("cancelImportBtn");
+  const importDataModal = document.getElementById("importDataModal");
+  const dropZone = document.getElementById("dropZone");
+  const importFileInput = document.getElementById("importFileInput");
+
+  function openImportModal() {
+    if (importDataModal) {
+      importDataModal.classList.add("active");
+      lockScroll();
+    }
+  }
+
+  function closeImportModal() {
+    if (importDataModal) {
+      importDataModal.classList.remove("active");
+      unlockScroll();
+    }
+  }
+
+  if (openImportDataModalBtn)
+    openImportDataModalBtn.addEventListener("click", openImportModal);
+  if (cancelImportBtn)
+    cancelImportBtn.addEventListener("click", closeImportModal);
+
+  if (dropZone && importFileInput) {
+    dropZone.addEventListener("click", () => importFileInput.click());
   }
 });

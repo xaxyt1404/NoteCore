@@ -395,7 +395,7 @@
           <div class="view-welcome-bar">
             <div class="welcome-heading">
               <h1>Asignaturas 📚</h1>
-              <p>Gestiona tus materias, consulta el desglose de cortes y proyecta tus calificaciones del semestre.</p>
+              <p>Gestiona tus notas, consulta el estado y proyecta tus calificaciones del semestre.</p>
             </div>
             <button type="button" class="btn btn-primary">
               <i class="fa-solid fa-plus icon-left"></i> Agregar asignatura
@@ -778,16 +778,85 @@
 
         </section>
 
+        <!-- ================= -->
+        <!-- SECCIÓN AJUSTES   -->
+        <!-- ================= -->
+        <section id="view-ajustes" class="dash-view d-none">
+
+          <!-- Encabezado de la Vista -->
+          <div class="view-welcome-bar">
+            <div class="welcome-heading">
+              <h1>Ajustes ⚙️</h1>
+              <p>Gestiona el respaldo de tus datos y la información de tu cuenta.</p>
+            </div>
+          </div>
+
+          <!-- Bloque de Portabilidad de Datos -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div>
+                <h3><i class="fa-solid fa-database card-icon"></i> Portabilidad de Datos</h3>
+                <p class="dash-card-sub">Exporta una copia de seguridad en formato JSON de todas tus calificaciones y
+                  asignaturas, o restaura un respaldo previo.</p>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <div class="form-grid">
+                <button type="button" class="btn btn-outline" id="exportDataBtn">
+                  <i class="fa-solid fa-download icon-left"></i> Exportar datos (JSON)
+                </button>
+                <button type="button" class="btn btn-outline" id="openImportDataModalBtn">
+                  <i class="fa-solid fa-upload icon-left"></i> Importar respaldo
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloque de Limpieza y Eliminación de Cuenta -->
+          <div class="dash-card">
+            <div class="dash-card-header">
+              <div>
+                <h3><i class="fa-solid fa-triangle-exclamation card-icon text-danger"></i> Limpieza y Eliminación de
+                  cuenta</h3>
+                <p class="dash-card-sub">Acciones sobre los datos almacenados y tu cuenta.
+                  <span class="text-warning">Esto no puede revertirse.</span>
+                </p>
+              </div>
+            </div>
+            <div class="dash-card-body settings-danger-zone">
+
+              <!-- Opción 1: Limpiar Calificaciones -->
+              <div class="subject-header-row settings-option-row">
+                <div>
+                  <span class="subject-name">Limpiar calificaciones del semestre</span>
+                  <span class="dash-card-sub">Resetea todas las notas actuales a cero manteniendo tus asignaturas
+                    base.</span>
+                </div>
+                <button type="button" class="btn btn-outline" id="resetSemesterDataBtn">
+                  <i class="fa-solid fa-rotate-left icon-left"></i> Restablecer notas
+                </button>
+              </div>
+
+              <!-- Opción 2: Eliminar Cuenta -->
+              <div class="subject-header-row settings-option-row">
+                <div>
+                  <span class="subject-name text-danger">Eliminar cuenta y datos</span>
+                  <span class="dash-card-sub">Elimina permanentemente tu perfil, asignaturas y registros.</span>
+                </div>
+                <button type="button" class="btn btn-outline btn-danger" id="deleteAccountBtn">
+                  <i class="fa-solid fa-user-xmark icon-left"></i> Eliminar cuenta
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+
         <!-- ================ -->
         <!-- SECCIÓN SOPORTE  -->
         <!-- ================ -->
         <section id="view-soporte" class="dash-view d-none">
-        </section>
-
-        <!-- ======================= -->
-        <!-- SECCIÓN CONFIGURACIÓN   -->
-        <!-- ======================= -->
-        <section id="view-ajustes" class="dash-view d-none">
         </section>
 
       </main>
@@ -1047,6 +1116,43 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="closeCalcAsignaturaBtn">Cerrar</button>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL PARA IMPORTAR RESPALDO DE DATOS (JSON) -->
+  <div class="modal-overlay" id="importDataModal">
+    <div class="modal-card">
+
+      <div class="modal-header">
+        <div>
+          <h3><i class="fa-solid fa-upload card-icon"></i> Importar Respaldo</h3>
+          <p class="dash-card-sub">Carga tu archivo de seguridad (.json) para restaurar tus asignaturas y
+            calificaciones.</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Zona Drag & Drop -->
+        <div class="drop-zone" id="dropZone">
+          <i class="fa-solid fa-cloud-arrow-up drop-zone-icon"></i>
+          <p class="drop-zone-text">Arrastra y suelta tu archivo <strong>JSON</strong> aquí</p>
+          <span class="drop-zone-sub">o haz clic aquí para seleccionarlo desde tu equipo</span>
+        </div>
+
+        <!-- Input de archivo oculto + Botón de selección manual -->
+        <input type="file" id="importFileInput" accept=".json" class="d-none">
+
+
+      </div>
+
+      <div class="modal-footer modal-footer-between">
+        <button type="button" class="btn btn-outline" id="cancelImportBtn">Cancelar</button>
+        <button type="button" class="btn" id="confirmImportBtn" disabled>
+          <i class="fa-solid fa-check icon-left"></i> Restaurar Datos
+        </button>
+      </div>
+
     </div>
   </div>
 
