@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NoteCore</title>
+  <link rel="icon" type="image/png" href="/NoteCore/favicon.png" />
+
+  <!-- Tema síncrono (evita FOUC) -->
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem("theme-preference") || "system";
+        var theme =
+          pref === "system"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light"
+            : pref;
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) { }
+    })();
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://xaxyt1404.github.io/NoteCore/" />
+  <meta property="og:title" content="NoteCore | Control total de tus notas del semestre" />
+  <meta property="og:description"
+    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI." />
+  <meta property="og:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NoteCore | Control total de tus notas del semestre" />
+  <meta name="twitter:description"
+    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI." />
+  <meta name="twitter:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png" />
+  <script type="module" crossorigin src="/NoteCore/assets/index-CFD0twze.js"></script>
+  <link rel="stylesheet" crossorigin href="/NoteCore/assets/index-DNWgU9Ya.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>
