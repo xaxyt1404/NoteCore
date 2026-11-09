@@ -1,7 +1,6 @@
 /* ==========================================
    SCRIPT.JS
    Script principal del landing NoteCore.
-   Incluye: navbar, sidebar, contacto por WhatsApp, modal de simulación con Sliders
    ========================================== */
 
 // Constantes globales

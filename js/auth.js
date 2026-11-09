@@ -1,8 +1,8 @@
-/* =================================================
+/* ==================================
    AUTH.JS - NoteCore
-   Lógica de interacción, validación y asistente (SPA)
-   para login.html, register.html y forgot-password.html
-   ================================================= */
+   Lógica de interacción y validación
+   para login.html, register.html
+   ================================== */
 
 // Objeto temporal en memoria para recolectar el Onboarding del usuario
 let onboardingPayload = {

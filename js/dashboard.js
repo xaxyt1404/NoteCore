@@ -1,6 +1,6 @@
-/* =============================================
+/* ========================================================
    LÓGICA DE INTERFAZ, GRÁFICOS & TOASTS PARA EL DASHBOARD
-   ============================================= */
+   ======================================================== */
 
 // Helper Global para mostrar Toasts
 function showToast(message, type = "success") {
