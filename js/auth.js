@@ -16,7 +16,7 @@ let onboardingPayload = {
   subjects: [],
 };
 
-// Catálogo estructurado de carreras por universidad (Desacoplado: listo para migrar a backend)
+// Catálogo estructurado de carreras por universidad
 const academicCatalog = {
   "Universidad de Cartagena": [
     "Administración de Empresas",
@@ -71,9 +71,58 @@ const academicCatalog = {
   ],
 };
 
-// ===========================
-// UTILIDADES Y HELPERS DE UI
-// ===========================
+// =====================
+// HELPER GLOBAL TOAST
+// =====================
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+  const toastIcon = document.getElementById("toastIcon");
+
+  if (!toast || !toastMessage || !toastIcon) return;
+
+  toastMessage.textContent = message;
+  toast.className = "toast show";
+  toastIcon.className = "fa-solid toast-icon";
+
+  if (type === "success") {
+    toast.classList.add("toast-success");
+    toastIcon.classList.add("fa-circle-check");
+  } else if (type === "warning") {
+    toast.classList.add("toast-warning");
+    toastIcon.classList.add("fa-triangle-exclamation");
+  } else if (type === "danger") {
+    toast.classList.add("toast-danger");
+    toastIcon.classList.add("fa-circle-xmark");
+  } else {
+    toastIcon.classList.add("fa-circle-info");
+  }
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3500);
+}
+
+// Alertas de feedback delegadas al Toast flotante
+function showAuthAlert(message, type = "info") {
+  const toastTypeMap = {
+    danger: "danger",
+    warning: "warning",
+    success: "success",
+    info: "info",
+  };
+  showToast(message, toastTypeMap[type] || "info");
+}
+
+// Control del estado de carga del botón (Spinner)
+function setButtonLoading(btn, isLoading) {
+  if (!btn) return;
+  const text = btn.querySelector(".btn-text");
+  const spinner = btn.querySelector(".btn-spinner");
+  btn.disabled = isLoading;
+  if (text) text.hidden = isLoading;
+  if (spinner) spinner.hidden = !isLoading;
+}
 
 // Mostrar / Ocultar Contraseña
 function togglePasswordVisibility(inputId, btn) {
@@ -87,39 +136,19 @@ function togglePasswordVisibility(inputId, btn) {
   icon.classList.toggle("fa-eye", isPassword);
 }
 
-// Alertas de feedback dentro del contenedor global #authAlert
-function showAuthAlert(message, type = "info") {
-  const alert = document.getElementById("authAlert");
-  if (!alert) return;
-  alert.textContent = message;
-  alert.className = `auth-alert auth-alert-${type}`;
-  alert.style.display = "block";
-}
-
-// Control del estado de carga del botón (Spinner)
-function setButtonLoading(btn, isLoading) {
-  if (!btn) return;
-  const text = btn.querySelector(".btn-text");
-  const spinner = btn.querySelector(".btn-spinner");
-  btn.disabled = isLoading;
-  if (text) text.hidden = isLoading;
-  if (spinner) spinner.hidden = !isLoading;
-}
-
-// Transición de vistas SPA dentro del wizard
+// Transición de vistas SPA (register y login)
 function switchAuthStep(hideId, showId) {
   const hideEl = document.getElementById(hideId);
   const showEl = document.getElementById(showId);
-  const backLink = document.querySelector(".back-link");
 
   if (hideEl && showEl) {
     hideEl.classList.add("d-none");
     showEl.classList.remove("d-none");
   }
 
-  // Mostrar "Volver al inicio" únicamente en la Vista 0 (Registro Base)
+  const backLink = document.querySelector(".back-link");
   if (backLink) {
-    if (showId === "step-register") {
+    if (showId === "step-register" || showId === "view-login") {
       backLink.classList.remove("d-none");
     } else {
       backLink.classList.add("d-none");
@@ -131,11 +160,11 @@ function switchAuthStep(hideId, showId) {
 function getAutoSemesterName() {
   const now = new Date();
   const year = now.getFullYear();
-  const period = now.getMonth() < 6 ? 1 : 2; // Ene-Jun = 1, Jul-Dic = 2
+  const period = now.getMonth() < 6 ? 1 : 2;
   return `Semestre ${year}-${period}`;
 }
 
-// Servicio de persistencia (Desacoplado: listo para cambiar por API/Fetch)
+// Servicio de persistencia
 function saveUserDataService(data) {
   localStorage.setItem(
     "notecore_active_user",
@@ -195,7 +224,6 @@ function acceptTermsAndClose() {
 // PASO 2: GESTIÓN DE ASIGNATURAS INICIALES
 // ==========================================
 
-// Añadir asignatura clonando la plantilla <template>
 function addTemporarySubject() {
   const nameInput = document.getElementById("setupSubjectName");
   const listContainer = document.getElementById("tempSubjectsList");
@@ -211,9 +239,6 @@ function addTemporarySubject() {
     nameInput.focus();
     return;
   }
-
-  const alertEl = document.getElementById("authAlert");
-  if (alertEl) alertEl.style.display = "none";
 
   if (noMsg) noMsg.remove();
 
@@ -242,7 +267,6 @@ function addTemporarySubject() {
   nameInput.focus();
 }
 
-// Editar el nombre de una asignatura existente
 function editTemporarySubject(index, nameSpan) {
   const currentName = onboardingPayload.subjects[index]?.name || "";
   const newName = prompt("Editar nombre de la asignatura:", currentName);
@@ -254,7 +278,6 @@ function editTemporarySubject(index, nameSpan) {
   }
 }
 
-// Eliminar asignatura de la lista
 function removeTemporarySubject(index, pillElement) {
   onboardingPayload.subjects.splice(index, 1);
 
@@ -263,7 +286,6 @@ function removeTemporarySubject(index, pillElement) {
   const listContainer = document.getElementById("tempSubjectsList");
   const remainingPills = listContainer.querySelectorAll(".dropdown-item");
 
-  // Re-indexar los eventos onclick de los botones de editar y eliminar
   remainingPills.forEach((pill, idx) => {
     const nameSpan = pill.querySelector(".subject-name");
     const editBtn = pill.querySelector(".subject-pill-edit");
@@ -290,7 +312,6 @@ function removeTemporarySubject(index, pillElement) {
   }
 }
 
-// Paso Final: Validar al menos 1 materia, consolidar y redirigir
 function completeOnboardingFlow() {
   if (!onboardingPayload.subjects || onboardingPayload.subjects.length === 0) {
     showAuthAlert(
@@ -302,7 +323,10 @@ function completeOnboardingFlow() {
   }
 
   saveUserDataService(onboardingPayload);
-  window.location.href = "dashboard-user.html";
+  showToast("¡Registro completado! Preparando tu panel...", "success");
+  setTimeout(() => {
+    window.location.href = "dashboard-user.html";
+  }, 1000);
 }
 
 // ==========================================
@@ -358,7 +382,6 @@ function updateDegreeDropdown(universityName) {
 // ===============================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Helper DRY para formularios
   const validateAndSubmit = (form, onValid) => {
     if (!form) return;
     form.addEventListener("submit", (e) => {
@@ -372,8 +395,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* ------------------------------------------
-     1. SECUENCIA DE FOCUS CON TECLA ENTER (PASO 0)
+     1. SECUENCIA DE FOCUS CON TECLA ENTER
      ------------------------------------------ */
+  // Secuencia para Registro
   const regEmail = document.getElementById("regEmail");
   const regName = document.getElementById("regName");
   const regPassword = document.getElementById("regPassword");
@@ -397,13 +421,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Al presionar Enter en contraseña, el submit nativo del formulario procesará el envío automáticamente.
+  // Secuencia para Login
+  const loginEmail = document.getElementById("loginEmail");
+  const loginPassword = document.getElementById("loginPassword");
+
+  if (loginEmail) {
+    loginEmail.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        loginPassword?.focus();
+      }
+    });
+  }
 
   /* ------------------------------------------
      2. MANEJO DE PASOS DEL WIZARD DE REGISTRO
      ------------------------------------------ */
 
-  // Paso 0: Registro Base ➔ Avanzar al Paso 1
   validateAndSubmit(registerForm, () => {
     onboardingPayload.email = regEmail?.value || "";
     onboardingPayload.name = regName?.value || "";
@@ -412,7 +446,6 @@ document.addEventListener("DOMContentLoaded", () => {
     switchAuthStep("step-register", "step-profile");
   });
 
-  // Paso 1: Perfil Académico ➔ Avanzar al Paso 2 con validación estricta
   validateAndSubmit(document.getElementById("profileFormStep"), () => {
     const uniVal = document.getElementById("setupUniversity")?.value.trim();
     const degreeVal = document.getElementById("setupDegree")?.value.trim();
@@ -427,10 +460,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Ocultar alertas de error previas si todo está correcto
-    const alertEl = document.getElementById("authAlert");
-    if (alertEl) alertEl.style.display = "none";
-
     onboardingPayload.university = uniVal;
     onboardingPayload.degree = degreeVal;
     onboardingPayload.semesterName = getAutoSemesterName();
@@ -438,7 +467,6 @@ document.addEventListener("DOMContentLoaded", () => {
     switchAuthStep("step-profile", "step-subjects");
   });
 
-  // Paso 2: Intercepción de tecla Enter al añadir asignaturas
   const subjectsFormStep = document.getElementById("subjectsFormStep");
   if (subjectsFormStep) {
     subjectsFormStep.addEventListener("keydown", (e) => {
@@ -461,13 +489,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setButtonLoading(submitBtn, true);
     loginUserService(email, password);
-    window.location.href = "dashboard-user.html";
+    showToast("¡Inicio de sesión exitoso! Redirigiendo...", "success");
+    setTimeout(() => {
+      window.location.href = "dashboard-user.html";
+    }, 1000);
   });
 
   // Manejo de Recuperación de Contraseña
   validateAndSubmit(document.getElementById("forgotPasswordForm"), () => {
     const email = document.getElementById("resetEmail")?.value;
-    alert(`Hemos enviado un enlace de recuperación a: ${email}`);
+    showToast(
+      `Revisa el mensaje enviado a: ${email} y sigue las instrucciones para recuperar tu contraseña.`,
+      "success",
+    );
     switchAuthStep("view-forgot-password", "view-login");
   });
 
@@ -505,7 +539,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (selectedText) selectedText.textContent = item.textContent.trim();
         if (hiddenInput) hiddenInput.value = val;
 
-        // Si es la universidad, actualizar dinámicamente sus carreras
         if (dropdown.id === "dropdownUniversity") {
           updateDegreeDropdown(val);
         }
@@ -525,7 +558,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
   if (degreeSearchWrapper) {
-    // Evita que el clic en la barra de búsqueda cierre el desplegable
     degreeSearchWrapper.addEventListener("click", (e) => {
       e.stopPropagation();
     });
@@ -545,7 +577,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Cerrar cualquier dropdown al hacer clic afuera
   document.addEventListener("click", () => {
     customDropdowns.forEach((d) => d.classList.remove("active"));
   });

@@ -1,6 +1,37 @@
 /* =============================================
-LÓGICA DE INTERFAZ & GRÁFICOS PARA EL DASHBOARD
+   LÓGICA DE INTERFAZ, GRÁFICOS & TOASTS PARA EL DASHBOARD
    ============================================= */
+
+// Helper Global para mostrar Toasts
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  const toastMessage = document.getElementById("toastMessage");
+  const toastIcon = document.getElementById("toastIcon");
+
+  if (!toast || !toastMessage || !toastIcon) return;
+
+  toastMessage.textContent = message;
+  toast.className = "toast show";
+  toastIcon.className = "fa-solid toast-icon";
+
+  if (type === "success") {
+    toast.classList.add("toast-success");
+    toastIcon.classList.add("fa-circle-check");
+  } else if (type === "warning") {
+    toast.classList.add("toast-warning");
+    toastIcon.classList.add("fa-triangle-exclamation");
+  } else if (type === "danger") {
+    toast.classList.add("toast-danger");
+    toastIcon.classList.add("fa-circle-xmark");
+  } else {
+    toastIcon.classList.add("fa-circle-info");
+  }
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3500);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   /* ------------------------------------------
      1. NAVEGACIÓN SPA (SIDEBAR LINKS & VIEWS)
@@ -143,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let chartRendimientoInstance = null;
   let chartEstadoInstance = null;
 
-  // Helper esencial: Extrae el valor real de cualquier variable CSS centralizada
   function getCssVar(varName) {
     return getComputedStyle(document.documentElement)
       .getPropertyValue(varName)
@@ -163,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // --- Gráfico 1: Rendimiento Académico (Línea) ---
   function initChartRendimiento() {
     const canvas = document.getElementById("chartRendimiento");
     if (!canvas || typeof Chart === "undefined") return;
@@ -172,8 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const colors = getChartColors();
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 240);
-    gradient.addColorStop(0, colors.primary + "4D"); // 30% Opacidad
-    gradient.addColorStop(1, colors.primary + "00"); // 0% Opacidad
+    gradient.addColorStop(0, colors.primary + "4D");
+    gradient.addColorStop(1, colors.primary + "00");
 
     chartRendimientoInstance = new Chart(ctx, {
       type: "line",
@@ -234,7 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Gráfico 2: Estado Académico (Dona) ---
   function initChartEstado() {
     const canvas = document.getElementById("chartEstado");
     if (!canvas || typeof Chart === "undefined") return;
@@ -321,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ------------------------------------------
-     POPOVERS DE HEADER & MODAL DE PERFIL
+     7. POPOVERS DE HEADER & MODAL DE PERFIL
      ------------------------------------------ */
   const notifMenuBtn = document.getElementById("notifMenuBtn");
   const notifPopover = document.getElementById("notifPopover");
@@ -335,6 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const avatarEditBtn = document.getElementById("avatarEditBtn");
   const profileModal = document.getElementById("profileModal");
   const profileInputs = document.querySelectorAll("#profileForm input");
+  const logoutItem = document.querySelector(".logout-item");
 
   let isEditingProfile = false;
 
@@ -365,6 +394,15 @@ document.addEventListener("DOMContentLoaded", () => {
     userMenuBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       togglePopover(userMenuBtn, userPopover);
+    });
+  }
+
+  if (logoutItem) {
+    logoutItem.addEventListener("click", () => {
+      showToast("Sesión cerrada.", "info");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1000);
     });
   }
 
@@ -424,6 +462,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (toggleEditProfileBtn) {
     toggleEditProfileBtn.addEventListener("click", () => {
+      if (isEditingProfile) {
+        showToast("Perfil actualizado correctamente.", "success");
+      }
       setProfileMode(!isEditingProfile);
     });
   }
@@ -444,7 +485,35 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ------------------------------------------
-     7. LÓGICA DE HERRAMIENTAS ACADÉMICAS & MODALES
+     8. ACCIONES DE AJUSTES (EXPORTAR, IMPORTAR Y ZONA PELIGROSA)
+     ------------------------------------------ */
+  const exportDataBtn = document.getElementById("exportDataBtn");
+  const resetSemesterDataBtn = document.getElementById("resetSemesterDataBtn");
+  const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+
+  if (exportDataBtn) {
+    exportDataBtn.addEventListener("click", () => {
+      showToast("Descargando copia de seguridad en JSON...", "success");
+    });
+  }
+
+  if (resetSemesterDataBtn) {
+    resetSemesterDataBtn.addEventListener("click", () => {
+      showToast("Notas del semestre restablecidas a cero.", "warning");
+    });
+  }
+
+  if (deleteAccountBtn) {
+    deleteAccountBtn.addEventListener("click", () => {
+      showToast("Cuenta eliminada correctamente.", "danger");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1200);
+    });
+  }
+
+  /* ------------------------------------------
+     9. LÓGICA DE HERRAMIENTAS ACADÉMICAS & MODALES
      ------------------------------------------ */
   function lockScroll() {
     document.documentElement.classList.add("modal-open");
@@ -674,6 +743,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "openImportDataModalBtn",
   );
   const cancelImportBtn = document.getElementById("cancelImportBtn");
+  const confirmImportBtn = document.getElementById("confirmImportBtn");
   const importDataModal = document.getElementById("importDataModal");
   const dropZone = document.getElementById("dropZone");
   const importFileInput = document.getElementById("importFileInput");
@@ -699,5 +769,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (dropZone && importFileInput) {
     dropZone.addEventListener("click", () => importFileInput.click());
+    importFileInput.addEventListener("change", () => {
+      if (importFileInput.files.length > 0 && confirmImportBtn) {
+        confirmImportBtn.removeAttribute("disabled");
+      }
+    });
+  }
+
+  if (confirmImportBtn) {
+    confirmImportBtn.addEventListener("click", () => {
+      closeImportModal();
+      showToast("Respaldo restaurado con éxito.", "success");
+    });
   }
 });

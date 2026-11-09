@@ -124,3 +124,63 @@
   border-color: var(--danger-border-subtle);
   color: var(--danger);
 }
+
+/* ==========================================
+   TOAST FLOTANTE GLOBAL
+   ========================================== */
+/* ==========================================
+   TOAST FLOTANTE GLOBAL (CENTRADURA ABSOLUTA PUSH)
+   ========================================== */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+  max-width: calc(100vw - 32px);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.3s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+/* Variantes de estado para el Toast */
+.toast.toast-success .toast-icon {
+  color: var(--success);
+}
+
+.toast.toast-warning .toast-icon {
+  color: var(--warning);
+}
+
+.toast.toast-danger .toast-icon {
+  color: var(--danger);
+}

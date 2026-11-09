@@ -53,7 +53,7 @@
       <div class="auth-col-form">
 
         <!-- ==========================================
-             VISTA 1: INICIAR SESIÓN (#view-login)
+              VISTA 1: INICIAR SESIÓN (#view-login)
              ========================================== -->
         <div id="view-login" class="auth-wizard-view">
           <a href="index.html" class="back-link">
@@ -106,7 +106,7 @@
 
             <!-- Botón de Acción -->
             <div class="auth-buttons-group" style="grid-template-columns: 1fr;">
-              <button type="submit" id="btnRegisterSubmit" class="btn btn-primary btn-auth">
+              <button type="submit" id="btnLoginSubmit" class="btn btn-primary btn-auth">
                 <span class="btn-text">Continuar</span>
                 <span class="btn-spinner" hidden><i class="fa-solid fa-spinner fa-spin"></i></span>
               </button>
@@ -145,13 +145,9 @@
         </div>
 
         <!-- ==========================================
-             VISTA 2: RECUPERAR CONTRASEÑA (#view-forgot-password)
-             ========================================== -->
+     VISTA 2: RECUPERAR CONTRASEÑA (#view-forgot-password)
+     ========================================== -->
         <div id="view-forgot-password" class="auth-wizard-view d-none">
-          <a href="#" class="back-link" onclick="switchAuthStep('view-forgot-password', 'view-login'); return false;">
-            <i class="fa-solid fa-arrow-left"></i> Volver a Iniciar Sesión
-          </a>
-
           <div class="auth-header">
             <h2>¿Olvidaste tu contraseña?</h2>
             <p>Ingresa tu correo registrado y te enviaremos las instrucciones para restablecerla.</p>
@@ -189,6 +185,12 @@
 
     </div>
   </main>
+
+  <!-- CONTENEDOR TOAST FLOTANTE -->
+  <div id="toast" class="toast" role="alert" aria-live="polite">
+    <i id="toastIcon" class="fa-solid fa-circle-check toast-icon"></i>
+    <span id="toastMessage">Notificación de NoteCore</span>
+  </div>
 
   <!-- Script exclusivo de autenticación -->
   <script src="js/auth.js"></script>
