@@ -62,9 +62,9 @@ a {
   padding: 0 1.5rem;
 }
 
-/* ==========================================
+/* ======================
    COMPONENTES Y BOTONES
-   ========================================== */
+   ====================== */
 .highlight {
   color: var(--primary);
 }
@@ -145,15 +145,18 @@ a {
   margin-right: 8px;
 }
 
-/* ==========================================
+/* ======================================
    NAVBAR CON MENÚ HAMBURGUESA Y SIDEBAR
-   ========================================== */
+   ====================================== */
 .navbar {
   background-color: rgba(234, 244, 254, 0.85);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(208, 227, 255, 0.6);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 100;
 }
 
@@ -300,9 +303,9 @@ a {
   transform: translateX(4px);
 }
 
-/* ==========================================
+/* ==========================
    DROPDOWN SELECTOR DE TEMA
-   ========================================== */
+   ========================== */
 .theme-dropdown-wrapper {
   position: relative;
   display: inline-flex;
@@ -310,10 +313,16 @@ a {
   transform: translateY(2px);
 }
 
+.theme-text {
+  margin-right: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 .theme-menu {
   position: absolute;
   top: calc(100% + 8px);
-  right: 0;
+  left: 0;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -322,7 +331,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 130px;
+  min-width: 140px;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
@@ -342,7 +351,7 @@ a {
   color: var(--text-main);
   padding: 8px 12px;
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -351,6 +360,13 @@ a {
   transition: var(--transition);
   width: 100%;
   text-align: left;
+  white-space: nowrap;
+}
+
+.theme-option i {
+  font-size: 1rem;
+  width: 18px;
+  text-align: center;
 }
 
 .theme-option:hover {
@@ -363,11 +379,11 @@ a {
   background-color: var(--bg-card-hover);
 }
 
-/* ==========================================
+/* =============
    HERO SECTION
-   ========================================== */
+   ============= */
 .hero {
-  padding: 4rem 0 3rem;
+  padding-top: 6rem;
 }
 
 .hero-container {
@@ -493,21 +509,22 @@ a {
 }
 
 .ai-footer-tag {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--primary);
-  background-color: var(--bg-main);
-  padding: 0.5rem 0.8rem;
-  border-radius: var(--radius-md);
   text-align: center;
-  border: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-/* ==========================================
+/* ================
    CARACTERÍSTICAS
-   ========================================== */
+   ================ */
 .features {
-  padding: 1rem 1.5rem 5rem;
+  padding: 1rem 1.5rem 4rem;
 }
 
 .section-title {
@@ -577,39 +594,11 @@ a {
   margin-top: 1rem;
 }
 
-@media (max-width: 900px) {
-  .tools-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .tool-card {
-    padding: 1.2rem;
-    gap: 0.9rem;
-  }
-
-  .tool-card .feature-icon {
-    font-size: 1.8rem;
-  }
-
-  @media (max-width: 600px) {
-    .nav-container {
-      height: 60px;
-      padding: 0 0.8rem;
-      /* Reducido de 1rem a 0.8rem para evitar scroll lateral en móviles pequeños */
-      gap: 0.3rem;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-  }
-}
-
-/* ==========================================
+/* =========
    CONTACTO
-   ========================================== */
+   ========= */
 .contact {
-  padding: 40px 15px;
+  padding: 1.5rem 1.5rem 2rem;
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -637,56 +626,16 @@ a {
   gap: 20px;
 }
 
-.contact-info-wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-  width: 100%;
-}
-
-.info-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-  transition: var(--transition);
-}
-
-.info-card i {
-  font-size: 1.25rem;
-  color: var(--primary);
-  width: 24px;
-  text-align: center;
-}
-
-.info-title {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.info-text {
-  font-size: 0.88rem;
-  color: var(--text-main);
-  font-weight: 700;
-}
-
 .contact-forms-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
 }
 
 .contact-form {
   background: var(--bg-card);
-  padding: 20px;
+  padding: 24px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--border-color);
@@ -694,8 +643,8 @@ a {
 }
 
 .contact-form h3 {
-  font-size: 1rem;
-  margin-bottom: 14px;
+  font-size: 1.05rem;
+  margin-bottom: 16px;
   color: var(--text-main);
   font-weight: 800;
   display: flex;
@@ -704,26 +653,26 @@ a {
 }
 
 .form-group {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
 }
 
 .form-group label {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-main);
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 8px 12px;
+  padding: 10px 14px;
   background-color: var(--bg-main);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--text-main);
   outline: none;
   box-shadow: inset 0 2px 4px rgba(0, 102, 255, 0.03);
@@ -740,13 +689,13 @@ a {
 
 .submit-btn {
   width: 100%;
-  padding: 0.7rem 1.2rem;
+  padding: 0.75rem 1.2rem;
   background-color: var(--primary);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-md);
   font-weight: 800;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   cursor: pointer;
   box-shadow: var(--shadow-button-3d);
   transition: var(--transition);
@@ -779,9 +728,9 @@ a {
   box-shadow: 0 2px 0px #1ba850;
 }
 
-/* ==========================================
+/* =========
    FOOTER
-   ========================================== */
+   ========= */
 .footer {
   border-top: 1px solid var(--border-color);
   padding: 1.5rem 0;
@@ -791,9 +740,9 @@ a {
   background-color: #ffffff;
 }
 
-/* ==========================================
+/* ==================================
    FONDO ANIMADO DE ICONOS FLOTANTES
-   ========================================== */
+   ================================== */
 .background-floating-icons {
   position: fixed;
   top: 0;
@@ -931,9 +880,9 @@ a {
   animation: floatSlowReverse 11s ease-in-out infinite;
 }
 
-/* ==========================================
+/* ===============================
    DISEÑO RESPONSIVO Y ADAPTATIVO
-   ========================================== */
+   =============================== */
 
 @media (max-width: 1024px) {
   .nav-container {
@@ -959,6 +908,10 @@ a {
     padding: 0.45rem 0.85rem;
     font-size: 0.82rem;
   }
+
+  .tools-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 600px) {
@@ -966,6 +919,8 @@ a {
     height: 60px;
     padding: 0 0.8rem;
     gap: 0.3rem;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .nav-left {
@@ -1020,7 +975,7 @@ a {
   }
 
   .hero {
-    padding: 1.5rem 0 2rem;
+    padding-top: 6rem;
   }
 
   .hero-content h1 {
@@ -1049,15 +1004,28 @@ a {
     max-width: 100%;
   }
 
+  .tool-card {
+    padding: 1.2rem;
+    gap: 0.9rem;
+  }
+
+  .tool-card .feature-icon {
+    font-size: 1.8rem;
+  }
+
+  .contact-forms-container {
+    grid-template-columns: 1fr;
+  }
+
   .bg-icon {
     opacity: 0.3;
     transform: scale(0.7);
   }
 }
 
-/* ==========================================
+/* ================================
    MODAL DE SIMULACIÓN INTERACTIVA
-   ========================================== */
+   ================================ */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1084,12 +1052,9 @@ a {
 
 /* Bloquea el scroll de la página de fondo en PC y móviles */
 html.modal-open,
-body.modal-open,
-html:has(body.modal-open) {
+body.modal-open {
   overflow: hidden !important;
-  height: 100% !important;
   touch-action: none;
-  /* Bloquea gestos táctiles de fondo en móviles */
 }
 
 /* Permite el scroll vertical únicamente dentro de los cuerpos de las modales y popovers */
@@ -1112,7 +1077,6 @@ html:has(body.modal-open) {
   transform: translateY(20px);
   transition: var(--transition);
   overflow: hidden;
-  /* Mantiene bordes redondeados limpios */
 }
 
 .modal-overlay.active .modal-card {
@@ -1144,7 +1108,6 @@ html:has(body.modal-open) {
   max-height: calc(100svh - 40px);
   overflow-y: auto;
   padding-right: 0.8rem;
-  /* Espacio para separar la barra del contenido */
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
 }
@@ -1232,6 +1195,20 @@ html:has(body.modal-open) {
   font-weight: 800;
   color: var(--primary);
   margin-top: 4px;
+  transition: color 0.25s ease;
+}
+
+/* Clases dinámicas de color para retroalimentación visual del resultado */
+.text-success {
+  color: var(--success) !important;
+}
+
+.text-warning {
+  color: var(--warning) !important;
+}
+
+.text-danger {
+  color: var(--danger) !important;
 }
 
 .sim-instruction {
@@ -1303,62 +1280,107 @@ html:has(body.modal-open) {
 }
 
 /* ==========================================
-   CONTROLES Y FLECHAS DE INPUT NUMBER
+   ESTILOS DE CONTROLES SLIDER (RANGE INPUTS)
    ========================================== */
 
-/* Ocultar flechas nativas del navegador */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-/* Estilos para los botones personalizados (+ / -) */
-.input-number-wrapper {
-  position: relative;
+.label-wrapper {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
 }
 
-.input-number-wrapper input {
-  padding-right: 50px;
-  /* Espacio para los botones integrados */
-}
-
-.spin-buttons {
-  position: absolute;
-  right: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.spin-btn {
-  background: var(--bg-card);
+.range-val {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--primary);
+  background-color: var(--bg-main);
   border: 1px solid var(--border-color);
-  color: var(--text-main);
-  width: 20px;
-  height: 16px;
-  border-radius: 4px;
+  padding: 2px 10px;
+  border-radius: var(--radius-md);
+  min-width: 48px;
+  text-align: center;
+}
+
+.slider-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
+  width: 100%;
+  padding: 4px 0;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  outline: none;
   cursor: pointer;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
   transition: var(--transition);
 }
 
-.spin-btn:hover {
-  background: var(--primary);
-  color: #ffffff;
+input[type="range"]:focus {
   border-color: var(--primary);
 }
 
-.spin-btn:active {
-  transform: scale(0.9);
+/* THUMB - WebKit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--primary);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 4px 10px rgba(0, 163, 255, 0.4);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+  margin-top: 0px;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+/* THUMB - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--primary);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 4px 10px rgba(0, 163, 255, 0.4);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  transform: scale(0.95);
+}
+
+/* Pista en Firefox */
+input[type="range"]::-moz-range-track {
+  height: 14px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
 }

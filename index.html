@@ -54,25 +54,6 @@
 
       <!-- Botones de Acción -->
       <div class="nav-actions">
-        <!-- Botón Selector de Tema -->
-        <div class="theme-dropdown-wrapper">
-          <button id="theme-btn" class="hamburger-btn" aria-label="Cambiar tema">
-            <i id="theme-btn-icon" class="fa-solid fa-sun"></i>
-          </button>
-
-          <!-- Menú desplegable flotante -->
-          <div id="theme-menu" class="theme-menu">
-            <button class="theme-option" data-theme-opt="light">
-              <i class="fa-solid fa-sun"></i> Claro
-            </button>
-            <button class="theme-option" data-theme-opt="dark">
-              <i class="fa-solid fa-moon"></i> Oscuro
-            </button>
-            <button class="theme-option" data-theme-opt="system">
-              <i class="fa-solid fa-desktop"></i> Sistema
-            </button>
-          </div>
-        </div>
         <a href="login.html" class="btn btn-outline">Iniciar Sesión</a>
         <a href="register.html" class="btn btn-primary">Registrarse</a>
       </div>
@@ -83,7 +64,26 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img src="assets/logotipo.png" alt="NoteCore Logo" class="logo-img">
+      <!-- Selector de Tema -->
+      <div class="theme-dropdown-wrapper">
+        <button id="theme-btn" class="hamburger-btn" aria-label="Cambiar tema">
+          <span class="theme-text">Tema</span>
+          <i id="theme-btn-icon" class="fa-solid fa-sun"></i>
+        </button>
+
+        <div id="theme-menu" class="theme-menu">
+          <button class="theme-option" data-theme-opt="light">
+            <i class="fa-solid fa-sun"></i> Claro
+          </button>
+          <button class="theme-option" data-theme-opt="dark">
+            <i class="fa-solid fa-moon"></i> Oscuro
+          </button>
+          <button class="theme-option" data-theme-opt="system">
+            <i class="fa-solid fa-desktop"></i> Sistema
+          </button>
+        </div>
+      </div>
+
       <button class="close-btn" id="closeSidebar" aria-label="Cerrar menú">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -105,19 +105,18 @@
   <section id="inicio" class="hero">
     <div class="container hero-container">
       <div class="hero-content">
-        <span class="badge">Seguimiento Universitario Inteligente</span>
+        <span class="badge">Diseñado para estudiantes universitarios</span>
         <h1>Toma el control total de tus <span class="highlight">notas</span></h1>
         <p>
           Configura los cortes de tus asignaturas, calcula cuánto necesitas exactamente para aprobar y recibe
           recomendaciones inteligentes con <strong>CoreAI</strong>.
         </p>
-        <div class="hero-buttons">
-          <a href="register.html" class="btn btn-primary btn-lg">Comenzar</a>
+      </div>
+      <div class="hero-buttons">
           <button class="btn btn-primary btn-lg" onclick="openSimulationModal()">
-            <i class="fa-solid fa-play icon-left"></i> Ver simulación
+            <i class="fa-solid fa-play icon-left"></i> Probar simulación
           </button>
         </div>
-      </div>
     </div>
   </section>
 
@@ -125,7 +124,7 @@
   <section id="herramientas" class="features container">
     <h2 class="section-title">Herramientas</h2>
     <div class="tools-layout">
-      <!-- Tarjeta CoreAI: Guía Paso a Paso (¿Cómo funciona?) -->
+      <!-- Tarjeta CoreAI: Guía Paso a Paso -->
       <div class="card-preview ai-guide-card">
         <div class="card-preview-header">
           <span class="ai-badge">
@@ -155,7 +154,7 @@
           </ul>
 
           <div class="ai-footer-tag">
-            <i class="fa-solid fa-sparkles"></i> Recibe recomendaciones inteligentes con CoreAI
+            <i class="fa-solid fa-sparkles"></i> Deja de hacer cuentas en la calculadora
           </div>
         </div>
       </div>
@@ -166,17 +165,15 @@
           <div class="feature-icon">⚙️</div>
           <div class="tool-info">
             <h3>Esquemas Personalizables</h3>
-            <p>Adapta los porcentajes de los cortes y asignaturas como necesites, o bien, elige uno de los esquemas
-              predeterminados.</p>
+            <p>Adapta los porcentajes de las asignaturas como necesites.</p>
           </div>
         </article>
 
         <article class="feature-card tool-card">
           <div class="feature-icon">🎯</div>
           <div class="tool-info">
-            <h3>Simulador Metodológico</h3>
-            <p>Calcula múltiples escenarios de calificación para tus notas finales según las obtenidas.</p>
-            <button class="btn btn-primary" onclick="openSimulationModal()">Probar simulador</button>
+            <h3>Calculadoras dinámicas</h3>
+            <p>Calcula múltiples escenarios para tus notas finales.</p>
           </div>
         </article>
 
@@ -184,7 +181,7 @@
           <div class="feature-icon">🤖</div>
           <div class="tool-info">
             <h3>Asistente CoreAI</h3>
-            <p>Diagnósticos en tiempo real y planes de estudio ajustados a tu meta académica para enfocarte en lo que
+            <p>Diagnósticos en tiempo real ajustados a tu meta académica para enfocarte en lo que
               más importa.</p>
           </div>
         </article>
@@ -202,33 +199,6 @@
     </div>
 
     <div class="contact-wrapper">
-      <!-- Información de Contacto Directo -->
-      <div class="contact-info-wrapper">
-        <div class="info-card">
-          <i class="fa-solid fa-envelope"></i>
-          <div>
-            <span class="info-title">Email</span>
-            <span class="info-text">martineze1422@outlook.com</span>
-          </div>
-        </div>
-
-        <div class="info-card">
-          <i class="fa-solid fa-phone"></i>
-          <div>
-            <span class="info-title">Teléfono</span>
-            <span class="info-text">+57 313 629 7041</span>
-          </div>
-        </div>
-
-        <div class="info-card">
-          <i class="fa-solid fa-location-dot"></i>
-          <div>
-            <span class="info-title">Ubicación</span>
-            <span class="info-text">Arjona, Bolívar, Colombia</span>
-          </div>
-        </div>
-      </div>
-
       <!-- Formularios de Contacto (Correo y WhatsApp) -->
       <div class="contact-forms-container">
 
@@ -334,38 +304,37 @@
         <!-- VISTA OPCIÓN A: Nota del Parcial Corte 1 -->
         <div class="sim-content" id="contentOptionA">
           <div class="form-grid">
+
             <div class="form-group">
-              <label for="tallerInput">Taller (30% del corte):</label>
-              <div class="input-number-wrapper">
-                <input type="number" id="tallerInput" value="0" min="0" max="5" step="0.1">
-                <div class="spin-buttons">
-                  <button type="button" class="spin-btn" onclick="adjustValue('tallerInput', 0.1)">▲</button>
-                  <button type="button" class="spin-btn" onclick="adjustValue('tallerInput', -0.1)">▼</button>
-                </div>
+              <div class="label-wrapper">
+                <label for="tallerInput">Taller (30% del corte):</label>
+                <span class="range-val" id="tallerVal">0.0</span>
+              </div>
+              <div class="slider-wrapper">
+                <input type="range" id="tallerInput" min="0" max="5" step="0.1" value="0">
               </div>
             </div>
 
             <div class="form-group">
-              <label for="quizInput">Quiz (20% del corte):</label>
-              <div class="input-number-wrapper">
-                <input type="number" id="quizInput" value="0" min="0" max="5" step="0.1">
-                <div class="spin-buttons">
-                  <button type="button" class="spin-btn" onclick="adjustValue('quizInput', 0.1)">▲</button>
-                  <button type="button" class="spin-btn" onclick="adjustValue('quizInput', -0.1)">▼</button>
-                </div>
+              <div class="label-wrapper">
+                <label for="quizInput">Quiz (20% del corte):</label>
+                <span class="range-val" id="quizVal">0.0</span>
+              </div>
+              <div class="slider-wrapper">
+                <input type="range" id="quizInput" min="0" max="5" step="0.1" value="0">
               </div>
             </div>
 
             <div class="form-group">
-              <label for="bonusInput">Puntos Clase (Suma Directa):</label>
-              <div class="input-number-wrapper">
-                <input type="number" id="bonusInput" value="0" min="0" max="5" step="0.1" placeholder="0">
-                <div class="spin-buttons">
-                  <button type="button" class="spin-btn" onclick="adjustValue('bonusInput', 0.1)">▲</button>
-                  <button type="button" class="spin-btn" onclick="adjustValue('bonusInput', -0.1)">▼</button>
-                </div>
+              <div class="label-wrapper">
+                <label for="bonusInput">Puntos Clase (+0.2 a la definitiva):</label>
+                <span class="range-val" id="bonusVal">0.0</span>
+              </div>
+              <div class="slider-wrapper">
+                <input type="range" id="bonusInput" min="0" max="1" step="0.1" value="0">
               </div>
             </div>
+
           </div>
 
           <div class="result-box">
@@ -379,19 +348,17 @@
         <!-- VISTA OPCIÓN B: Proyectar 5 Escenarios Dinámicos -->
         <div class="sim-content d-none" id="contentOptionB">
           <div class="form-group" style="margin-bottom: 1rem;">
-            <label for="corte1Input">Nota Definitiva del Corte 1 (30%):</label>
-            <div class="input-number-wrapper">
-              <input type="number" id="corte1Input" min="0" max="5" step="0.1" value="0" placeholder="0.0 - 5.0"
-                oninput="validateAndCalculateB(this)">
-              <div class="spin-buttons">
-                <button type="button" class="spin-btn" onclick="adjustValue('corte1Input', 0.1)">▲</button>
-                <button type="button" class="spin-btn" onclick="adjustValue('corte1Input', -0.1)">▼</button>
-              </div>
+            <div class="label-wrapper">
+              <label for="corte1Input">Nota Definitiva del Corte 1 (30%):</label>
+              <span class="range-val" id="corte1Val">0.0</span>
+            </div>
+            <div class="slider-wrapper">
+              <input type="range" id="corte1Input" min="0" max="5" step="0.1" value="0">
             </div>
           </div>
 
           <p class="sim-instruction" id="c1SummaryText">
-            Ingresa tu nota del Corte 1 para calcular los escenarios necesarios en los Cortes 2 y 3 para aprobar en
+            Selecciona tu nota del Corte 1 para calcular los escenarios necesarios en los Cortes 2 y 3 para aprobar en
             <strong>3.0</strong>.
           </p>
 
@@ -414,12 +381,6 @@
         <button class="btn btn-primary" onclick="closeSimulationModal()">Cerrar</button>
       </div>
     </div>
-  </div>
-
-  <!-- CONTENEDOR TOAST FLOTANTE -->
-  <div id="toast" class="toast" role="alert" aria-live="polite">
-    <i id="toastIcon" class="fa-solid fa-circle-check toast-icon"></i>
-    <span id="toastMessage">Notificación de NoteCore</span>
   </div>
 
   <script src="js/script.js"></script>
