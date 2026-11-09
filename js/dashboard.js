@@ -72,7 +72,16 @@ document.addEventListener("DOMContentLoaded", () => {
     .forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        showView(link.getAttribute("data-view"));
+        const targetViewId = link.getAttribute("data-view");
+        if (showView(targetViewId)) {
+          sidebarLinks.forEach((l) => {
+            if (l.getAttribute("data-view") === targetViewId) {
+              l.classList.add("active");
+            } else {
+              l.classList.remove("active");
+            }
+          });
+        }
       });
     });
 
@@ -180,16 +189,30 @@ document.addEventListener("DOMContentLoaded", () => {
       .trim();
   }
 
+  // Convierte un HEX (#00a3ff) a formato RGBA dinámico para canvas
+  function hexToRgba(hex, alpha) {
+    if (!hex || !hex.startsWith("#")) return `rgba(0, 163, 255, ${alpha})`;
+    let c = hex.substring(1);
+    if (c.length === 3)
+      c = c
+        .split("")
+        .map((x) => x + x)
+        .join("");
+    const num = parseInt(c, 16);
+    return `rgba(${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}, ${alpha})`;
+  }
+
   function getChartColors() {
     return {
       primary: getCssVar("--primary"),
       success: getCssVar("--success"),
       warning: getCssVar("--warning"),
-      danger: getCssVar("--danger") || "#ef4444",
+      danger: getCssVar("--danger"),
       textColor: getCssVar("--text-muted"),
       borderColor: getCssVar("--border-color"),
-      bgTooltip: getCssVar("--bg-tooltip") || getCssVar("--bg-card"),
-      textTooltip: getCssVar("--text-tooltip") || getCssVar("--text-main"),
+      bgCard: getCssVar("--bg-card"),
+      bgTooltip: getCssVar("--bg-tooltip"),
+      textTooltip: getCssVar("--text-tooltip"),
     };
   }
 
@@ -200,9 +223,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext("2d");
     const colors = getChartColors();
 
+    // Degradado azul limpio y transparente
     const gradient = ctx.createLinearGradient(0, 0, 0, 240);
-    gradient.addColorStop(0, colors.primary + "4D");
-    gradient.addColorStop(1, colors.primary + "00");
+    gradient.addColorStop(0, hexToRgba(colors.primary, 0.35));
+    gradient.addColorStop(1, hexToRgba(colors.primary, 0.0));
 
     chartRendimientoInstance = new Chart(ctx, {
       type: "line",
@@ -214,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data: [3.8, 4.0, 3.9, 4.1],
             borderColor: colors.primary,
             borderWidth: 3,
-            pointBackgroundColor: getCssVar("--bg-card"),
+            pointBackgroundColor: colors.bgCard,
             pointBorderColor: colors.primary,
             pointBorderWidth: 2,
             pointRadius: 4,
@@ -320,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
       chartRendimientoInstance.data.datasets[0].pointBorderColor =
         colors.primary;
       chartRendimientoInstance.data.datasets[0].pointBackgroundColor =
-        getCssVar("--bg-card");
+        colors.bgCard;
       chartRendimientoInstance.options.plugins.tooltip.backgroundColor =
         colors.bgTooltip;
       chartRendimientoInstance.options.plugins.tooltip.titleColor =
@@ -726,7 +750,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resultVal.style.color = getCssVar("--success");
       } else if (neededC3 > 5.0) {
         resultVal.textContent = "> 5.0 (Inalcanzable)";
-        resultVal.style.color = getCssVar("--danger") || "#ef4444";
+        resultVal.style.color = getCssVar("--danger");
       } else {
         resultVal.textContent = neededC3.toFixed(2);
         resultVal.style.color = getCssVar("--primary");

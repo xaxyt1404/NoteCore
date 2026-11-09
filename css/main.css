@@ -71,7 +71,7 @@ a {
 
 .badge {
   display: inline-block;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   color: var(--primary);
   border: 1px solid var(--border-color);
   padding: 0.4rem 1rem;
@@ -79,7 +79,7 @@ a {
   font-size: 0.85rem;
   font-weight: 700;
   margin-bottom: 1.2rem;
-  box-shadow: 0 4px 12px rgba(0, 163, 255, 0.1);
+  box-shadow: var(--shadow-card);
 }
 
 /* Logo */
@@ -119,14 +119,14 @@ a {
 
 .btn-primary:active {
   transform: translateY(4px);
-  box-shadow: 0 2px 0px #0077c8;
+  box-shadow: 0 2px 0px var(--primary-hover);
 }
 
 .btn-outline {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 2px solid var(--border-color);
   color: var(--text-main);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-card);
 }
 
 .btn-outline:hover {
@@ -149,10 +149,10 @@ a {
    NAVBAR CON MENÚ HAMBURGUESA Y SIDEBAR
    ====================================== */
 .navbar {
-  background-color: rgba(234, 244, 254, 0.85);
+  background-color: var(--bg-main);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(208, 227, 255, 0.6);
+  border-bottom: 1px solid var(--border-color);
   position: fixed;
   top: 0;
   left: 0;
@@ -212,7 +212,7 @@ a {
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(30, 41, 59, 0.4);
+  background-color: rgba(10, 17, 24, 0.5);
   backdrop-filter: blur(4px);
   z-index: 200;
   opacity: 0;
@@ -233,7 +233,7 @@ a {
   height: 100vh;
   background-color: var(--bg-card);
   border-right: 1px solid var(--border-color);
-  box-shadow: 10px 0 30px rgba(0, 102, 255, 0.1);
+  box-shadow: var(--shadow-card);
   z-index: 201;
   display: flex;
   flex-direction: column;
@@ -444,8 +444,8 @@ a {
 }
 
 .status-badge.warning {
-  background-color: #fef3c7;
-  color: #d97706;
+  background-color: var(--bg-card-hover);
+  color: var(--warning);
 }
 
 /* --- TARJETA PASO A PASO COREAI --- */
@@ -464,7 +464,7 @@ a {
 }
 
 .status-badge.info {
-  background-color: rgba(0, 163, 255, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--primary);
 }
 
@@ -675,16 +675,16 @@ a {
   font-size: 0.9rem;
   color: var(--text-main);
   outline: none;
-  box-shadow: inset 0 2px 4px rgba(0, 102, 255, 0.03);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: var(--transition);
   box-sizing: border-box;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.15);
+  box-shadow: 0 0 0 3px var(--bg-card-hover);
 }
 
 .submit-btn {
@@ -708,7 +708,7 @@ a {
 
 .submit-btn:active {
   transform: translateY(4px);
-  box-shadow: 0 2px 0px #0077c8;
+  box-shadow: 0 2px 0px var(--primary-hover);
 }
 
 .ws-btn {
@@ -737,7 +737,7 @@ a {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.95rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 /* ==================================
@@ -1166,7 +1166,7 @@ body.modal-open {
 .tab-btn.active {
   background-color: var(--bg-card);
   color: var(--primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .form-grid {
@@ -1244,7 +1244,7 @@ body.modal-open {
 }
 
 .ai-feedback-box {
-  background-color: rgba(0, 163, 255, 0.08);
+  background-color: var(--bg-card-hover);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1rem;
@@ -1336,7 +1336,7 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 8px;
   background: var(--primary);
   border: 2px solid var(--bg-card);
-  box-shadow: 0 4px 10px rgba(0, 163, 255, 0.4);
+  box-shadow: var(--shadow-card);
   cursor: pointer;
   transition:
     transform 0.15s ease,
@@ -1360,7 +1360,7 @@ input[type="range"]::-moz-range-thumb {
   border-radius: 8px;
   background: var(--primary);
   border: 2px solid var(--bg-card);
-  box-shadow: 0 4px 10px rgba(0, 163, 255, 0.4);
+  box-shadow: var(--shadow-card);
   cursor: pointer;
   transition:
     transform 0.15s ease,

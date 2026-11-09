@@ -1,8 +1,7 @@
-/* ==================================
-   AUTH.JS - NoteCore
+/* ===================================
    Lógica de interacción y validación
    para login.html, register.html
-   ================================== */
+   =================================== */
 
 // Objeto temporal en memoria para recolectar el Onboarding del usuario
 let onboardingPayload = {
@@ -305,7 +304,7 @@ function removeTemporarySubject(index, pillElement) {
 
   if (onboardingPayload.subjects.length === 0) {
     listContainer.innerHTML = `
-      <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;" id="noSubjectsMsg">
+      <span class="sim-instruction" id="noSubjectsMsg">
         Aún no has agregado materias (se requiere al menos una).
       </span>
     `;
@@ -397,7 +396,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ------------------------------------------
      1. SECUENCIA DE FOCUS CON TECLA ENTER
      ------------------------------------------ */
-  // Secuencia para Registro
   const regEmail = document.getElementById("regEmail");
   const regName = document.getElementById("regName");
   const regPassword = document.getElementById("regPassword");
@@ -421,7 +419,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Secuencia para Login
   const loginEmail = document.getElementById("loginEmail");
   const loginPassword = document.getElementById("loginPassword");
 

@@ -67,9 +67,9 @@
   font-size: 0.8rem;
 }
 
-/* ==========================================
-   2. SIDEBAR LATERAL (DASHBOARD ESPECÍFICO)
-   ========================================== */
+/* ============
+   2. SIDEBAR 
+   ============ */
 @media (min-width: 1025px) {
   .sidebar.dash-sidebar {
     position: fixed;
@@ -84,7 +84,7 @@
     padding: 1.5rem;
     border-right: 1px solid var(--border-color);
     background-color: var(--bg-card);
-    box-shadow: 4px 0 24px rgba(0, 102, 255, 0.04);
+    box-shadow: var(--shadow-card);
     box-sizing: border-box;
   }
 
@@ -112,7 +112,7 @@
 .sidebar-group {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.6rem;
 }
 
 .sidebar-group.main-links {
@@ -124,6 +124,30 @@
   margin-top: 0;
   padding-top: 1.2rem;
   border-top: 1px solid var(--border-color);
+}
+
+/* --- ESTADO ACTIVO --- */
+.sidebar-link.active {
+  color: var(--primary);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: relative;
+}
+
+.sidebar-link.active i {
+  color: var(--primary);
+}
+
+.sidebar-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  height: 60%;
+  width: 4px;
+  background-color: var(--primary);
+  border-radius: 0 4px 4px 0;
 }
 
 .sidebar-illustration {
@@ -159,12 +183,12 @@
   transform: rotate(3deg);
 }
 
-/* ==========================================
+/* ===============================
    3. HEADER SUPERIOR Y CONTROLES
-   ========================================== */
+   =============================== */
 .dash-header {
   height: 70px;
-  background-color: rgba(234, 244, 254, 0.85);
+  background-color: var(--bg-main);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
   display: flex;
@@ -176,49 +200,12 @@
   z-index: 80;
 }
 
-[data-theme="dark"] .dash-header {
-  background-color: rgba(10, 17, 24, 0.85);
-}
-
 .header-left {
   display: flex;
   align-items: center;
   gap: 1.2rem;
   flex: 1;
   min-width: 0;
-  max-width: 480px;
-}
-
-.search-box {
-  position: relative;
-  width: 100%;
-}
-
-.search-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.search-box input {
-  width: 100%;
-  height: 40px;
-  padding: 0 1rem 0 2.5rem;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  color: var(--text-main);
-  font-size: 0.88rem;
-  outline: none;
-  transition: var(--transition);
-}
-
-.search-box input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.15);
 }
 
 .header-right {
@@ -249,7 +236,7 @@
   right: 7px;
   width: 8px;
   height: 8px;
-  background-color: #ef4444;
+  background-color: var(--danger);
   border-radius: 50%;
   border: 2px solid var(--bg-card);
 }
@@ -435,7 +422,7 @@
 }
 
 .notif-item.unread {
-  background-color: rgba(0, 163, 255, 0.05);
+  background-color: var(--bg-card-hover);
 }
 
 .notif-icon {
@@ -450,12 +437,12 @@
 }
 
 .notif-icon.danger {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
+  background-color: var(--danger-bg-subtle);
+  color: var(--danger);
 }
 
 .notif-icon.primary {
-  background-color: rgba(0, 163, 255, 0.15);
+  background-color: var(--bg-card-hover);
   color: var(--primary);
 }
 
@@ -518,11 +505,11 @@
 }
 
 .popover-item.logout-item {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .popover-item.logout-item:hover {
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--danger-bg-subtle);
 }
 
 /* ==========================================
@@ -558,18 +545,18 @@
 }
 
 .kpi-icon-box.blue {
-  background-color: rgba(0, 163, 255, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--primary);
 }
 
 .kpi-icon-box.blue-alt {
-  background-color: rgba(30, 64, 175, 0.12);
-  color: #2563eb;
+  background-color: var(--bg-card-hover);
+  color: var(--primary-alt);
 }
 
 .kpi-icon-box.red {
-  background-color: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
+  background-color: var(--danger-bg-subtle);
+  color: var(--danger);
 }
 
 .kpi-content {
@@ -633,7 +620,7 @@
 }
 
 .text-danger {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 /* ==========================================
@@ -703,7 +690,7 @@
   outline: none;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .dash-select:hover {
@@ -712,7 +699,7 @@
 
 .dash-select:focus-visible {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(0, 163, 255, 0.15);
+  box-shadow: var(--shadow-hover);
 }
 
 .dash-select option {
@@ -824,7 +811,7 @@
 }
 
 .legend-dot.en-riesgo {
-  background-color: #ef4444;
+  background-color: var(--danger);
 }
 
 .legend-name {
@@ -890,17 +877,17 @@
 }
 
 .subject-grade-badge.red {
-  background-color: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
+  background-color: var(--danger-bg-subtle);
+  color: var(--danger);
 }
 
 .subject-grade-badge.yellow {
-  background-color: rgba(245, 158, 11, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--warning);
 }
 
 .subject-grade-badge.green {
-  background-color: rgba(16, 185, 129, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--success);
 }
 
@@ -984,7 +971,7 @@
 }
 
 .subject-card-compact .grade-val.red-text {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .subject-card-compact .grade-val.yellow-text {
@@ -1041,7 +1028,7 @@
   background-color: var(--bg-card);
   color: var(--primary);
   border-color: var(--border-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-card);
 }
 
 .sim-tabs .tab-btn:not(.active):hover {
@@ -1316,7 +1303,7 @@
 .dropdown-item:focus-visible,
 .semester-selector-btn:focus-visible,
 .btn-icon-more:focus-visible {
-  outline: 3px solid rgba(0, 163, 255, 0.35);
+  outline: 3px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -1384,7 +1371,7 @@
 }
 
 .stats-table tbody tr:hover {
-  background-color: rgba(0, 163, 255, 0.04);
+  background-color: var(--bg-card-hover);
 }
 
 /* Componentes internos de la tabla */
@@ -1399,7 +1386,7 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background-color: rgba(0, 163, 255, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--primary);
   display: flex;
   align-items: center;
@@ -1419,18 +1406,18 @@
 }
 
 .stats-table .status-badge.success {
-  background-color: rgba(16, 185, 129, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--success);
 }
 
 .stats-table .status-badge.warning {
-  background-color: rgba(245, 158, 11, 0.12);
+  background-color: var(--bg-card-hover);
   color: var(--warning);
 }
 
 .stats-table .status-badge.danger {
-  background-color: rgba(239, 68, 68, 0.12);
-  color: #ef4444;
+  background-color: var(--danger-bg-subtle);
+  color: var(--danger);
 }
 
 .stats-table .progress-track-cell {
@@ -1460,7 +1447,7 @@
   background-color: var(--warning);
 }
 .stats-table .mini-progress-fill.red {
-  background-color: #ef4444;
+  background-color: var(--danger);
 }
 
 .stats-table .action-btn {
