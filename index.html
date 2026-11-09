@@ -2,388 +2,54 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NoteCore</title>
-  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="icon" type="image/png" href="/favicon.png" />
 
-  <script src="js/theme.js"></script>
+  <!-- Tema síncrono (evita FOUC) -->
+  <script>
+    (function () {
+      try {
+        var pref = localStorage.getItem("theme-preference") || "system";
+        var theme =
+          pref === "system"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light"
+            : pref;
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) { }
+    })();
+  </script>
 
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Estilos Principales -->
-  <link rel="stylesheet" href="css/variables.css">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <!-- Google Fonts: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Open Graph / Meta etiquetas -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://xaxyt1404.github.io/NoteCore/">
-  <meta property="og:title" content="NoteCore | Control total de tus notas del semestre">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://xaxyt1404.github.io/NoteCore/" />
+  <meta property="og:title" content="NoteCore | Control total de tus notas del semestre" />
   <meta property="og:description"
-    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI.">
-  <meta property="og:image" content="https://xaxyt1404.github.io/NoteCore/assets/notecorebanner.png">
+    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI." />
+  <meta property="og:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png" />
 
   <!-- Twitter Cards -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="NoteCore | Control total de tus notas del semestre">
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NoteCore | Control total de tus notas del semestre" />
   <meta name="twitter:description"
-    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI.">
-  <meta name="twitter:image" content="https://xaxyt1404.github.io/NoteCore/assets/notecorebanner.png">
+    content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI." />
+  <meta name="twitter:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png" />
 </head>
 
 <body>
-
-  <!-- NAV BAR -->
-  <header class="navbar">
-    <div class="nav-container container">
-      <!-- Botón Hamburguesa + Logo -->
-      <div class="nav-left">
-        <button class="hamburger-btn" id="menuToggle" aria-label="Abrir menú">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <div class="logo">
-          <img src="assets/logotipo.png" alt="NoteCore Logo" class="logo-img">
-        </div>
-      </div>
-
-      <!-- Botones de Acción -->
-      <div class="nav-actions">
-        <a href="login.html" class="btn btn-outline">Iniciar Sesión</a>
-        <a href="register.html" class="btn btn-primary">Registrarse</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- SIDEBAR / BARRA LATERAL DESPLEGABLE -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <!-- Selector de Tema -->
-      <div class="theme-dropdown-wrapper">
-        <button id="theme-btn" class="hamburger-btn" aria-label="Cambiar tema">
-          <span class="theme-text">Tema</span>
-          <i id="theme-btn-icon" class="fa-solid fa-sun"></i>
-        </button>
-
-        <div id="theme-menu" class="theme-menu">
-          <button class="theme-option" data-theme-opt="light">
-            <i class="fa-solid fa-sun"></i> Claro
-          </button>
-          <button class="theme-option" data-theme-opt="dark">
-            <i class="fa-solid fa-moon"></i> Oscuro
-          </button>
-          <button class="theme-option" data-theme-opt="system">
-            <i class="fa-solid fa-desktop"></i> Sistema
-          </button>
-        </div>
-      </div>
-
-      <button class="close-btn" id="closeSidebar" aria-label="Cerrar menú">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-    <nav class="sidebar-links">
-      <a href="#inicio" class="sidebar-link">
-        <i class="fa-solid fa-house"></i> Inicio
-      </a>
-      <a href="#herramientas" class="sidebar-link">
-        <i class="fa-solid fa-toolbox"></i> Herramientas
-      </a>
-      <a href="#contacto" class="sidebar-link">
-        <i class="fa-solid fa-envelope"></i> Contacto
-      </a>
-    </nav>
-  </aside>
-
-  <!-- HERO SECTION -->
-  <section id="inicio" class="hero">
-    <div class="container hero-container">
-      <div class="hero-content">
-        <span class="badge">Diseñado para estudiantes universitarios</span>
-        <h1>Toma el control total de tus <span class="highlight">notas</span></h1>
-        <p>
-          Configura los cortes de tus asignaturas, calcula cuánto necesitas exactamente para aprobar y recibe
-          recomendaciones inteligentes con <strong>CoreAI</strong>.
-        </p>
-      </div>
-      <div class="hero-buttons">
-          <button class="btn btn-primary btn-lg" onclick="openSimulationModal()">
-            <i class="fa-solid fa-play icon-left"></i> Probar simulación
-          </button>
-        </div>
-    </div>
-  </section>
-
-  <!-- HERRAMIENTAS -->
-  <section id="herramientas" class="features container">
-    <h2 class="section-title">Herramientas</h2>
-    <div class="tools-layout">
-      <!-- Tarjeta CoreAI: Guía Paso a Paso -->
-      <div class="card-preview ai-guide-card">
-        <div class="card-preview-header">
-          <span class="ai-badge">
-            <i class="fa-solid fa-robot"></i> CoreAI
-          </span>
-          <span class="status-badge info">Cómo funciona</span>
-        </div>
-        <div class="card-preview-body">
-          <p class="ai-greeting">
-            ¡Hola! Soy CoreAI, te ayudaré a controlar tu progreso en el semestre.
-          </p>
-
-          <ul class="ai-steps">
-            <li>
-              <span class="step-num">1</span>
-              <span><strong>Configura:</strong> Agrega tus asignaturas y los porcentajes establecidos para tus
-                notas.</span>
-            </li>
-            <li>
-              <span class="step-num">2</span>
-              <span><strong>Registra:</strong> Guarda tus notas a medida que avanza el semestre.</span>
-            </li>
-            <li>
-              <span class="step-num">3</span>
-              <span><strong>Proyecta:</strong> Calcula cuánto necesitas exactamente para aprobar.</span>
-            </li>
-          </ul>
-
-          <div class="ai-footer-tag">
-            <i class="fa-solid fa-sparkles"></i> Deja de hacer cuentas en la calculadora
-          </div>
-        </div>
-      </div>
-
-      <!-- Lista de herramientas -->
-      <div class="tools-list">
-        <article class="feature-card tool-card">
-          <div class="feature-icon">⚙️</div>
-          <div class="tool-info">
-            <h3>Esquemas Personalizables</h3>
-            <p>Adapta los porcentajes de las asignaturas como necesites.</p>
-          </div>
-        </article>
-
-        <article class="feature-card tool-card">
-          <div class="feature-icon">🎯</div>
-          <div class="tool-info">
-            <h3>Calculadoras dinámicas</h3>
-            <p>Calcula múltiples escenarios para tus notas finales.</p>
-          </div>
-        </article>
-
-        <article class="feature-card tool-card">
-          <div class="feature-icon">🤖</div>
-          <div class="tool-info">
-            <h3>Asistente CoreAI</h3>
-            <p>Diagnósticos en tiempo real ajustados a tu meta académica para enfocarte en lo que
-              más importa.</p>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACTO -->
-  <section id="contacto" class="contact">
-    <div class="contact-header">
-      <h2>Contáctame</h2>
-      <p class="contact-subtitle">
-        ¿Tienes una duda o sugerencia? Envíame un mensaje y me pondré en contacto contigo.
-      </p>
-    </div>
-
-    <div class="contact-wrapper">
-      <!-- Formularios de Contacto (Correo y WhatsApp) -->
-      <div class="contact-forms-container">
-
-        <!-- Opción 1: Formulario / Enlace WhatsApp Directo -->
-        <form class="contact-form ws-form" id="whatsappForm" onsubmit="sendToWhatsApp(event)">
-          <h3><i class="fa-brands fa-whatsapp"></i> Chat de WhatsApp</h3>
-
-          <div class="form-group">
-            <label for="ws-name">Nombre</label>
-            <input type="text" id="ws-name" placeholder="Tu nombre" required>
-          </div>
-
-          <div class="form-group">
-            <label for="ws-message">Consulta o Sugerencia</label>
-            <textarea id="ws-message" rows="3" placeholder="¿En qué te puedo ayudar?" required></textarea>
-          </div>
-
-          <div class="form-group">
-            <button type="submit" class="submit-btn ws-btn">
-              <i class="fa-brands fa-whatsapp"></i> Enviar mensaje
-            </button>
-          </div>
-        </form>
-
-        <!-- Opción 2: Formulario Correo -->
-        <form class="contact-form" id="emailForm">
-          <h3><i class="fa-solid fa-paper-plane"></i> Envío por Email</h3>
-
-          <div class="form-group">
-            <label for="name">Nombre</label>
-            <input type="text" id="name" name="name" placeholder="Tu nombre" autocomplete="name" required>
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="tu@correo.com" autocomplete="email" required>
-          </div>
-
-          <div class="form-group">
-            <label for="message">Mensaje</label>
-            <textarea id="message" name="message" rows="3" placeholder="Escribe tu mensaje aquí..." required></textarea>
-          </div>
-
-          <div class="form-group">
-            <button type="submit" class="submit-btn">Enviar Mensaje</button>
-          </div>
-        </form>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer-container">
-      <p>&copy; 2026 NoteCore. Desarrollado por Estiben Yesid Martinez</p>
-    </div>
-  </footer>
-
-  <!-- Fondo Animado de Iconos 3D -->
-  <div class="background-floating-icons" aria-hidden="true">
-    <img src="assets/fondo/iconosfondo_01.png" class="bg-icon icon-1" alt="">
-    <img src="assets/fondo/iconosfondo_02.png" class="bg-icon icon-2" alt="">
-    <img src="assets/fondo/iconosfondo_03.png" class="bg-icon icon-3" alt="">
-    <img src="assets/fondo/iconosfondo_04.png" class="bg-icon icon-4" alt="">
-    <img src="assets/fondo/iconosfondo_05.png" class="bg-icon icon-5" alt="">
-    <img src="assets/fondo/iconosfondo_06.png" class="bg-icon icon-6" alt="">
-    <img src="assets/fondo/iconosfondo_07.png" class="bg-icon icon-7" alt="">
-    <img src="assets/fondo/iconosfondo_08.png" class="bg-icon icon-8" alt="">
-    <img src="assets/fondo/iconosfondo_09.png" class="bg-icon icon-9" alt="">
-    <img src="assets/fondo/iconosfondo_10.png" class="bg-icon icon-10" alt="">
-    <img src="assets/fondo/iconosfondo_11.png" class="bg-icon icon-11" alt="">
-    <img src="assets/fondo/iconosfondo_12.png" class="bg-icon icon-12" alt="">
-    <img src="assets/fondo/iconosfondo_13.png" class="bg-icon icon-13" alt="">
-  </div>
-
-  <!-- MODAL DE SIMULACIÓN INTERACTIVA -->
-  <div class="modal-overlay" id="simulationModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-title">
-          <i class="fa-solid fa-calculator highlight"></i>
-          <span>Simulador de Asignaturas</span>
-        </div>
-      </div>
-
-      <div class="modal-body">
-        <div class="subject-tag">
-          <span class="badge">Escenario Hipotético</span>
-          <h3>Asignatura: Producción Textual</h3>
-          <p class="cuts-summary">
-            Desglose de Cortes: <strong>Corte 1 (30%)</strong> • <strong>Corte 2 (30%)</strong> • <strong>Corte 3
-              (40%)</strong>
-          </p>
-        </div>
-
-        <!-- Selector de Modos de Simulación -->
-        <div class="sim-tabs">
-          <button class="tab-btn active" id="tabOptionA" onclick="switchSimTab('A')">Calcular Parcial (Corte 1)</button>
-          <button class="tab-btn" id="tabOptionB" onclick="switchSimTab('B')">Escenarios Cortes 2 y 3</button>
-        </div>
-
-        <!-- VISTA OPCIÓN A: Nota del Parcial Corte 1 -->
-        <div class="sim-content" id="contentOptionA">
-          <div class="form-grid">
-
-            <div class="form-group">
-              <div class="label-wrapper">
-                <label for="tallerInput">Taller (30% del corte):</label>
-                <span class="range-val" id="tallerVal">0.0</span>
-              </div>
-              <div class="slider-wrapper">
-                <input type="range" id="tallerInput" min="0" max="5" step="0.1" value="0">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="label-wrapper">
-                <label for="quizInput">Quiz (20% del corte):</label>
-                <span class="range-val" id="quizVal">0.0</span>
-              </div>
-              <div class="slider-wrapper">
-                <input type="range" id="quizInput" min="0" max="5" step="0.1" value="0">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="label-wrapper">
-                <label for="bonusInput">Puntos Clase (+0.2 a la definitiva):</label>
-                <span class="range-val" id="bonusVal">0.0</span>
-              </div>
-              <div class="slider-wrapper">
-                <input type="range" id="bonusInput" min="0" max="1" step="0.1" value="0">
-              </div>
-            </div>
-
-          </div>
-
-          <div class="result-box">
-            <span class="result-label">
-              Nota necesaria en el Parcial (50% del corte) para aprobar el Corte 1 con 3.0:
-            </span>
-            <div class="result-value" id="parcialNeededResult">0.0</div>
-          </div>
-        </div>
-
-        <!-- VISTA OPCIÓN B: Proyectar 5 Escenarios Dinámicos -->
-        <div class="sim-content d-none" id="contentOptionB">
-          <div class="form-group" style="margin-bottom: 1rem;">
-            <div class="label-wrapper">
-              <label for="corte1Input">Nota Definitiva del Corte 1 (30%):</label>
-              <span class="range-val" id="corte1Val">0.0</span>
-            </div>
-            <div class="slider-wrapper">
-              <input type="range" id="corte1Input" min="0" max="5" step="0.1" value="0">
-            </div>
-          </div>
-
-          <p class="sim-instruction" id="c1SummaryText">
-            Selecciona tu nota del Corte 1 para calcular los escenarios necesarios en los Cortes 2 y 3 para aprobar en
-            <strong>3.0</strong>.
-          </p>
-
-          <div class="scenarios-grid" id="scenariosContainer">
-            <!-- Se cargan dinámicamente -->
-          </div>
-        </div>
-
-        <!-- Retroalimentación CoreAI -->
-        <div class="ai-feedback-box">
-          <div class="ai-header">
-            <i class="fa-solid fa-robot highlight"></i>
-            <strong>CoreAI Smart Insight:</strong>
-          </div>
-          <p id="coreAIFeedbackText" class="ai-message">Cargando diagnóstico inteligente...</p>
-        </div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-primary" onclick="closeSimulationModal()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="js/script.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>
