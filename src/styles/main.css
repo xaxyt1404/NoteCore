@@ -1,6 +1,16 @@
-/* ========================================
-   Base global y componentes compartidos.
-   ======================================== */
+/* ==============================================================================
+   Base global y componentes compartidos
+   Convenciones:
+   - Solo var(--…): los colores literales viven únicamente en variables.css.
+   - Todo componente usado en más de una vista se define aquí.
+   - auth.css y dashboard.css solo añaden variantes acotadas por un ancestro
+     (.auth-col-form, .dashboard-container, .dash-sidebar): en una SPA sus
+     hojas siguen activas al cambiar de ruta y no deben afectar a otras vistas.
+   ============================================================================= */
+
+/* ===============
+   1. BASE GLOBAL
+   =============== */
 
 html {
   scroll-behavior: smooth;
@@ -62,9 +72,10 @@ a {
   padding: 0 1.5rem;
 }
 
-/* ======================
-   COMPONENTES Y BOTONES
-   ====================== */
+/* =========================
+   2. BOTONES, BADGE Y LOGO
+   ========================= */
+
 .highlight {
   color: var(--primary);
 }
@@ -88,7 +99,7 @@ a {
   width: auto;
   display: block;
   object-fit: contain;
-  filter: drop-shadow(0 4px 8px rgba(0, 102, 255, 0.15));
+  filter: var(--filter-logo);
 }
 
 /* Botones 3D (Interactividad Exclusiva) */
@@ -108,7 +119,7 @@ a {
 
 .btn-primary {
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-on-primary);
   box-shadow: var(--shadow-button-3d);
 }
 
@@ -145,9 +156,55 @@ a {
   margin-right: 8px;
 }
 
-/* ======================================
-   NAVBAR CON MENÚ HAMBURGUESA Y SIDEBAR
-   ====================================== */
+/* ============================
+   3. FORMULARIOS COMPARTIDOS.
+   ============================ */
+
+.form-group {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--text-main);
+  outline: none;
+  box-shadow: var(--shadow-inset);
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  background-color: var(--bg-card);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--bg-card-hover);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+/* ==========
+   4. NAVBAR
+   ========== */
+
 .navbar {
   background-color: var(--bg-main);
   backdrop-filter: blur(12px);
@@ -173,7 +230,7 @@ a {
   gap: 1rem;
 }
 
-/* Botón Hamburguesa 3D Soft */
+/* Botón Hamburguesa */
 .hamburger-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -205,14 +262,17 @@ a {
   gap: 0.8rem;
 }
 
-/* --- ESTILOS DE LA BARRA LATERAL (SIDEBAR) --- */
+/* ===========
+   5. SIDEBAR
+   =========== */
+
 .sidebar-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(10, 17, 24, 0.5);
+  background-color: var(--overlay-bg);
   backdrop-filter: blur(4px);
   z-index: 200;
   opacity: 0;
@@ -303,9 +363,10 @@ a {
   transform: translateX(4px);
 }
 
-/* ==========================
-   DROPDOWN SELECTOR DE TEMA
-   ========================== */
+/* ====================
+   6. SELECTOR DE TEMA
+   ==================== */
+
 .theme-dropdown-wrapper {
   position: relative;
   display: inline-flex;
@@ -379,370 +440,10 @@ a {
   background-color: var(--bg-card-hover);
 }
 
-/* =============
-   HERO SECTION
-   ============= */
-.hero {
-  padding-top: 6rem;
-}
+/* =============================
+   7. FONDO DE ICONOS FLOTANTES
+   ============================= */
 
-.hero-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-items: center;
-  text-align: center;
-}
-
-.hero-content {
-  max-width: 760px;
-}
-
-.hero-content h1 {
-  font-size: 3rem;
-  line-height: 1.25;
-  margin-bottom: 1.2rem;
-  font-weight: 800;
-  color: var(--text-main);
-}
-
-.hero-content p {
-  color: var(--text-muted);
-  font-size: 1.15rem;
-  margin-bottom: 2rem;
-}
-
-.hero-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1.2rem;
-}
-
-/* Contenedor Base de Tarjeta Preview */
-.card-preview {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-card);
-  transition: var(--transition);
-}
-
-.card-preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.status-badge {
-  font-size: 0.8rem;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-weight: 700;
-}
-
-.status-badge.warning {
-  background-color: var(--bg-card-hover);
-  color: var(--warning);
-}
-
-/* --- TARJETA PASO A PASO COREAI --- */
-.ai-guide-card {
-  border-color: var(--border-color);
-  background: var(--bg-card);
-}
-
-.ai-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 800;
-  color: var(--primary);
-  font-size: 1rem;
-}
-
-.status-badge.info {
-  background-color: var(--bg-card-hover);
-  color: var(--primary);
-}
-
-.ai-greeting {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-  font-style: italic;
-  margin-bottom: 1.2rem;
-}
-
-.ai-steps {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.2rem 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.ai-steps li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  font-size: 0.88rem;
-  color: var(--text-main);
-  line-height: 1.4;
-}
-
-.step-num {
-  background-color: var(--primary);
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 0.75rem;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.ai-footer-tag {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--primary);
-  text-align: center;
-  margin-top: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-/* ================
-   CARACTERÍSTICAS
-   ================ */
-.features {
-  padding: 1rem 1.5rem 4rem;
-}
-
-.section-title {
-  text-align: center;
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin-bottom: 3.5rem;
-}
-
-.feature-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  padding: 2.2rem;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  transition: var(--transition);
-}
-
-.feature-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.feature-card h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.6rem;
-}
-
-.feature-card p {
-  color: var(--text-muted);
-  font-size: 0.98rem;
-}
-
-/* --- Herramientas: tarjeta "¿Cómo funciona?" + lista de herramientas --- */
-.tools-layout {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 2rem;
-  align-items: center;
-}
-
-.tools-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.tool-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 1.2rem;
-  padding: 1.6rem;
-}
-
-.tool-card .feature-icon {
-  font-size: 2.2rem;
-  margin-bottom: 0;
-  flex-shrink: 0;
-}
-
-.tool-card h3 {
-  margin-bottom: 0.4rem;
-}
-
-.tool-card .btn {
-  margin-top: 1rem;
-}
-
-/* =========
-   CONTACTO
-   ========= */
-.contact {
-  padding: 1.5rem 1.5rem 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.contact-header {
-  text-align: center;
-  margin-bottom: 25px;
-}
-
-.contact-header h2 {
-  font-size: 1.9rem;
-  color: var(--text-main);
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-
-.contact-subtitle {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-
-.contact-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.contact-forms-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  width: 100%;
-}
-
-.contact-form {
-  background: var(--bg-card);
-  padding: 24px;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-  transition: var(--transition);
-}
-
-.contact-form h3 {
-  font-size: 1.05rem;
-  margin-bottom: 16px;
-  color: var(--text-main);
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.form-group {
-  margin-bottom: 14px;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 6px;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 14px;
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  color: var(--text-main);
-  outline: none;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: var(--transition);
-  box-sizing: border-box;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  background-color: var(--bg-card);
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px var(--bg-card-hover);
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 0.75rem 1.2rem;
-  background-color: var(--primary);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--radius-md);
-  font-weight: 800;
-  font-size: 0.9rem;
-  cursor: pointer;
-  box-shadow: var(--shadow-button-3d);
-  transition: var(--transition);
-}
-
-.submit-btn:hover {
-  background-color: var(--primary-hover);
-  transform: translateY(-2px);
-}
-
-.submit-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0px var(--primary-hover);
-}
-
-.ws-btn {
-  background-color: #25d366;
-  box-shadow:
-    0 5px 0px #1ba850,
-    0 8px 15px rgba(37, 211, 102, 0.25);
-}
-
-.ws-btn:hover {
-  background-color: #20bd5a;
-  transform: translateY(-2px);
-}
-
-.ws-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0px #1ba850;
-}
-
-/* =========
-   FOOTER
-   ========= */
-.footer {
-  border-top: 1px solid var(--border-color);
-  padding: 1.5rem 0;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  background-color: var(--bg-card);
-}
-
-/* ==================================
-   FONDO ANIMADO DE ICONOS FLOTANTES
-   ================================== */
 .background-floating-icons {
   position: fixed;
   top: 0;
@@ -757,7 +458,7 @@ a {
 .bg-icon {
   position: absolute;
   opacity: 0.35;
-  filter: drop-shadow(0 10px 15px rgba(0, 102, 255, 0.08));
+  filter: var(--filter-bg-icon);
   user-select: none;
 }
 
@@ -880,9 +581,895 @@ a {
   animation: floatSlowReverse 11s ease-in-out infinite;
 }
 
-/* ===============================
-   DISEÑO RESPONSIVO Y ADAPTATIVO
-   =============================== */
+/* ==============================================
+   8. DESPLEGABLE PERSONALIZADO (CustomDropdown)
+   ============================================== */
+
+.custom-dropdown {
+  position: relative;
+  display: inline-flex;
+  z-index: 50;
+}
+
+.custom-dropdown.active {
+  z-index: 100;
+}
+
+.dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+.dropdown-trigger:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.dropdown-trigger .arrow-icon {
+  font-size: 0.7rem;
+  transition: transform 0.25s ease;
+}
+
+.custom-dropdown.active .dropdown-trigger .arrow-icon {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown .dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 130px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: var(--transition);
+  z-index: 100;
+}
+
+.custom-dropdown.active .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  text-align: left;
+}
+
+.dropdown-item:hover,
+.dropdown-item.active {
+  background-color: var(--bg-card-hover);
+  color: var(--primary);
+}
+
+.dropdown-trigger:focus-visible,
+.dropdown-item:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   9. DESPLEGABLE CON BUSCADOR (searchable)
+   ========================================== */
+
+/* Buscador interno dentro del desplegable */
+.dropdown-search-wrapper {
+  position: relative;
+  padding: 4px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 4px;
+}
+
+.dropdown-search-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dropdown-search-input {
+  width: 100%;
+  height: 34px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 600;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.dropdown-search-input:focus {
+  border-color: var(--primary);
+}
+
+/* .form-group input (0,1,1) pisa el padding; se sube la especificidad solo
+   para dejar espacio al icono de lupa */
+.dropdown-search-wrapper .dropdown-search-input {
+  padding-left: 38px;
+}
+
+/* Lista con Scrollbar */
+.dropdown-options-list {
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdown-options-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dropdown-options-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-options-list::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+/* ==============
+   10. MODALES
+   ============== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background-color: var(--overlay-bg-strong);
+  backdrop-filter: blur(6px);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal.jsx añade .modal-open a <html> y <body> para bloquear el scroll de fondo */
+html.modal-open,
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Permite el scroll vertical únicamente dentro de los cuerpos de las modales y popovers */
+.modal-body,
+.ai-chat-body,
+.popover-body {
+  touch-action: pan-y;
+}
+
+.modal-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: 620px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(20px);
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.modal-overlay.active .modal-card {
+  transform: translateY(0);
+}
+
+.modal-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 1.15rem;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  max-height: calc(100svh - 40px);
+  overflow-y: auto;
+  padding-right: 0.8rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+/* Scrollbar Personalizado en Webkit (Chrome, Safari, Edge) */
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.modal-footer.modal-footer-between {
+  justify-content: space-between;
+}
+
+/* =============
+   11. PESTAÑAS
+   ============= */
+
+/* Los botones comparten borde transparente para que el activo no "salte" */
+.sim-tabs {
+  display: flex;
+  gap: 8px;
+  background-color: var(--bg-main);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.82rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.tab-btn.active {
+  background-color: var(--bg-card);
+  color: var(--primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.sim-tabs .tab-btn:not(.active):hover {
+  color: var(--primary);
+  background-color: var(--bg-card-hover);
+  border-color: var(--border-color);
+  transform: translateY(-2px);
+}
+
+/* ============
+   12. SLIDERS
+   ============ */
+
+.label-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.range-val {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--primary);
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 2px 10px;
+  border-radius: var(--radius-md);
+  min-width: 48px;
+  text-align: center;
+}
+
+.slider-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 4px 0;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 14px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-inset-strong);
+  transition: var(--transition);
+}
+
+input[type="range"]:focus {
+  border-color: var(--primary);
+}
+
+/* THUMB - WebKit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--primary);
+  border: 2px solid var(--bg-card);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+  margin-top: 0px;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+/* THUMB - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--primary);
+  border: 2px solid var(--bg-card);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.15s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  transform: scale(0.95);
+}
+
+/* Pista en Firefox */
+input[type="range"]::-moz-range-track {
+  height: 14px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: var(--shadow-inset-strong);
+}
+
+/* ======================
+   13. CAJA DE RESULTADO
+   ====================== */
+
+.result-box {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  text-align: center;
+}
+
+.result-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.result-value {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-top: 4px;
+  transition: color 0.25s ease;
+}
+
+/* ===================
+   14. LANDING · HERO
+   =================== */
+
+.hero {
+  padding-top: 6rem;
+}
+
+.hero-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 760px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  line-height: 1.25;
+  margin-bottom: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.hero-content p {
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  margin-bottom: 2rem;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+/* =====================================
+   15. LANDING · TARJETAS Y GUÍA COREAI
+   ===================================== */
+
+/* Contenedor Base de Tarjeta Preview */
+.card-preview {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.card-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.status-badge {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.status-badge.warning {
+  background-color: var(--bg-card-hover);
+  color: var(--warning);
+}
+
+/* --- TARJETA PASO A PASO COREAI --- */
+.ai-guide-card {
+  border-color: var(--border-color);
+  background: var(--bg-card);
+}
+
+.ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.status-badge.info {
+  background-color: var(--bg-card-hover);
+  color: var(--primary);
+}
+
+.ai-greeting {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 1.2rem;
+}
+
+.ai-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.ai-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.step-num {
+  background-color: var(--primary);
+  color: var(--text-on-primary);
+  font-weight: 800;
+  font-size: 0.75rem;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-footer-tag {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ===========================
+   16. LANDING · HERRAMIENTAS
+   =========================== */
+
+.features {
+  padding: 1rem 1.5rem 4rem;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 3.5rem;
+}
+
+.feature-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 2.2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.feature-card p {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+
+/* --- Herramientas: tarjeta "¿Cómo funciona?" + lista de herramientas --- */
+.tools-layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.tools-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.tool-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1.6rem;
+}
+
+.tool-card .feature-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.tool-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.tool-card .btn {
+  margin-top: 1rem;
+}
+
+/* ========================
+   17. LANDING · SIMULADOR
+   ======================== */
+
+.subject-tag h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-top: 0.3rem;
+}
+
+.cuts-summary {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.sim-instruction {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.scenario-card {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.scenario-card strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+:where(.scenario-card span) {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ai-feedback-box {
+  background-color: var(--bg-card-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.ai-message {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+/* =======================
+   18. LANDING · CONTACTO
+   ======================= */
+
+.contact {
+  padding: 1.5rem 1.5rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.contact-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.contact-header h2 {
+  font-size: 1.9rem;
+  color: var(--text-main);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.contact-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.contact-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contact-forms-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.contact-form {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+  transition: var(--transition);
+}
+
+.contact-form h3 {
+  font-size: 1.05rem;
+  margin-bottom: 16px;
+  color: var(--text-main);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  background-color: var(--primary);
+  color: var(--text-on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-button-3d);
+  transition: var(--transition);
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0px var(--primary-hover);
+}
+
+.ws-btn {
+  background-color: var(--whatsapp);
+  box-shadow: var(--shadow-whatsapp);
+}
+
+.ws-btn:hover {
+  background-color: var(--whatsapp-hover);
+  transform: translateY(-2px);
+}
+
+.ws-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0px var(--whatsapp-shadow);
+}
+
+/* ===========
+   19. FOOTER
+   =========== */
+
+.footer {
+  border-top: 1px solid var(--border-color);
+  padding: 1.5rem 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  background-color: var(--bg-card);
+}
+
+/* =========================
+   20. UTILIDADES DE ESTADO
+   ========================= */
+
+/* Deben declararse DESPUÉS de los componentes que fijan color (.result-value).
+   Los componentes cuyo color base podría pisarlos (.scenario-card span,
+   .card-icon, .kpi-subtext) usan :where() para bajar su especificidad a 0. */
+.text-success {
+  color: var(--success);
+}
+
+.text-warning {
+  color: var(--warning);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+.d-none {
+  display: none;
+}
+
+/* ===============
+   21. RESPONSIVO
+  ================ */
 
 @media (max-width: 1024px) {
   .nav-container {
@@ -1021,366 +1608,4 @@ a {
     opacity: 0.3;
     transform: scale(0.7);
   }
-}
-
-/* ================================
-   MODAL DE SIMULACIÓN INTERACTIVA
-   ================================ */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
-  background-color: rgba(10, 17, 24, 0.6);
-  backdrop-filter: blur(6px);
-  z-index: 300;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  opacity: 0;
-  visibility: hidden;
-  transition: var(--transition);
-}
-
-.modal-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Bloquea el scroll de la página de fondo en PC y móviles */
-html.modal-open,
-body.modal-open {
-  overflow: hidden !important;
-  touch-action: none;
-}
-
-/* Permite el scroll vertical únicamente dentro de los cuerpos de las modales y popovers */
-.modal-body,
-.ai-chat-body,
-.popover-body {
-  touch-action: pan-y;
-}
-
-.modal-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  width: 100%;
-  max-width: 620px;
-  max-height: 100%;
-  display: flex;
-  flex-direction: column;
-  transform: translateY(20px);
-  transition: var(--transition);
-  overflow: hidden;
-}
-
-.modal-overlay.active .modal-card {
-  transform: translateY(0);
-}
-
-.modal-header {
-  padding: 1.2rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.modal-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: 800;
-  font-size: 1.15rem;
-}
-
-.modal-body {
-  padding: 1.5rem;
-  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-  max-height: calc(100svh - 40px);
-  overflow-y: auto;
-  padding-right: 0.8rem;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
-}
-
-/* Scrollbar Personalizado en Webkit (Chrome, Safari, Edge) */
-.modal-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.modal-body::-webkit-scrollbar-thumb {
-  background-color: var(--border-color);
-  border-radius: 10px;
-}
-
-.modal-body::-webkit-scrollbar-thumb:hover {
-  background-color: var(--primary);
-}
-
-.subject-tag h3 {
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-top: 0.3rem;
-}
-
-.cuts-summary {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-.sim-tabs {
-  display: flex;
-  gap: 8px;
-  background-color: var(--bg-main);
-  padding: 6px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 0.6rem;
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-weight: 700;
-  font-size: 0.82rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.tab-btn.active {
-  background-color: var(--bg-card);
-  color: var(--primary);
-  box-shadow: var(--shadow-card);
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-}
-
-.result-box {
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 1rem;
-  text-align: center;
-}
-
-.result-label {
-  display: block;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-.result-value {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--primary);
-  margin-top: 4px;
-  transition: color 0.25s ease;
-}
-
-/* Clases dinámicas de color para retroalimentación visual del resultado */
-.text-success {
-  color: var(--success) !important;
-}
-
-.text-warning {
-  color: var(--warning) !important;
-}
-
-.text-danger {
-  color: var(--danger) !important;
-}
-
-.sim-instruction {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-}
-
-.scenarios-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px;
-}
-
-.scenario-card {
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  padding: 0.8rem;
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-
-.scenario-card strong {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--primary);
-  margin-bottom: 4px;
-}
-
-.scenario-card span {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.ai-feedback-box {
-  background-color: var(--bg-card-hover);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 1rem;
-}
-
-.ai-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  color: var(--primary);
-  margin-bottom: 4px;
-}
-
-.ai-message {
-  font-size: 0.88rem;
-  color: var(--text-main);
-  line-height: 1.4;
-}
-
-.modal-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.d-none {
-  display: none !important;
-}
-
-/* ==========================================
-   ESTILOS DE CONTROLES SLIDER (RANGE INPUTS)
-   ========================================== */
-
-.label-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.range-val {
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: var(--primary);
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-color);
-  padding: 2px 10px;
-  border-radius: var(--radius-md);
-  min-width: 48px;
-  text-align: center;
-}
-
-.slider-wrapper {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  padding: 4px 0;
-}
-
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 14px;
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  outline: none;
-  cursor: pointer;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
-  transition: var(--transition);
-}
-
-input[type="range"]:focus {
-  border-color: var(--primary);
-}
-
-/* THUMB - WebKit (Chrome, Safari, Edge) */
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 26px;
-  border-radius: 8px;
-  background: var(--primary);
-  border: 2px solid var(--bg-card);
-  box-shadow: var(--shadow-card);
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    background-color 0.15s ease;
-  margin-top: 0px;
-}
-
-input[type="range"]::-webkit-slider-thumb:hover {
-  background: var(--primary-hover);
-  transform: scale(1.1);
-}
-
-input[type="range"]::-webkit-slider-thumb:active {
-  transform: scale(0.95);
-}
-
-/* THUMB - Firefox */
-input[type="range"]::-moz-range-thumb {
-  width: 14px;
-  height: 26px;
-  border-radius: 8px;
-  background: var(--primary);
-  border: 2px solid var(--bg-card);
-  box-shadow: var(--shadow-card);
-  cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    background-color 0.15s ease;
-}
-
-input[type="range"]::-moz-range-thumb:hover {
-  background: var(--primary-hover);
-  transform: scale(1.1);
-}
-
-input[type="range"]::-moz-range-thumb:active {
-  transform: scale(0.95);
-}
-
-/* Pista en Firefox */
-input[type="range"]::-moz-range-track {
-  height: 14px;
-  background: var(--bg-main);
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
 }

@@ -2,15 +2,16 @@
    Variables globales para los colores del tema
    ============================================= */
 
-/* ==========================================
-   VARIABLES Y ESTILOS BASE (LIGHT MODE 3D)
-   ========================================== */
+/* ===========
+   MODO CLARO
+   =========== */
 :root {
   /* Paleta de Colores */
   --bg-main: #eaf4fe;
   --bg-card: #ffffff;
   --bg-card-hover: #f1f7ff;
   --border-color: #d0e3ff;
+  --text-on-primary: #ffffff; /* Texto sobre fondos de color primario */
 
   --primary: #00a3ff;
   --primary-hover: #0082cc;
@@ -30,16 +31,37 @@
   --bg-tooltip: #ffffff;
   --text-tooltip: #0f172a;
 
-  /* Sombras 3D Soft */
+  --whatsapp: #25d366;
+  --whatsapp-hover: #20bd5a;
+  --whatsapp-shadow: #1ba850;
+
+  /* Sombras */
   --shadow-card:
     0 12px 32px rgba(0, 102, 255, 0.08), 0 2px 6px rgba(0, 0, 0, 0.02);
   --shadow-hover: 0 20px 40px rgba(0, 102, 255, 0.15);
   --shadow-button-3d: 0 6px 0px #0077c8, 0 10px 20px rgba(0, 163, 255, 0.3);
+  --shadow-whatsapp: 0 5px 0px #1ba850, 0 8px 15px rgba(37, 211, 102, 0.25);
+
+  /* Sombras internas de inputs y sliders */
+  --shadow-inset: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-inset-strong: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  /* Fondos translúcidos de overlays (sidebar móvil y modales) */
+  --overlay-bg: rgba(10, 17, 24, 0.5);
+  --overlay-bg-strong: rgba(10, 17, 24, 0.6);
+
+  /* Filtros de imágenes decorativas */
+  --filter-logo: drop-shadow(0 4px 8px rgba(0, 102, 255, 0.15));
+  --filter-bg-icon: drop-shadow(0 10px 15px rgba(0, 102, 255, 0.08));
+  --filter-deco: drop-shadow(0 8px 12px rgba(0, 102, 255, 0.12));
+
+  /* Flecha del <select> (el color va dentro del SVG, no admite var()) */
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
 }
 
-/* ==========================================
-   MODO OSCURO (DARK MODE 3D)
-   ========================================== */
+/* ============
+   MODO OSCURO
+   ============ */
 [data-theme="dark"] {
   --bg-main: #0a1118;
   --bg-card: #16202c;
@@ -64,6 +86,7 @@
   --shadow-card: 0 12px 32px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
   --shadow-hover: 0 20px 40px rgba(0, 163, 255, 0.15);
   --shadow-button-3d: 0 5px 0px #0284c7, 0 8px 18px rgba(56, 189, 248, 0.25);
+  --filter-deco: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }
 
 /* Ajustes específicos de componentes para el Modo Oscuro */

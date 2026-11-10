@@ -21,11 +21,12 @@ export function getGradeColorClass(grade) {
   return "text-danger";
 }
 
-// Tono según nota actual (badges: red / yellow / green)
-export function getGradeTone(grade) {
-  if (grade < 3.0) return "text-danger";
-  if (grade < 4.0) return "text-warning";
-  return "text-success";
+// danger: < 3.0 | warning: 3.0 a 3.4 | success: >= 3.5
+export function getGradeStatus(grade) {
+  const value = Number(grade);
+  if (value < 3.0) return "danger";
+  if (value < 3.5) return "warning";
+  return "success";
 }
 
 // Landing - Opción A: nota necesaria en el parcial (50% del corte 1)

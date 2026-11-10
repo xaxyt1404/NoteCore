@@ -1,4 +1,4 @@
-import { getGradeTone } from "../../../utils/gradeHelpers";
+import { getGradeStatus } from "../../../utils/gradeHelpers";
 
 const fmt = (value, decimals = 1) => (value == null ? "—" : value.toFixed(decimals));
 
@@ -47,7 +47,7 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
 
             <tbody>
               {sorted.map((s, i) => {
-                const tone = getGradeTone(s.current);
+                const status = getGradeStatus(s.current);
                 return (
                   <tr key={s.id}>
                     <td className="col-pos">{i + 1}</td>
@@ -60,10 +60,10 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
                       </td>
                     ))}
                     <td className="col-grade">
-                      <span className={`subject-grade-badge ${tone}`}>{fmt(s.current)}</span>
+                      <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>{fmt(s.current)}</span>
                     </td>
                     <td className="col-status">
-                      <span className={`subject-grade-badge ${tone}`}>{s.performance}</span>
+                      <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>{s.performance}</span>
                     </td>
                   </tr>
                 );
@@ -81,12 +81,12 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
                   </td>
                 ))}
                 <td className="col-grade">
-                  <span className={`subject-grade-badge ${getGradeTone(summary.current)}`}>
+                  <span className={`subject-grade-badge ${getGradeStatus(summary.current)}`}>
                     {fmt(summary.current, 2)}
                   </span>
                 </td>
                 <td className="col-status">
-                  <span className={`subject-grade-badge ${getGradeTone(summary.current)}`}>{summary.status}</span>
+                  <span className={`subject-grade-badge ${getGradeStatus(summary.current)}`}>{summary.status}</span>
                 </td>
               </tr>
             </tfoot>

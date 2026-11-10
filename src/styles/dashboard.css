@@ -1,10 +1,15 @@
-/* ===============================
-   Estilos para el dashboard SPA 
-   =============================== */
+/* ==============================================================================
+   Vistas del panel (DashboardUser y DashboardAdmin)
+   Se importa solo en DashboardLayout.jsx, después de variables.css y main.css.
+   Contiene únicamente estilos propios del panel; los componentes compartidos
+   (botones, modales, desplegables, pestañas) están en main.css. Las variantes
+   de componentes compartidos se acotan con .dashboard-container o .dash-sidebar.
+   ============================================================================== */
 
-/* ==========================================
+/* ====================================
    1. LAYOUT BASE Y ESTRUCTURA GENERAL
-   ========================================== */
+   ==================================== */
+
 .dashboard-body {
   background-color: var(--bg-main);
   color: var(--text-main);
@@ -67,9 +72,10 @@
   font-size: 0.8rem;
 }
 
-/* ============
-   2. SIDEBAR 
-   ============ */
+/* ===========
+   2. SIDEBAR
+   =========== */
+
 @media (min-width: 1025px) {
   .sidebar.dash-sidebar {
     position: fixed;
@@ -102,7 +108,7 @@
   }
 }
 
-.sidebar-links {
+.dash-sidebar .sidebar-links {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -165,14 +171,13 @@
   height: 55px;
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 8px 12px rgba(0, 102, 255, 0.12));
+  filter: var(--filter-deco);
   opacity: 0.85;
   transition: var(--transition);
 }
 
 [data-theme="dark"] .sidebar-deco-img {
   opacity: 0.5;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
 }
 
 .sidebar-deco-img.books-img {
@@ -186,6 +191,7 @@
 /* ===============================
    3. HEADER SUPERIOR Y CONTROLES
    =============================== */
+
 .dash-header {
   height: 70px;
   background-color: var(--bg-main);
@@ -263,7 +269,7 @@
   width: 26px;
   height: 26px;
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-on-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -276,7 +282,7 @@
   font-size: 0.88rem;
 }
 
-.arrow-icon {
+.profile-btn .arrow-icon {
   font-size: 0.75rem;
   color: var(--text-muted);
 }
@@ -284,53 +290,28 @@
 /* ==========================================
    4. MENÚS DESPLEGABLES Y POPOVERS
    ========================================== */
-.custom-dropdown,
+
 .header-dropdown-wrapper {
   position: relative;
   display: inline-flex;
 }
 
-.dropdown-trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  padding: 0.45rem 0.9rem;
-  border-radius: var(--radius-md);
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition);
+/* Variante del desplegable compartido (main.css) dentro del panel */
+.dashboard-container .dropdown-trigger {
   box-shadow: 0 3px 0 var(--border-color);
 }
 
-.dropdown-trigger:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.dropdown-trigger .arrow-icon {
-  font-size: 0.7rem;
-  transition: transform 0.25s ease;
-}
-
-.custom-dropdown.active .dropdown-trigger .arrow-icon {
-  transform: rotate(180deg);
-}
-
-.custom-dropdown .dropdown-menu,
+/* Contenedor base de los popovers del header (notificaciones y perfil) */
 .header-popover-menu {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 10px);
   right: 0;
+  width: 300px;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-hover);
-  padding: 6px;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -338,47 +319,14 @@
   visibility: hidden;
   transform: translateY(-8px);
   transition: var(--transition);
-  z-index: 100;
-}
-
-.custom-dropdown .dropdown-menu {
-  min-width: 130px;
-}
-
-.header-popover-menu {
-  top: calc(100% + 10px);
-  border-radius: var(--radius-lg);
-  width: 300px;
   z-index: 120;
   overflow: hidden;
-  padding: 0;
 }
 
-.custom-dropdown.active .dropdown-menu,
 .header-popover-menu.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-}
-
-.dropdown-item {
-  background: transparent;
-  border: none;
-  color: var(--text-main);
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--transition);
-  width: 100%;
-  text-align: left;
-}
-
-.dropdown-item:hover,
-.dropdown-item.active {
-  background-color: var(--bg-card-hover);
-  color: var(--primary);
 }
 
 /* Popover Notificaciones & Perfil */
@@ -512,9 +460,10 @@
   background-color: var(--danger-bg-subtle);
 }
 
-/* ==========================================
-   5. GRID Y TARJETAS DE MÉTRICAS (KPIs)
-   ========================================== */
+/* ===============================
+   5. TARJETAS DE MÉTRICAS (KPIs)
+   =============================== */
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -605,27 +554,16 @@
   color: var(--success);
 }
 
-.kpi-subtext {
+:where(.kpi-subtext) {
   font-size: 0.78rem;
   color: var(--text-muted);
   margin-top: 0.3rem;
 }
 
-.text-success {
-  color: var(--success);
-}
-
-.text-warning {
-  color: var(--warning);
-}
-
-.text-danger {
-  color: var(--danger);
-}
-
 /* ==========================================
    6. TARJETAS Y CONTENEDORES DE 2 COLUMNAS
    ========================================== */
+
 .dash-grid-2col {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -660,7 +598,8 @@
   color: var(--text-main);
 }
 
-.card-icon {
+/* :where() deja que .text-danger / .text-warning (main.css) cambien el color */
+:where(.card-icon) {
   color: var(--primary);
   font-size: 1.1rem;
 }
@@ -677,7 +616,7 @@
   -moz-appearance: none;
   min-height: 40px;
   background-color: var(--bg-main);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748b'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: var(--select-arrow);
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 18px;
@@ -734,9 +673,10 @@
   height: 100%;
 }
 
-/* ==========================================
+/* ==============================
    7. GRÁFICO DE DONA Y LEYENDAS
-   ========================================== */
+   ============================== */
+
 .donut-layout {
   display: flex;
   align-items: center;
@@ -830,9 +770,10 @@
   font-size: 0.8rem;
 }
 
-/* ==========================================
+/* ====================================
    8. LISTA DE ASIGNATURAS EN ATENCIÓN
-   ========================================== */
+   ==================================== */
+
 .attention-subjects-list {
   display: flex;
   flex-direction: column;
@@ -876,17 +817,17 @@
   border-radius: 20px;
 }
 
-.subject-grade-badge.red {
+.subject-grade-badge.danger {
   background-color: var(--danger-bg-subtle);
   color: var(--danger);
 }
 
-.subject-grade-badge.yellow {
+.subject-grade-badge.warning {
   background-color: var(--bg-card-hover);
   color: var(--warning);
 }
 
-.subject-grade-badge.green {
+.subject-grade-badge.success {
   background-color: var(--bg-card-hover);
   color: var(--success);
 }
@@ -896,9 +837,10 @@
   color: var(--text-muted);
 }
 
-/* ==========================================
-   9. VISTA ASIGNATURAS: GRID COMPACTO 3-COL
-   ========================================== */
+/* ===============================================
+   9. VISTA ASIGNATURAS: GRID COMPACTO 3 COLUMNAS
+   =============================================== */
+
 #view-asignaturas .view-welcome-bar {
   margin-bottom: 0.6rem;
 }
@@ -970,15 +912,15 @@
   font-size: 1.1rem;
 }
 
-.subject-card-compact .grade-val.red-text {
+.subject-card-compact .grade-val.danger {
   color: var(--danger);
 }
 
-.subject-card-compact .grade-val.yellow-text {
+.subject-card-compact .grade-val.warning {
   color: var(--warning);
 }
 
-.subject-card-compact .grade-val.green-text {
+.subject-card-compact .grade-val.success {
   color: var(--success);
 }
 
@@ -1002,45 +944,10 @@
   font-size: 0.73rem;
 }
 
-.sim-tabs {
-  display: flex;
-  gap: 8px;
-  background-color: var(--bg-main);
-  padding: 6px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 0.6rem;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--text-muted);
-  font-weight: 700;
-  font-size: 0.82rem;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.tab-btn.active {
-  background-color: var(--bg-card);
-  color: var(--primary);
-  border-color: var(--border-color);
-  box-shadow: var(--shadow-card);
-}
-
-.sim-tabs .tab-btn:not(.active):hover {
-  color: var(--primary);
-  background-color: var(--bg-card-hover);
-  border-color: var(--border-color);
-  transform: translateY(-2px);
-}
-
-/* ==========================================
+/* =====================================
    10. BANNER COREAI, FAB Y CHAT DRAWER
-   ========================================== */
+   ===================================== */
+
 .ai-recommendation-card {
   background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-main) 100%);
   border: 1px solid var(--border-color);
@@ -1064,7 +971,7 @@
   width: 54px;
   height: 54px;
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-on-primary);
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -1098,7 +1005,7 @@
   width: 56px;
   height: 56px;
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-on-primary);
   border: none;
   border-radius: 50%;
   font-size: 1.5rem;
@@ -1198,7 +1105,7 @@
 
 .btn-send {
   background-color: var(--primary);
-  color: #ffffff;
+  color: var(--text-on-primary);
   border: none;
   width: 36px;
   height: 36px;
@@ -1209,9 +1116,10 @@
   justify-content: center;
 }
 
-/* ==========================================
-   11. MODAL PERFIL Y CONTROLES ACCESIBLES
-   ========================================== */
+/* ====================
+   11. MODAL DE PERFIL
+   ==================== */
+
 .profile-modal-card {
   max-width: 580px;
 }
@@ -1248,7 +1156,7 @@
   border-radius: 50%;
   background-color: var(--primary);
   border: 2px solid var(--bg-card);
-  color: #ffffff;
+  color: var(--text-on-primary);
   font-size: 0.72rem;
   cursor: pointer;
   display: flex;
@@ -1288,40 +1196,9 @@
   box-shadow: none;
 }
 
-.modal-footer-between {
-  justify-content: space-between !important;
-}
-
-/* Foco Accesible */
-.sidebar-link:focus-visible,
-.card-link-action:focus-visible,
-.attention-subject-item:focus-visible,
-.ai-fab-btn:focus-visible,
-.btn-send:focus-visible,
-.profile-btn:focus-visible,
-.dropdown-trigger:focus-visible,
-.dropdown-item:focus-visible,
-.semester-selector-btn:focus-visible,
-.btn-icon-more:focus-visible {
-  outline: 3px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* Preferencia de Movimiento Reducido */
-@media (prefers-reduced-motion: reduce) {
-  .dashboard-body *,
-  .dashboard-body *::before,
-  .dashboard-body *::after {
-    scroll-behavior: auto;
-    transition-duration: 0.01ms;
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
-  }
-}
-
-/* ==========================================
-   TABLA DE ESTADÍSTICAS (.stats-table)
-   ========================================== */
+/* =======================
+   12. VISTA ESTADÍSTICAS 
+   ======================= */
 
 .table-responsive {
   width: 100%;
@@ -1469,9 +1346,10 @@
   color: var(--primary);
 }
 
-/* ======================
-   12. VISTA DE AJUSTES
-   ====================== */
+/* ==================
+   13. VISTA AJUSTES
+   ================== */
+
 .settings-danger-zone {
   display: flex;
   flex-direction: column;
@@ -1499,9 +1377,10 @@
   color: var(--danger);
 }
 
-/* ==========================================
-   ZONA DRAG & DROP (MODAL DE IMPORTACIÓN)
-   ========================================== */
+/* ============================================
+   14. ZONA DRAG & DROP (MODAL DE IMPORTACIÓN)
+   ============================================ */
+
 .drop-zone {
   display: flex;
   flex-direction: column;
@@ -1538,4 +1417,33 @@
 .drop-zone-sub {
   font-size: 0.8rem;
   color: var(--text-muted);
+}
+
+/* ==================
+   15. ACCESIBILIDAD
+   ================== */
+
+/* Foco Accesible */
+.sidebar-link:focus-visible,
+.card-link-action:focus-visible,
+.attention-subject-item:focus-visible,
+.ai-fab-btn:focus-visible,
+.btn-send:focus-visible,
+.profile-btn:focus-visible,
+.semester-selector-btn:focus-visible,
+.btn-icon-more:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Preferencia de Movimiento Reducido */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-body *,
+  .dashboard-body *::before,
+  .dashboard-body *::after {
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
 }

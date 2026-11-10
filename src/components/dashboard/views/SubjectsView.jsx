@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getGradeTone } from "../../../utils/gradeHelpers";
+import { getGradeStatus } from "../../../utils/gradeHelpers";
 
 const FILTERS = {
   all: () => true,
@@ -42,7 +42,7 @@ export default function SubjectsView({ subjects, tabs }) {
       ) : (
         <div className="subjects-grid-3col">
           {visible.map((s) => {
-            const tone = getGradeTone(s.current);
+            const status = getGradeStatus(s.current);
             return (
               <div className="dash-card subject-card-compact" key={s.id}>
                 <div className="dash-card-header">
@@ -56,9 +56,9 @@ export default function SubjectsView({ subjects, tabs }) {
                 </div>
                 <div className="dash-card-body">
                   <div className="subject-card-top-info">
-                    <span className={`subject-grade-badge ${tone}`}>{s.statusLabel}</span>
+                    <span className={`subject-grade-badge ${status}`}>{s.statusLabel}</span>
                     <div className="grade-display">
-                      <span className={`grade-val ${tone}-text`}>{s.current.toFixed(1)}</span>
+                      <span className={`grade-val ${status}-text`}>{s.current.toFixed(1)}</span>
                       <span className="grade-max">/ 5.0</span>
                     </div>
                   </div>

@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "chart.js";
 import CustomDropdown from "../../common/CustomDropdown";
-import { getGradeTone } from "../../../utils/gradeHelpers";
+import { getGradeStatus } from "../../../utils/gradeHelpers";
 
 ChartJS.register(ArcElement, CategoryScale, Filler, LinearScale, LineElement, PointElement, Tooltip);
 
@@ -243,7 +243,7 @@ export default function HomeView({
                 >
                   <div className="subject-header-row">
                     <span className="subject-name">{s.name}</span>
-                    <span className={`subject-grade-badge ${getGradeTone(s.current)}`}>
+                    <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>
                       Nota actual <strong>{s.current.toFixed(1)}</strong> / 5.0
                     </span>
                     <i className="fa-solid fa-chevron-right arrow-indicator"></i>
