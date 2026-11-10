@@ -1112,11 +1112,6 @@ input[type="range"]::-moz-range-track {
   font-weight: 700;
 }
 
-.status-badge.warning {
-  background-color: var(--bg-card-hover);
-  color: var(--warning);
-}
-
 /* --- TARJETA PASO A PASO COREAI --- */
 .ai-guide-card {
   border-color: var(--border-color);
@@ -1532,16 +1527,6 @@ input[type="range"]::-moz-range-track {
   /* Ajustes del Menú de Tema en Móviles */
   .theme-dropdown-wrapper {
     transform: none;
-  }
-
-  .theme-dropdown-wrapper .btn {
-    padding: 0.35rem 0.5rem;
-    font-size: 0.8rem;
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .theme-menu {

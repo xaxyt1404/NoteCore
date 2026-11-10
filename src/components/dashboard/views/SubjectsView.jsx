@@ -58,7 +58,7 @@ export default function SubjectsView({ subjects, tabs }) {
                   <div className="subject-card-top-info">
                     <span className={`subject-grade-badge ${status}`}>{s.statusLabel}</span>
                     <div className="grade-display">
-                      <span className={`grade-val ${status}-text`}>{s.current.toFixed(1)}</span>
+                      <span className={`grade-val ${status}`}>{s.current.toFixed(1)}</span>
                       <span className="grade-max">/ 5.0</span>
                     </div>
                   </div>

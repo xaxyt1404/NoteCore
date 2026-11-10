@@ -71,42 +71,6 @@
   font-size: 0.83rem;
 }
 
-/* --- ALERTAS GLOBALES DE FEEDBACK (#authAlert) ---
-   Sin uso actual: en React el feedback se muestra con ToastContext. */
-.auth-alert {
-  display: none;
-  padding: 0.65rem 0.9rem;
-  border-radius: var(--radius-md);
-  font-size: 0.82rem;
-  font-weight: 600;
-  margin-bottom: 0.9rem;
-  line-height: 1.4;
-}
-
-.auth-alert-info {
-  background-color: var(--bg-card-hover);
-  color: var(--primary);
-  border: 1px solid var(--border-color);
-}
-
-.auth-alert-success {
-  background-color: var(--bg-card-hover);
-  color: var(--success);
-  border: 1px solid var(--border-color);
-}
-
-.auth-alert-danger {
-  background-color: var(--danger-bg-subtle);
-  color: var(--danger);
-  border: 1px solid var(--danger-border-subtle);
-}
-
-.auth-alert-warning {
-  background-color: var(--bg-card-hover);
-  color: var(--warning);
-  border: 1px solid var(--border-color);
-}
-
 /* --- FORMULARIO E INPUTS --- */
 .auth-form {
   display: flex;
