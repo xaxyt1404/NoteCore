@@ -14,7 +14,7 @@ export default function StepAcademic({ data, onChange, onBack, onNext }) {
   };
 
   return (
-    <div className="auth-wizard-view">
+    <div>
       <div className="auth-header">
         <span className="badge">Paso 1 de 2</span>
         <h2>Perfil Académico</h2>
@@ -57,3 +57,5 @@ export default function StepAcademic({ data, onChange, onBack, onNext }) {
     </div>
   );
 }
+
+

@@ -57,7 +57,7 @@ export default function Landing() {
               </span>
               <span className="status-badge info">Cómo funciona</span>
             </div>
-            <div className="card-preview-body">
+            <div>
               <p className="ai-greeting">¡Hola! Soy CoreAI, te ayudaré a controlar tu progreso en el semestre.</p>
 
               <ul className="ai-steps">
@@ -81,7 +81,7 @@ export default function Landing() {
             {TOOLS.map((tool) => (
               <article className="feature-card tool-card" key={tool.title}>
                 <div className="feature-icon">{tool.icon}</div>
-                <div className="tool-info">
+                <div>
                   <h3>{tool.title}</h3>
                   <p>{tool.text}</p>
                 </div>
@@ -94,7 +94,7 @@ export default function Landing() {
       <ContactSection />
 
       <footer className="footer">
-        <div className="container footer-container">
+        <div className="container">
           <p>© 2026 NoteCore. Desarrollado por Estiben Yesid Martinez</p>
         </div>
       </footer>
@@ -105,3 +105,5 @@ export default function Landing() {
     </>
   );
 }
+
+

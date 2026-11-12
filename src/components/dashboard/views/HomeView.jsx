@@ -231,7 +231,7 @@ export default function HomeView({
               Ver todas <i className="fa-solid fa-arrow-right"></i>
             </a>
           </div>
-          <div className="dash-card-body">
+          <div>
             <div className="attention-subjects-list">
               {attention.map((s) => (
                 <button
@@ -263,7 +263,7 @@ export default function HomeView({
               <p className="dash-card-sub">Vista rápida de tu rendimiento por área</p>
             </div>
           </div>
-          <div className="dash-card-body donut-layout">
+          <div className="donut-layout">
             <div className="donut-chart-box">
               <Doughnut data={donutData} options={donutOptions} />
               <div className="donut-center-info">
@@ -295,7 +295,7 @@ export default function HomeView({
           </div>
           <CustomDropdown options={rendimientoChart.options} value={mode} onChange={setMode} />
         </div>
-        <div className="dash-card-body">
+        <div>
           <div className="chart-container">
             <Line data={lineData} options={lineOptions} />
           </div>
@@ -314,10 +314,12 @@ export default function HomeView({
             </p>
           </div>
         </div>
-        <button type="button" className="btn btn-primary ai-rec-btn">
+        <button type="button" className="btn btn-primary">
           <i className="fa-solid fa-arrow-right icon-left"></i> Ver sugerencias
         </button>
       </div>
     </section>
   );
 }
+
+

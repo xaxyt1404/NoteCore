@@ -19,7 +19,7 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
         </button>
       </div>
 
-      <div className="dash-card stats-table-card">
+      <div className="dash-card">
         <div className="dash-card-header">
           <div>
             <h3>
@@ -33,15 +33,15 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
           <table className="stats-table">
             <thead>
               <tr>
-                <th className="col-pos">#</th>
-                <th className="col-subject">Asignatura</th>
+                <th>#</th>
+                <th>Asignatura</th>
                 {cuts.map((c) => (
-                  <th className="col-cut" key={c.label}>
+                  <th key={c.label}>
                     {c.label} ({c.weight}%)
                   </th>
                 ))}
-                <th className="col-grade">Nota Actual</th>
-                <th className="col-status">Estado</th>
+                <th>Nota Actual</th>
+                <th>Estado</th>
               </tr>
             </thead>
 
@@ -50,19 +50,19 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
                 const status = getGradeStatus(s.current);
                 return (
                   <tr key={s.id}>
-                    <td className="col-pos">{i + 1}</td>
-                    <td className="col-subject">
+                    <td>{i + 1}</td>
+                    <td>
                       <i className={`fa-solid ${s.icon} card-icon`}></i> {s.statsName}
                     </td>
                     {s.cuts.map((c, idx) => (
-                      <td className="col-cut" key={idx}>
+                      <td key={idx}>
                         {fmt(c)}
                       </td>
                     ))}
-                    <td className="col-grade">
+                    <td>
                       <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>{fmt(s.current)}</span>
                     </td>
-                    <td className="col-status">
+                    <td>
                       <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>{s.performance}</span>
                     </td>
                   </tr>
@@ -72,20 +72,20 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
 
             <tfoot>
               <tr>
-                <td colSpan={2} className="summary-title">
+                <td colSpan={2}>
                   PROMEDIO GENERAL
                 </td>
                 {summary.cuts.map((c, idx) => (
-                  <td className="col-cut" key={idx}>
+                  <td key={idx}>
                     {fmt(c, 2)}
                   </td>
                 ))}
-                <td className="col-grade">
+                <td>
                   <span className={`subject-grade-badge ${getGradeStatus(summary.current)}`}>
                     {fmt(summary.current, 2)}
                   </span>
                 </td>
-                <td className="col-status">
+                <td>
                   <span className={`subject-grade-badge ${getGradeStatus(summary.current)}`}>{summary.status}</span>
                 </td>
               </tr>
@@ -96,3 +96,5 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
     </section>
   );
 }
+
+

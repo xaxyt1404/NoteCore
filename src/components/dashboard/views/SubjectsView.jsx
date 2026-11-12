@@ -54,7 +54,7 @@ export default function SubjectsView({ subjects, tabs }) {
                     <i className="fa-solid fa-ellipsis-vertical"></i>
                   </button>
                 </div>
-                <div className="dash-card-body">
+                <div>
                   <div className="subject-card-top-info">
                     <span className={`subject-grade-badge ${status}`}>{s.statusLabel}</span>
                     <div className="grade-display">
@@ -76,3 +76,5 @@ export default function SubjectsView({ subjects, tabs }) {
     </section>
   );
 }
+
+

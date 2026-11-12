@@ -41,7 +41,7 @@ export default function ToolsView({ onOpenTool }) {
                 <h3>{tool.title}</h3>
               </div>
             </div>
-            <div className="dash-card-body">
+            <div>
               <p className="dash-card-sub" style={{ marginBottom: "1.2rem" }}>
                 {tool.text}
               </p>
@@ -60,3 +60,5 @@ export default function ToolsView({ onOpenTool }) {
     </section>
   );
 }
+
+

@@ -13,7 +13,7 @@ export default function ForgotPasswordView({ onSubmit, onCancel }) {
   };
 
   return (
-    <div className="auth-wizard-view">
+    <div>
       <div className="auth-header">
         <h2>¿Olvidaste tu contraseña?</h2>
         <p>Ingresa tu correo registrado y te enviaremos las instrucciones para restablecerla.</p>
@@ -38,7 +38,7 @@ export default function ForgotPasswordView({ onSubmit, onCancel }) {
 
         <div className="auth-buttons-group">
           <button type="submit" className="btn btn-primary btn-auth">
-            <span className="btn-text">Enviar Enlace</span>
+            Enviar Enlace
           </button>
           <button type="button" className="btn btn-outline btn-auth" onClick={onCancel}>
             Cancelar
@@ -48,3 +48,5 @@ export default function ForgotPasswordView({ onSubmit, onCancel }) {
     </div>
   );
 }
+
+

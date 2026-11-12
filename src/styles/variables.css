@@ -53,8 +53,6 @@
   --filter-logo: drop-shadow(0 4px 8px rgba(0, 102, 255, 0.15));
   --filter-bg-icon: drop-shadow(0 10px 15px rgba(0, 102, 255, 0.08));
   --filter-deco: drop-shadow(0 8px 12px rgba(0, 102, 255, 0.12));
-
-  /* Flecha del <select> (el color va dentro del SVG, no admite var()) */
 }
 
 /* ============

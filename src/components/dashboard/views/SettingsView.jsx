@@ -20,7 +20,7 @@ export default function SettingsView({ onExport, onOpenImport, onReset, onDelete
             </p>
           </div>
         </div>
-        <div className="dash-card-body">
+        <div>
           <div className="form-grid">
             <button type="button" className="btn btn-outline" onClick={onExport}>
               <i className="fa-solid fa-download icon-left"></i> Exportar datos (JSON)
@@ -45,7 +45,7 @@ export default function SettingsView({ onExport, onOpenImport, onReset, onDelete
             </p>
           </div>
         </div>
-        <div className="dash-card-body settings-danger-zone">
+        <div className="settings-danger-zone">
           <div className="subject-header-row settings-option-row">
             <div>
               <span className="subject-name">Limpiar calificaciones del semestre </span>
@@ -72,3 +72,5 @@ export default function SettingsView({ onExport, onOpenImport, onReset, onDelete
     </section>
   );
 }
+
+

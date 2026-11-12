@@ -33,7 +33,7 @@ export default function StepBasicInfo({ data, onChange, onNext }) {
   };
 
   return (
-    <div className="auth-wizard-view">
+    <div>
       <div className="auth-header">
         <h2>Crear Cuenta</h2>
         <p>Únete a NoteCore y gestiona tus notas de forma eficiente.</p>
@@ -131,7 +131,7 @@ export default function StepBasicInfo({ data, onChange, onNext }) {
 
         <div className="auth-buttons-group" style={{ gridTemplateColumns: "1fr" }}>
           <button type="submit" className="btn btn-primary btn-auth">
-            <span className="btn-text">Continuar</span>
+            Continuar
           </button>
         </div>
 
@@ -153,3 +153,5 @@ export default function StepBasicInfo({ data, onChange, onNext }) {
     </div>
   );
 }
+
+

@@ -35,7 +35,7 @@ export default function Navbar() {
             >
               <i className="fa-solid fa-bars"></i>
             </button>
-            <div className="logo">
+            <div>
               <img src={logo} alt="NoteCore Logo" className="logo-img" />
             </div>
           </div>
@@ -80,3 +80,5 @@ export default function Navbar() {
     </>
   );
 }
+
+

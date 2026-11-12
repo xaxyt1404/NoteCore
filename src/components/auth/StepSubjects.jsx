@@ -44,7 +44,7 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
   });
 
   return (
-    <div className="auth-wizard-view">
+    <div>
       <div className="auth-header">
         <span className="badge">Paso 2 de 2</span>
         <h2>Asignaturas</h2>
@@ -124,3 +124,5 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
     </div>
   );
 }
+
+

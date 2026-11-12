@@ -41,7 +41,7 @@ export default function Topbar({
           <i className="fa-solid fa-bars"></i>
         </button>
 
-        <div className="logo">
+        <div>
           <img src={logo} alt="NoteCore Logo" className="logo-img" />
         </div>
       </div>
@@ -60,7 +60,7 @@ export default function Topbar({
             {hasUnread && <span className="notif-badge"></span>}
           </button>
 
-          <div className={`header-popover-menu notif-popover${menu === "notif" ? " active" : ""}`}>
+          <div className={`header-popover-menu${menu === "notif" ? " active" : ""}`}>
             <div className="popover-header">
               <h4>Notificaciones</h4>
               <button type="button" className="btn-text-action" onClick={markAllRead}>
@@ -133,3 +133,5 @@ export default function Topbar({
     </header>
   );
 }
+
+

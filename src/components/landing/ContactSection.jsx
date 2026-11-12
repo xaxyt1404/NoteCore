@@ -39,7 +39,7 @@ export default function ContactSection() {
 
       <div className="contact-wrapper">
         <div className="contact-forms-container">
-          <form className="contact-form ws-form" onSubmit={handleWhatsApp}>
+          <form className="contact-form" onSubmit={handleWhatsApp}>
             <h3><i className="fa-brands fa-whatsapp"></i> Chat de WhatsApp</h3>
 
             <div className="form-group">
@@ -126,3 +126,5 @@ export default function ContactSection() {
     </section>
   );
 }
+
+

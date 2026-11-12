@@ -79,7 +79,7 @@ export default function CustomDropdown({
         aria-haspopup="menu"
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="dropdown-selected-text">{selected ? selected.label : placeholder}</span>
+        {selected ? selected.label : placeholder}
         <i className="fa-solid fa-chevron-down arrow-icon"></i>
       </button>
 
@@ -102,3 +102,5 @@ export default function CustomDropdown({
     </div>
   );
 }
+
+

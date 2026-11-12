@@ -26,7 +26,7 @@ export default function LoginView({ onSubmit, onForgot, loading = false }) {
   };
 
   return (
-    <div className="auth-wizard-view">
+    <div>
       <div className="auth-header">
         <h2>¡Hola de nuevo!</h2>
         <p>Ingresa tus datos para continuar.</p>
@@ -75,7 +75,7 @@ export default function LoginView({ onSubmit, onForgot, loading = false }) {
           </div>
         </div>
 
-        <div className="form-checkbox form-checkbox-between">
+        <div className="form-checkbox">
           <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <input
               type="checkbox"
@@ -87,7 +87,7 @@ export default function LoginView({ onSubmit, onForgot, loading = false }) {
           </label>
           <a
             href="#"
-            className="terms-link forgot-link"
+            className="terms-link"
             onClick={(e) => {
               e.preventDefault();
               onForgot?.();
@@ -100,11 +100,9 @@ export default function LoginView({ onSubmit, onForgot, loading = false }) {
         <div className="auth-buttons-group" style={{ gridTemplateColumns: "1fr" }}>
           <button type="submit" className="btn btn-primary btn-auth" disabled={loading}>
             {loading ? (
-              <span className="btn-spinner">
-                <i className="fa-solid fa-spinner fa-spin"></i>
-              </span>
+              <i className="fa-solid fa-spinner fa-spin"></i>
             ) : (
-              <span className="btn-text">Continuar</span>
+              "Continuar"
             )}
           </button>
         </div>
@@ -121,3 +119,5 @@ export default function LoginView({ onSubmit, onForgot, loading = false }) {
     </div>
   );
 }
+
+

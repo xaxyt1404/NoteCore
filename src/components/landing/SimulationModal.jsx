@@ -266,7 +266,7 @@ export default function SimulationModal({ isOpen, onClose }) {
         </div>
 
         {tab === "A" ? (
-          <div className="sim-content">
+          <div>
             <div className="form-grid">
               <SliderField
                 id="tallerInput"
@@ -297,7 +297,7 @@ export default function SimulationModal({ isOpen, onClose }) {
             </div>
           </div>
         ) : (
-          <div className="sim-content">
+          <div>
             <SliderField
               id="corte1Input"
               label="Nota Definitiva del Corte 1 (30%):"
@@ -337,3 +337,5 @@ export default function SimulationModal({ isOpen, onClose }) {
     </Modal>
   );
 }
+
+
