@@ -31,7 +31,9 @@ export function ThemeProvider({ children }) {
   const theme = preference === "system" ? systemTheme : preference;
 
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    const root = document.documentElement;
+    root.setAttribute("data-theme", theme);
+    root.style.colorScheme = theme;
   }, [theme]);
 
   const setPreference = useCallback((pref) => {
