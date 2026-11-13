@@ -282,7 +282,7 @@ export default function SimulationModal({ isOpen, onClose }) {
               />
               <SliderField
                 id="bonusInput"
-                label="Puntos Clase (+0.2 a la definitiva):"
+                label="Puntos adicionales (a la definitiva):"
                 value={a.bonus}
                 max={1}
                 onChange={(v) => updateA("bonus", v)}

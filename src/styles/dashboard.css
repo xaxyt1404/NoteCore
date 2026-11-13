@@ -563,13 +563,6 @@
 /* ==========================================
    6. TARJETAS Y CONTENEDORES DE 2 COLUMNAS
    ========================================== */
-
-.dash-grid-2col {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 1.5rem;
-}
-
 .dash-card {
   min-width: 0;
   background-color: var(--bg-card);
@@ -702,11 +695,11 @@
 }
 
 .legend-dot.excelente {
-  background-color: var(--success);
+  background-color: var(--excelent);
 }
 
 .legend-dot.bueno {
-  background-color: var(--primary);
+  background-color: var(--success);
 }
 
 .legend-dot.regular {
@@ -766,11 +759,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.subject-name {
-  font-weight: 800;
-  font-size: 0.95rem;
 }
 
 .subject-grade-badge {
@@ -1281,8 +1269,164 @@
   color: var(--text-muted);
 }
 
+/* ==========================================
+   15. TARJETA DE ESTADO ACADÉMICO
+   ========================================== */
+
+.academic-overview-card.has-attention {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.academic-overview-card.has-attention .overview-status-col {
+  padding-right: 2rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.academic-overview-card.has-attention .overview-attention-col {
+  max-width: 440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.donut-layout.donut-stacked {
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.donut-legend-list.legend-horizontal {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem 1.2rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.donut-layout.donut-centered {
+  justify-content: center;
+  max-width: 540px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* =======================================
+   16. ESTADOS EXCELENTE Y MENÚ FLOTANTE
+   ======================================= */
+
+.subject-grade-badge.excelent {
+  background-color: var(--bg-card-hover);
+  color: var(--excelent);
+}
+
+.subject-card-compact .grade-val.excelent {
+  color: var(--excelent);
+}
+
+.card-menu-wrapper {
+  position: relative;
+}
+
+.floating-card-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 165px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 60;
+}
+
+.empty-state-card {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+}
+
+/* ====================================
+   17. MODAL DE DETALLES DE ASIGNATURA
+   ==================================== */
+
+.activities-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.section-header-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+.activities-section .scenario-card,
+.modal-body > .scenario-card {
+  text-align: left;
+  padding: 1rem 1.1rem;
+}
+
+.scenario-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.scenario-header input[type="text"] {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  outline: none;
+  box-shadow: var(--shadow-inset);
+  transition: var(--transition);
+}
+
+.scenario-header input[type="text"]:focus {
+  border-color: var(--primary);
+}
+
+.form-grid.activity-grid {
+  grid-template-columns: 1fr 110px;
+  align-items: end;
+}
+
+.weight-group input[type="number"] {
+  text-align: center;
+  font-weight: 700;
+}
+
+.action-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.4rem;
+}
+
+/* =======================================
+   18. UTILIDADES PROPIAS DEL PANEL
+   ======================================= */
+
+/* Scroll vertical táctil del chat de CoreAI y de los popovers del encabezado */
+.ai-chat-body,
+.popover-body {
+  touch-action: pan-y;
+}
+
 /* ==================
-   15. ACCESIBILIDAD
+   19. ACCESIBILIDAD
    ================== */
 
 /* Foco Accesible */

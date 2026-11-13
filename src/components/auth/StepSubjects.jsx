@@ -1,7 +1,23 @@
 import { useState } from "react";
+import ModifySubjectModal from "../dashboard/modals/ModifySubjectModal";
+import { createEmptyCuts, mockSubjects } from "../../mocks/dashboardMocks";
+import { getGradeStatus } from "../../utils/gradeHelpers";
+
+const SUBJECT_ICONS = [
+  "fa-book",
+  "fa-calculator",
+  "fa-atom",
+  "fa-code",
+  "fa-square-root-variable",
+  "fa-pen-nib",
+  "fa-flask",
+  "fa-globe",
+];
 
 export default function StepSubjects({ subjects, onChange, onBack, onFinish, onWarning }) {
   const [name, setName] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState(SUBJECT_ICONS[0]);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const addSubject = () => {
     const trimmed = name.trim();
@@ -9,23 +25,49 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
       onWarning?.("Ingresa el nombre de la asignatura.");
       return;
     }
-    onChange([...subjects, { name: trimmed }]);
+    onChange([...subjects, { name: trimmed, icon: selectedIcon }]);
     setName("");
+    setSelectedIcon(SUBJECT_ICONS[0]);
   };
 
-  const editSubject = (index) => {
-    const next = prompt("Editar nombre de la asignatura:", subjects[index]?.name || "");
-    if (next === null || !next.trim()) return;
-    onChange(subjects.map((s, i) => (i === index ? { ...s, name: next.trim() } : s)));
+  const handleSaveEdited = (updatedSub) => {
+    if (editingIndex === null) return;
+    onChange(
+      subjects.map((s, i) =>
+        i === editingIndex ? { ...s, name: updatedSub.name, icon: updatedSub.icon } : s
+      )
+    );
+    setEditingIndex(null);
   };
 
   const removeSubject = (index) => {
     onChange(subjects.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onFinish?.();
+  const handleFinish = (e) => {
+    e?.preventDefault();
+    if (subjects.length === 0) {
+      onWarning?.("Debes agregar al menos una asignatura para continuar.");
+      return;
+    }
+
+    const status = getGradeStatus(0.0);
+    const formattedSubjects = subjects.map((s, idx) => ({
+      id: `sub-${Date.now()}-${idx}`,
+      name: s.name,
+      statsName: s.name,
+      icon: s.icon || SUBJECT_ICONS[0],
+      current: 0.0,
+      statusLabel: status.label,
+      performance: status.label,
+      cuts: createEmptyCuts(),
+    }));
+
+    // Sincroniza el arreglo en memoria y guarda respaldo inicial para el Dashboard
+    mockSubjects.splice(0, mockSubjects.length, ...formattedSubjects);
+    sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(formattedSubjects));
+
+    onFinish?.(formattedSubjects);
   };
 
   const handleKeyDown = (e) => {
@@ -51,11 +93,11 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
         <p>Agrega tus asignaturas para este semestre.</p>
       </div>
 
-      <form className="auth-form" onSubmit={handleSubmit} onKeyDown={handleKeyDown} noValidate>
+      <form className="auth-form" onSubmit={handleFinish} onKeyDown={handleKeyDown} noValidate>
         <div className="form-group">
           <label htmlFor="setupSubjectName">Nombre de la Asignatura</label>
           <div className="input-icon-wrapper">
-            <i className="fa-solid fa-book input-icon"></i>
+            <i className={`fa-solid ${selectedIcon} input-icon`}></i>
             <input
               type="text"
               id="setupSubjectName"
@@ -64,6 +106,22 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Selecciona un ícono</label>
+          <div className="icon-selector-grid">
+            {SUBJECT_ICONS.map((icon) => (
+              <button
+                key={icon}
+                type="button"
+                className={`btn ${selectedIcon === icon ? "btn-primary" : "btn-outline"}`}
+                onClick={() => setSelectedIcon(icon)}
+              >
+                <i className={`fa-solid ${icon}`}></i>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -79,7 +137,7 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
         <div className="dropdown-options-list" style={{ marginBottom: "1rem", maxHeight: "125px" }}>
           {subjects.length === 0 ? (
             <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-              Aún no has agregado materias (se requiere al menos una).
+              Aún no has agregado asignaturas (se requiere al menos una).
             </span>
           ) : (
             subjects.map((subject, index) => (
@@ -88,20 +146,23 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
                 className="dropdown-item"
                 style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "default" }}
               >
-                <span className="subject-name">📚 {subject.name}</span>
+                <span className="subject-name">
+                  <i className={`fa-solid ${subject.icon || "fa-book"} icon-left`}></i>{"  "}
+                  {subject.name}
+                </span>
                 <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
                   <button
                     type="button"
-                    title="Editar materia"
-                    style={iconBtn("var(--primary)")}
-                    onClick={() => editSubject(index)}
+                    title="Editar asignatura"
+                    className="btn-icon-edit"
+                    onClick={() => setEditingIndex(index)}
                   >
                     <i className="fa-solid fa-pen"></i>
                   </button>
                   <button
                     type="button"
-                    title="Eliminar materia"
-                    style={iconBtn("var(--danger)")}
+                    title="Eliminar asignatura"
+                    className="btn-icon-delete"
                     onClick={() => removeSubject(index)}
                   >
                     <i className="fa-solid fa-trash-can"></i>
@@ -116,13 +177,20 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
           <button type="button" className="btn btn-outline btn-auth" onClick={onBack}>
             Atrás
           </button>
-          <button type="button" className="btn btn-primary btn-auth" onClick={onFinish}>
+          <button type="submit" className="btn btn-primary btn-auth">
             Finalizar
           </button>
         </div>
       </form>
+
+      {/* Modal reutilizada para editar nombre */}
+      <ModifySubjectModal
+        isOpen={editingIndex !== null}
+        onClose={() => setEditingIndex(null)}
+        onSaveSubject={handleSaveEdited}
+        subject={editingIndex !== null ? subjects[editingIndex] : null}
+        mode="edit-name"
+      />
     </div>
   );
 }
-
-

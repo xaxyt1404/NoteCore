@@ -3,8 +3,7 @@ export const MAX_GRADE = 5.0;
 
 export const CUT_SCHEMES = {
   "30-30-40": [30, 30, 40],
-  "25-25-25-25": [25, 25, 25, 25],
-  "50-50": [50, 50],
+  //Más adelante se definen más esquemas según las universidades disponibles
 };
 
 export const toNumber = (value) => parseFloat(value) || 0;
@@ -21,12 +20,28 @@ export function getGradeColorClass(grade) {
   return "text-danger";
 }
 
-// danger: < 3.0 | warning: 3.0 a 3.4 | success: >= 3.5
+// Clase y etiqueta según estado de la nota
+// danger: < 3.0 | warning: 3.0 a 3.4 | success: 3.5 a 4.4 | excelent: >= 4.5
 export function getGradeStatus(grade) {
   const value = Number(grade);
-  if (value < 3.0) return "danger";
-  if (value < 3.5) return "warning";
-  return "success";
+  if (value < 3.0) {
+    return { status: "danger", colorClass: "text-danger", label: "En riesgo" };
+  }
+  if (value < 3.5) {
+    return { status: "warning", colorClass: "text-warning", label: "Regular" };
+  }
+  if (value >= 4.5) {
+    return {
+      status: "excelent",
+      colorClass: "text-excelent",
+      label: "Excelente",
+    };
+  }
+  return {
+    status: "success",
+    colorClass: "text-success",
+    label: "En buen estado",
+  };
 }
 
 // Landing - Opción A: nota necesaria en el parcial (50% del corte 1)

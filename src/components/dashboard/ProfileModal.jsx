@@ -75,11 +75,11 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
 
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="prof-university">Universidad / Institución</label>
+              <label htmlFor="prof-university">Institución</label>
               <input id="prof-university" type="text" value={form.university} onChange={set("university")} readOnly={!editing} />
             </div>
             <div className="form-group">
-              <label htmlFor="prof-degree">Carrera / Programa</label>
+              <label htmlFor="prof-degree">Programa Académico</label>
               <input id="prof-degree" type="text" value={form.degree} onChange={set("degree")} readOnly={!editing} />
             </div>
           </div>

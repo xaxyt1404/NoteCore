@@ -201,6 +201,42 @@ a {
   gap: 12px;
 }
 
+/* Selector de íconos compartidos */
+.icon-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.icon-selector-grid .btn {
+  padding: 0.55rem;
+}
+
+/* Nombre de asignatura en listas (wizard de auth y panel) */
+.subject-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+/* Botón de acción de lista (eliminar) */
+.btn-icon-delete {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--danger);
+}
+
+.btn-icon-delete:hover {
+  background-color: var(--bg-card-hover);
+  transform: scale(1.1);
+}
+
 /* ==========
    4. NAVBAR
    ========== */
@@ -782,10 +818,8 @@ body.modal-open {
   touch-action: none;
 }
 
-/* Permite el scroll vertical únicamente dentro de los cuerpos de las modales y popovers */
-.modal-body,
-.ai-chat-body,
-.popover-body {
+/* Permite el scroll vertical únicamente dentro del cuerpo de las modales */
+.modal-body {
   touch-action: pan-y;
 }
 
@@ -868,7 +902,6 @@ body.modal-open {
 .modal-footer.modal-footer-between {
   justify-content: space-between;
 }
-
 /* =============
    11. PESTAÑAS
    ============= */
@@ -1446,6 +1479,10 @@ input[type="range"]::-moz-range-track {
 /* Deben declararse DESPUÉS de los componentes que fijan color (.result-value).
    Los componentes cuyo color base podría pisarlos (.scenario-card span,
    .card-icon, .kpi-subtext) usan :where() para bajar su especificidad a 0. */
+.text-excelent {
+  color: var(--excelent);
+}
+
 .text-success {
   color: var(--success);
 }

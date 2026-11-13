@@ -37,19 +37,20 @@ export const academicCatalog = {
     "Tecnología en Procesos Industriales",
     "Trabajo Social",
   ],
-  "Institución Universitaria Mayor de Cartagena": [
-    "Administración de Empresas",
-    "Diseño Visual",
-    "Técnica Profesional en Operación Turística",
-    "Tecnología en Gestión Gastronómica",
-  ],
-  "Universidad Tecnológica de Bolívar": [
-    "Ingeniería de Sistemas",
-    "Ingeniería Industrial",
-    "Ingeniería Mecatrónica",
-    "Administración de Empresas",
-    "Finanzas y Negocios Internacionales",
-  ],
+  //Más adelante se definen más universidades disponibles
+  // "Institución Universitaria Mayor de Cartagena": [
+  //   "Administración de Empresas",
+  //   "Diseño Visual",
+  //   "Técnica Profesional en Operación Turística",
+  //   "Tecnología en Gestión Gastronómica",
+  // ],
+  // "Universidad Tecnológica de Bolívar": [
+  //   "Ingeniería de Sistemas",
+  //   "Ingeniería Industrial",
+  //   "Ingeniería Mecatrónica",
+  //   "Administración de Empresas",
+  //   "Finanzas y Negocios Internacionales",
+  // ],
 };
 
 export const universities = Object.keys(academicCatalog);

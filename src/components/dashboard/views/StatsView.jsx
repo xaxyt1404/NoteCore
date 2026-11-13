@@ -1,9 +1,33 @@
 import { getGradeStatus } from "../../../utils/gradeHelpers";
 
-const fmt = (value, decimals = 1) => (value == null ? "—" : value.toFixed(decimals));
+const fmt = (value, decimals = 1) => (value == null ? "—" : Number(value).toFixed(decimals));
 
-export default function StatsView({ semester, subjects, summary, cuts }) {
+// Calcula la nota de un corte a partir de su objeto (actividades + parcial + bono)
+const getCutGrade = (cut) => {
+  if (typeof cut === "number" || cut === null) return cut;
+  if (!cut) return null;
+
+  const activitiesSum = (cut.activities || []).reduce(
+    (acc, act) => acc + (Number(act.grade) || 0) * ((Number(act.weight) || 0) / 100),
+    0
+  );
+  const parcialContribution =
+    (Number(cut.parcial?.grade) || 0) * ((Number(cut.parcial?.weight) || 0) / 100);
+  const total = activitiesSum + parcialContribution + (Number(cut.bonus) || 0);
+
+  const hasAnyGrade =
+    (cut.activities || []).some((a) => a.grade > 0 || a.locked) ||
+    cut.parcial?.grade > 0 ||
+    cut.parcial?.locked ||
+    cut.bonus > 0;
+
+  if (!hasAnyGrade) return null;
+  return Math.min(5.0, total);
+};
+
+export default function StatsView({ semester, subjects = [], summary, cuts }) {
   const sorted = [...subjects].sort((a, b) => b.current - a.current);
+  const summaryStatus = getGradeStatus(summary.current);
 
   return (
     <section id="view-estadisticas" className="dash-view active">
@@ -46,28 +70,36 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
             </thead>
 
             <tbody>
-              {sorted.map((s, i) => {
-                const status = getGradeStatus(s.current);
-                return (
-                  <tr key={s.id}>
-                    <td>{i + 1}</td>
-                    <td>
-                      <i className={`fa-solid ${s.icon} card-icon`}></i> {s.statsName}
-                    </td>
-                    {s.cuts.map((c, idx) => (
-                      <td key={idx}>
-                        {fmt(c)}
+              {sorted.length === 0 ? (
+                <tr>
+                  <td colSpan={cuts.length + 4} className="dash-card-sub">
+                    Aún no hay asignaturas registradas para mostrar estadísticas.
+                  </td>
+                </tr>
+              ) : (
+                sorted.map((s, i) => {
+                  const status = getGradeStatus(s.current);
+                  return (
+                    <tr key={s.id}>
+                      <td>{i + 1}</td>
+                      <td>
+                        <i className={`fa-solid ${s.icon} card-icon`}></i> {s.statsName}
                       </td>
-                    ))}
-                    <td>
-                      <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>{fmt(s.current)}</span>
-                    </td>
-                    <td>
-                      <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>{s.performance}</span>
-                    </td>
-                  </tr>
-                );
-              })}
+                      {s.cuts.map((c, idx) => (
+                        <td key={c.id || idx}>
+                          {fmt(getCutGrade(c))}
+                        </td>
+                      ))}
+                      <td>
+                        <span className={`subject-grade-badge ${status.colorClass}`}>{fmt(s.current)}</span>
+                      </td>
+                      <td>
+                        <span className={`subject-grade-badge ${status.colorClass}`}>{status.label}</span>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
 
             <tfoot>
@@ -81,12 +113,14 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
                   </td>
                 ))}
                 <td>
-                  <span className={`subject-grade-badge ${getGradeStatus(summary.current)}`}>
+                  <span className={`subject-grade-badge ${summaryStatus.colorClass}`}>
                     {fmt(summary.current, 2)}
                   </span>
                 </td>
                 <td>
-                  <span className={`subject-grade-badge ${getGradeStatus(summary.current)}`}>{summary.status}</span>
+                  <span className={`subject-grade-badge ${summaryStatus.colorClass}`}>
+                    {summaryStatus.label}
+                  </span>
                 </td>
               </tr>
             </tfoot>
@@ -96,5 +130,3 @@ export default function StatsView({ semester, subjects, summary, cuts }) {
     </section>
   );
 }
-
-

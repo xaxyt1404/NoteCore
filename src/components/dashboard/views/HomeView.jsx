@@ -20,6 +20,7 @@ const readVar = (name) =>
 
 const readColors = () => ({
   primary: readVar("--primary"),
+  excelent: readVar("--excelent"),
   success: readVar("--success"),
   warning: readVar("--warning"),
   danger: readVar("--danger"),
@@ -56,6 +57,13 @@ const hexToRgba = (hex, alpha) => {
 
 const tickFont = { family: "Inter", size: 11, weight: "600" };
 
+const LEGEND_COLOR_CLASS = {
+  excelente: "text-excelent",
+  bueno: "text-success",
+  regular: "text-warning",
+  "en-riesgo": "text-danger",
+};
+
 export default function HomeView({
   user,
   semester,
@@ -66,6 +74,7 @@ export default function HomeView({
   rendimientoChart,
   recommendation,
   onNavigate,
+  onOpenSubjectDetail,
 }) {
   const colors = useChartColors();
   const [mode, setMode] = useState(rendimientoChart.options[0].value);
@@ -73,6 +82,8 @@ export default function HomeView({
   const attention = attentionIds
     .map((id) => subjects.find((s) => s.id === id))
     .filter(Boolean);
+
+  const hasAttention = attention.length > 0;
 
   const lineData = useMemo(
     () => ({
@@ -123,7 +134,7 @@ export default function HomeView({
       scales: {
         x: { grid: { display: false }, ticks: { color: colors.textColor, font: tickFont } },
         y: {
-          min: 1.0,
+          min: 0,
           max: 5.0,
           grid: { color: colors.borderColor },
           ticks: { stepSize: 0.5, color: colors.textColor, font: tickFont },
@@ -139,7 +150,7 @@ export default function HomeView({
       datasets: [
         {
           data: estadoChart.data,
-          backgroundColor: [colors.success, colors.primary, colors.warning, colors.danger],
+          backgroundColor: [colors.excelent, colors.success, colors.warning, colors.danger],
           borderWidth: 0,
           hoverOffset: 4,
         },
@@ -217,44 +228,9 @@ export default function HomeView({
         </div>
       </div>
 
-      <div className="dash-grid-2col">
-        <div className="dash-card">
-          <div className="dash-card-header">
-            <div>
-              <h3>
-                <i className="fa-solid fa-triangle-exclamation card-icon text-danger"></i> Asignaturas que requieren
-                atención
-              </h3>
-              <p className="dash-card-sub">Estas asignaturas están en riesgo o cerca del mínimo.</p>
-            </div>
-            <a href="#view-asignaturas" className="card-link-action" onClick={(e) => goTo(e, "view-asignaturas")}>
-              Ver todas <i className="fa-solid fa-arrow-right"></i>
-            </a>
-          </div>
-          <div>
-            <div className="attention-subjects-list">
-              {attention.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className="attention-subject-item"
-                  aria-label={`Abrir asignatura ${s.name}`}
-                  onClick={() => onNavigate?.("view-asignaturas")}
-                >
-                  <div className="subject-header-row">
-                    <span className="subject-name">{s.name}</span>
-                    <span className={`subject-grade-badge ${getGradeStatus(s.current)}`}>
-                      Nota actual <strong>{s.current.toFixed(1)}</strong> / 5.0
-                    </span>
-                    <i className="fa-solid fa-chevron-right arrow-indicator"></i>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="dash-card">
+      {/* Tarjeta unificada: Estado académico + Asignaturas que requieren atención (si existen) */}
+      <div className={`dash-card academic-overview-card ${hasAttention ? "has-attention" : "no-attention"}`}>
+        <div className="overview-status-col">
           <div className="dash-card-header">
             <div>
               <h3>
@@ -263,7 +239,8 @@ export default function HomeView({
               <p className="dash-card-sub">Vista rápida de tu rendimiento por área</p>
             </div>
           </div>
-          <div className="donut-layout">
+
+          <div className={`donut-layout ${hasAttention ? "donut-stacked" : "donut-centered"}`}>
             <div className="donut-chart-box">
               <Doughnut data={donutData} options={donutOptions} />
               <div className="donut-center-info">
@@ -271,18 +248,60 @@ export default function HomeView({
                 <span className="donut-lbl">Promedio</span>
               </div>
             </div>
-            <div className="donut-legend-list">
-              {estadoChart.legend.map((item) => (
-                <div className="legend-row" key={item.key}>
-                  <span className={`legend-dot ${item.key}`}></span>
-                  <span className="legend-name">{item.label}</span>
-                  <span className="legend-count">{item.count}</span>
-                  <span className="legend-percent">({item.percent}%)</span>
-                </div>
-              ))}
+            <div className={`donut-legend-list ${hasAttention ? "legend-horizontal" : "legend-vertical"}`}>
+              {estadoChart.legend.map((item) => {
+                const colorClass = LEGEND_COLOR_CLASS[item.key] || "";
+                return (
+                  <div className="legend-row" key={item.key}>
+                    <span className={`legend-dot ${item.key}`}></span>
+                    <span className={`legend-name ${colorClass}`}>{item.label}</span>
+                    <span className={`legend-count ${colorClass}`}>{item.count}</span>
+                    <span className="legend-percent">({item.percent}%)</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
+
+        {hasAttention && (
+          <div className="overview-attention-col">
+            <div className="dash-card-header">
+              <div>
+                <h3>
+                  <i className="fa-solid fa-triangle-exclamation card-icon text-danger"></i> Asignaturas que
+                  requieren atención
+                </h3>
+                <p className="dash-card-sub">Estas asignaturas están en riesgo o cerca del mínimo.</p>
+              </div>
+              <a href="#view-asignaturas" className="card-link-action" onClick={(e) => goTo(e, "view-asignaturas")}>
+                Ver todas <i className="fa-solid fa-arrow-right"></i>
+              </a>
+            </div>
+
+            <div className="attention-subjects-list">
+              {attention.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  className="attention-subject-item"
+                  aria-label={`Abrir asignatura ${s.name}`}
+                  onClick={() => {
+                    onOpenSubjectDetail?.(s);
+                  }}
+                >
+                  <div className="subject-header-row">
+                    <span className="subject-name">{s.name}</span>
+                    <span className={`subject-grade-badge ${getGradeStatus(s.current).colorClass}`}>
+                      Nota actual <strong>{s.current.toFixed(1)}</strong> / 5.0
+                    </span>
+                    <i className="fa-solid fa-chevron-right arrow-indicator"></i>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="dash-card">
@@ -321,5 +340,3 @@ export default function HomeView({
     </section>
   );
 }
-
-

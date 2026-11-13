@@ -216,6 +216,25 @@
   font-size: 0.85rem;
 }
 
+/* Botón de acción de lista del wizard (editar asignatura) */
+.btn-icon-edit {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--primary);
+}
+
+.btn-icon-edit:hover {
+  background-color: var(--bg-card-hover);
+  transform: scale(1.1);
+}
+
 .auth-login-redirect {
   text-align: center;
   font-size: 0.82rem;
