@@ -75,6 +75,16 @@ function GradeSlider({ id, label, value, onChange }) {
   );
 }
 
+// Campo de solo lectura para notas importadas de una asignatura
+function LockedGradeField({ label, value }) {
+  return (
+    <div className="form-group">
+      <label>{label}</label>
+      <input type="text" readOnly value={formatGrade(value)} />
+    </div>
+  );
+}
+
 export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimulation }) {
   const isOpen = Boolean(toolId && TOOL_META[toolId]);
   const meta = TOOL_META[toolId] || { icon: "fa-calculator", title: "" };
@@ -88,7 +98,7 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
   const [c2, setC2] = useState(0);
   const [c3, setC3] = useState(0);
 
-  // Detección automática de cortes reales de la asignatura (para Herramienta 3)
+  // Detección automática de cortes reales de la asignatura seleccionada
   const subC1 = selectedSubject ? computeCutGrade(selectedSubject.cuts?.[0]) : null;
   const subC2 = selectedSubject ? computeCutGrade(selectedSubject.cuts?.[1]) : null;
   const hasC1 = subC1 !== null;
@@ -98,6 +108,12 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
   const [activeCutIdx, setActiveCutIdx] = useState(0);
   const [activities, setActivities] = useState([]);
   const [finalCutGrade, setFinalCutGrade] = useState(3.0);
+
+  // Indica si el corte activo en herramienta 5 tiene definitiva importada de la asignatura
+  const activeCutImportedGrade = selectedSubject
+    ? computeCutGrade(selectedSubject.cuts?.[activeCutIdx])
+    : null;
+  const hasImportedFinalCut = activeCutImportedGrade !== null;
 
   // Temporizador para mostrar el botón Guardar 500ms después de calcular (solo en herramienta 5)
   const [calcTick, setCalcTick] = useState(0);
@@ -136,6 +152,15 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
     if (isOpen) resetManual();
   }, [toolId]);
 
+  const mapImportedActivities = (cut) =>
+    (cut?.activities || []).map((a) => ({
+      id: a.id,
+      name: a.name,
+      grade: Number(a.grade) || 0,
+      weight: Number(a.weight) || 0,
+      imported: true,
+    }));
+
   // Autocompleta los datos al elegir una asignatura del dropdown
   const handleSelectSubject = (subId) => {
     if (!subId) {
@@ -154,15 +179,8 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
     setC2(g2 !== null ? Number(g2.toFixed(1)) : 0);
     setC3(g3 !== null ? Number(g3.toFixed(1)) : 0);
 
-    const cutActs = sub.cuts?.[0]?.activities || [];
-    setActivities(
-      cutActs.map((a) => ({
-        id: a.id,
-        name: a.name,
-        grade: Number(a.grade) || 0,
-        weight: Number(a.weight) || 20,
-      }))
-    );
+    setActiveCutIdx(0);
+    setActivities(mapImportedActivities(sub.cuts?.[0]));
     setFinalCutGrade(g1 !== null ? Number(g1.toFixed(1)) : 3.0);
     triggerAutoCalc();
   };
@@ -172,36 +190,48 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
     setActiveCutIdx(idx);
     if (!selectedSubject) return;
     const cut = selectedSubject.cuts?.[idx];
-    const cutActs = cut?.activities || [];
-    setActivities(
-      cutActs.map((a) => ({
-        id: a.id,
-        name: a.name,
-        grade: Number(a.grade) || 0,
-        weight: Number(a.weight) || 20,
-      }))
-    );
+    setActivities(mapImportedActivities(cut));
     const g = computeCutGrade(cut);
     setFinalCutGrade(g !== null ? Number(g.toFixed(1)) : 3.0);
     triggerAutoCalc();
   };
 
-  // Gestión de filas de actividades
+  // Gestión de filas de actividades (las nuevas agregadas en la herramienta sí son editables)
   const addActivityRow = () => {
     setActivities((prev) => [
       ...prev,
-      { id: Date.now(), name: `Actividad ${prev.length + 1}`, grade: 0, weight: 20 },
+      {
+        id: Date.now(),
+        name: `Actividad ${prev.length + 1}`,
+        grade: 0,
+        weight: 0,
+        imported: false,
+      },
     ]);
     triggerAutoCalc();
   };
 
   const updateActivityRow = (id, field, val) => {
-    setActivities((prev) => prev.map((a) => (a.id === id ? { ...a, [field]: val } : a)));
+    setActivities((prev) => {
+      const otherWeight = prev
+        .filter((a) => a.id !== id)
+        .reduce((acc, a) => acc + (Number(a.weight) || 0), 0);
+      const maxAllowed = Math.max(0, 100 - otherWeight);
+
+      return prev.map((a) => {
+        if (a.id !== id || a.imported) return a;
+        if (field === "weight") {
+          const clamped = Math.min(maxAllowed, Math.max(0, Number(val) || 0));
+          return { ...a, weight: clamped };
+        }
+        return { ...a, [field]: val };
+      });
+    });
     triggerAutoCalc();
   };
 
   const removeActivityRow = (id) => {
-    setActivities((prev) => prev.filter((a) => a.id !== id));
+    setActivities((prev) => prev.filter((a) => a.id !== id || a.imported));
     triggerAutoCalc();
   };
 
@@ -240,7 +270,9 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
     if (!selectedSubject || toolId !== "inverse") return;
     const summaryText =
       inverseParcialGrade !== null
-        ? `Nota calculada del parcial en Corte ${activeCutIdx + 1}: ${formatGradePrecise(Math.max(0, inverseParcialGrade))}.`
+        ? `Nota calculada del parcial en Corte ${activeCutIdx + 1}: ${formatGradePrecise(
+          Math.max(0, inverseParcialGrade)
+        )}.`
         : "Cálculo inverso registrado.";
 
     onSaveSimulation?.(selectedSubject.id, {
@@ -259,8 +291,66 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
   ];
 
   // Controla si la caja de resultados debe mostrarse
-  const showResultBox =
-    toolId !== "what-if" || (Boolean(selectedSubject) && hasC1);
+  const showResultBox = toolId !== "what-if" || (Boolean(selectedSubject) && hasC1);
+
+  const renderActivityCard = (act, idPrefix, gradeLabel) => {
+    if (act.imported) {
+      return (
+        <div key={act.id} className="scenario-card profile-form">
+          <div className="scenario-header">
+            <input type="text" readOnly value={act.name} />
+          </div>
+          <div className="form-grid activity-grid">
+            <LockedGradeField label={gradeLabel} value={act.grade} />
+            <div className="form-group weight-group">
+              <label>Porcentaje (%):</label>
+              <input type="text" readOnly value={`${act.weight}%`} />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div key={act.id} className="scenario-card">
+        <div className="scenario-header">
+          <input
+            type="text"
+            value={act.name}
+            onChange={(e) => updateActivityRow(act.id, "name", e.target.value)}
+          />
+          <button
+            type="button"
+            className="btn-icon-delete"
+            title="Eliminar fila"
+            onClick={() => removeActivityRow(act.id)}
+          >
+            <i className="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+        <div className="form-grid activity-grid">
+          <GradeSlider
+            id={`${idPrefix}-act-${act.id}`}
+            label={gradeLabel}
+            value={act.grade}
+            onChange={(v) => updateActivityRow(act.id, "grade", v)}
+          />
+          <div className="form-group weight-group">
+            <label>Porcentaje (%):</label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={act.weight}
+              onChange={(e) =>
+                updateActivityRow(act.id, "weight", parseFloat(e.target.value) || 0)
+              }
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -295,25 +385,34 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
 
         {/* Formulario Herramienta 1: Último corte */}
         {toolId === "last-cut" && (
-          <div className="form-grid">
-            <GradeSlider
-              id="lc-c1"
-              label="Nota Corte 1 (30%):"
-              value={c1}
-              onChange={(v) => {
-                setC1(v);
-                triggerAutoCalc();
-              }}
-            />
-            <GradeSlider
-              id="lc-c2"
-              label="Nota Corte 2 (30%):"
-              value={c2}
-              onChange={(v) => {
-                setC2(v);
-                triggerAutoCalc();
-              }}
-            />
+          <div className={`form-grid${hasC1 || hasC2 ? " profile-form" : ""}`}>
+            {hasC1 ? (
+              <LockedGradeField label="Nota Corte 1 (30%):" value={c1} />
+            ) : (
+              <GradeSlider
+                id="lc-c1"
+                label="Nota Corte 1 (30%):"
+                value={c1}
+                onChange={(v) => {
+                  setC1(v);
+                  triggerAutoCalc();
+                }}
+              />
+            )}
+
+            {hasC2 ? (
+              <LockedGradeField label="Nota Corte 2 (30%):" value={c2} />
+            ) : (
+              <GradeSlider
+                id="lc-c2"
+                label="Nota Corte 2 (30%):"
+                value={c2}
+                onChange={(v) => {
+                  setC2(v);
+                  triggerAutoCalc();
+                }}
+              />
+            )}
           </div>
         )}
 
@@ -349,45 +448,7 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
                 Agrega las actividades realizadas y sus notas para hacer el cálculo
               </p>
             ) : (
-              activities.map((act) => (
-                <div key={act.id} className="scenario-card">
-                  <div className="scenario-header">
-                    <input
-                      type="text"
-                      value={act.name}
-                      onChange={(e) => updateActivityRow(act.id, "name", e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      className="btn-icon-delete"
-                      title="Eliminar fila"
-                      onClick={() => removeActivityRow(act.id)}
-                    >
-                      <i className="fa-solid fa-trash-can"></i>
-                    </button>
-                  </div>
-                  <div className="form-grid activity-grid">
-                    <GradeSlider
-                      id={`pn-act-${act.id}`}
-                      label="Nota obtenida:"
-                      value={act.grade}
-                      onChange={(v) => updateActivityRow(act.id, "grade", v)}
-                    />
-                    <div className="form-group weight-group">
-                      <label>Porcentaje (%):</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={act.weight}
-                        onChange={(e) =>
-                          updateActivityRow(act.id, "weight", parseFloat(e.target.value) || 0)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))
+              activities.map((act) => renderActivityCard(act, "pn", "Nota obtenida:"))
             )}
           </div>
         )}
@@ -396,9 +457,7 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
         {toolId === "what-if" && (
           <div>
             {!selectedSubject ? (
-              <p className="dash-card-sub">
-                Selecciona una asignatura para continuar
-              </p>
+              <p className="dash-card-sub">Selecciona una asignatura para continuar</p>
             ) : !hasC1 ? (
               <p className="dash-card-sub">
                 Registra al menos la nota del Corte 1 en <strong>{selectedSubject.name}</strong> para simular.
@@ -418,17 +477,8 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
                 {/* Notas fijas importadas de la asignatura */}
                 <div className="profile-form">
                   <div className="form-grid">
-                    <div className="form-group">
-                      <label>Corte 1 (30%):</label>
-                      <input type="text" readOnly value={formatGrade(c1)} />
-                    </div>
-
-                    {hasC2 && (
-                      <div className="form-group">
-                        <label>Corte 2 (30%):</label>
-                        <input type="text" readOnly value={formatGrade(c2)} />
-                      </div>
-                    )}
+                    <LockedGradeField label="Corte 1 (30%):" value={c1} />
+                    {hasC2 && <LockedGradeField label="Corte 2 (30%):" value={c2} />}
                   </div>
                 </div>
 
@@ -462,16 +512,20 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
 
         {/* Formulario Herramienta 4: Calculadora de Estrategia */}
         {toolId === "strategy" && (
-          <div>
-            <GradeSlider
-              id="st-c1"
-              label="Nota que llevas en el Corte 1 (30%):"
-              value={c1}
-              onChange={(v) => {
-                setC1(v);
-                triggerAutoCalc();
-              }}
-            />
+          <div className={hasC1 ? "profile-form" : undefined}>
+            {hasC1 ? (
+              <LockedGradeField label="Nota que llevas en el Corte 1 (30%):" value={c1} />
+            ) : (
+              <GradeSlider
+                id="st-c1"
+                label="Nota que llevas en el Corte 1 (30%):"
+                value={c1}
+                onChange={(v) => {
+                  setC1(v);
+                  triggerAutoCalc();
+                }}
+              />
+            )}
           </div>
         )}
 
@@ -493,15 +547,24 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
               </div>
             )}
 
-            <GradeSlider
-              id="inv-final"
-              label="Nota definitiva que obtuviste en el corte:"
-              value={finalCutGrade}
-              onChange={(v) => {
-                setFinalCutGrade(v);
-                triggerAutoCalc();
-              }}
-            />
+            {hasImportedFinalCut ? (
+              <div className="profile-form">
+                <LockedGradeField
+                  label="Nota definitiva que obtuviste en el corte:"
+                  value={finalCutGrade}
+                />
+              </div>
+            ) : (
+              <GradeSlider
+                id="inv-final"
+                label="Nota definitiva que obtuviste en el corte:"
+                value={finalCutGrade}
+                onChange={(v) => {
+                  setFinalCutGrade(v);
+                  triggerAutoCalc();
+                }}
+              />
+            )}
 
             <div className="section-header-row">
               <h4>
@@ -517,45 +580,7 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
                 Agrega las actividades realizadas y sus notas para hacer el cálculo
               </p>
             ) : (
-              activities.map((act) => (
-                <div key={act.id} className="scenario-card">
-                  <div className="scenario-header">
-                    <input
-                      type="text"
-                      value={act.name}
-                      onChange={(e) => updateActivityRow(act.id, "name", e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      className="btn-icon-delete"
-                      title="Eliminar fila"
-                      onClick={() => removeActivityRow(act.id)}
-                    >
-                      <i className="fa-solid fa-trash-can"></i>
-                    </button>
-                  </div>
-                  <div className="form-grid activity-grid">
-                    <GradeSlider
-                      id={`inv-act-${act.id}`}
-                      label="Nota de la actividad:"
-                      value={act.grade}
-                      onChange={(v) => updateActivityRow(act.id, "grade", v)}
-                    />
-                    <div className="form-group weight-group">
-                      <label>Porcentaje (%):</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="100"
-                        value={act.weight}
-                        onChange={(e) =>
-                          updateActivityRow(act.id, "weight", parseFloat(e.target.value) || 0)
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))
+              activities.map((act) => renderActivityCard(act, "inv", "Nota de la actividad:"))
             )}
           </div>
         )}
