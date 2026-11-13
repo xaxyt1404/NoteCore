@@ -6,7 +6,8 @@ import TermsModal from "./TermsModal";
 export default function StepBasicInfo({ data, onChange, onNext }) {
   const [showPassword, setShowPassword] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
-  const nameRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
   const passwordRef = useRef(null);
 
   const set = (key) => (e) => onChange({ ...data, [key]: e.target.value });
@@ -51,27 +52,47 @@ export default function StepBasicInfo({ data, onChange, onNext }) {
               autoComplete="email"
               value={data.email}
               onChange={set("email")}
-              onKeyDown={focusOnEnter(nameRef)}
+              onKeyDown={focusOnEnter(firstNameRef)}
               required
             />
           </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="regName">Nombre y Apellido</label>
-          <div className="input-icon-wrapper">
-            <i className="fa-regular fa-user input-icon"></i>
-            <input
-              ref={nameRef}
-              type="text"
-              id="regName"
-              placeholder="Ej. Estiben Martinez"
-              autoComplete="name"
-              value={data.name}
-              onChange={set("name")}
-              onKeyDown={focusOnEnter(passwordRef)}
-              required
-            />
+        <div className="form-grid">
+          <div className="form-group">
+            <label htmlFor="regFirstName">Nombre</label>
+            <div className="input-icon-wrapper">
+              <i className="fa-regular fa-user input-icon"></i>
+              <input
+                ref={firstNameRef}
+                type="text"
+                id="regFirstName"
+                placeholder="Ej. Estiben"
+                autoComplete="given-name"
+                value={data.firstName}
+                onChange={set("firstName")}
+                onKeyDown={focusOnEnter(lastNameRef)}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="regLastName">Apellidos</label>
+            <div className="input-icon-wrapper">
+              <i className="fa-regular fa-id-card input-icon"></i>
+              <input
+                ref={lastNameRef}
+                type="text"
+                id="regLastName"
+                placeholder="Ej. Martinez"
+                autoComplete="family-name"
+                value={data.lastName}
+                onChange={set("lastName")}
+                onKeyDown={focusOnEnter(passwordRef)}
+                required
+              />
+            </div>
           </div>
         </div>
 
@@ -153,5 +174,3 @@ export default function StepBasicInfo({ data, onChange, onNext }) {
     </div>
   );
 }
-
-

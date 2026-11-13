@@ -1136,6 +1136,28 @@
   transform: scale(1.1);
 }
 
+.avatar-remove-btn {
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  width: 26px;
+  height: 26px;
+  background-color: var(--danger);
+  border: 2px solid var(--bg-card);
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.avatar-remove-btn:hover {
+  transform: scale(1.08);
+}
+
 .profile-head-info h3 {
   font-size: 1.1rem;
   font-weight: 800;
@@ -1161,6 +1183,71 @@
   color: var(--text-muted);
   cursor: default;
   box-shadow: none;
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Modal de recorte 1:1 de foto de perfil */
+.avatar-crop-modal-card {
+  max-width: 420px;
+}
+
+.cropper-stage-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+.cropper-viewport {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--primary);
+  background-color: var(--bg-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.cropper-viewport:active {
+  cursor: grabbing;
+}
+
+.cropper-image {
+  max-width: none;
+  max-height: none;
+  pointer-events: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.cropper-circle-guide {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.75);
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
 }
 
 /* =======================

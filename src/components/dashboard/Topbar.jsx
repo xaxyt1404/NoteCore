@@ -94,7 +94,11 @@ export default function Topbar({
             onClick={() => toggle("user")}
           >
             <div className="user-avatar">
-              <i className="fa-solid fa-user"></i>
+              {user.avatar ? (
+                <img src={user.avatar} alt={user.greetingName} className="user-avatar-img" />
+              ) : (
+                <i className="fa-solid fa-user"></i>
+              )}
             </div>
             <span className="user-name">Hola, {user.greetingName}</span>
             <i className="fa-solid fa-chevron-down arrow-icon"></i>

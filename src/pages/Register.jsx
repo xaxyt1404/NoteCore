@@ -8,29 +8,46 @@ import { useToast } from "../context/ToastContext";
 
 const getAutoSemesterName = () => {
   const now = new Date();
-  return `Semestre ${now.getFullYear()}-${now.getMonth() < 6 ? 1 : 2}`;
+  return `Semestre ${now.getFullYear()} - ${now.getMonth() < 6 ? 1 : 2}`;
 };
 
-const saveUserData = (data) => {
+const saveUserData = (data, formattedSubjects) => {
+  const firstName = data.firstName.trim();
+  const lastName = data.lastName.trim();
+  const fullName = `${firstName} ${lastName}`.trim();
+
   localStorage.setItem(
     "notecore_active_user",
     JSON.stringify({
-      name: data.name,
-      email: data.email,
+      firstName,
+      lastName,
+      fullName,
+      greetingName: firstName.split(/\s+/)[0] || firstName,
+      email: data.email.trim(),
       university: data.university,
       degree: data.degree,
-    }),
+      roleLabel: "Estudiante Universitario",
+    })
   );
+
   localStorage.setItem(
     "notecore_user_semester",
-    JSON.stringify({ period: getAutoSemesterName(), schema: "30-30-40" }),
+    JSON.stringify({ period: getAutoSemesterName(), schema: "30-30-40" })
   );
-  localStorage.setItem("notecore_user_subjects", JSON.stringify(data.subjects));
+
+  localStorage.setItem("notecore_user_subjects", JSON.stringify(formattedSubjects));
+  sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(formattedSubjects));
 };
 
 export default function Register() {
   const [step, setStep] = useState(0);
-  const [basic, setBasic] = useState({ email: "", name: "", password: "", terms: false });
+  const [basic, setBasic] = useState({
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    terms: false,
+  });
   const [academic, setAcademic] = useState({ university: "", degree: "" });
   const [subjects, setSubjects] = useState([]);
   const { showToast } = useToast();
@@ -51,12 +68,12 @@ export default function Register() {
     setStep(2);
   };
 
-  const handleFinish = () => {
+  const handleFinish = (formattedSubjects) => {
     if (subjects.length === 0) {
       showToast("Debes agregar al menos una asignatura para poder continuar.", "warning");
       return;
     }
-    saveUserData({ ...basic, ...academic, subjects });
+    saveUserData({ ...basic, ...academic }, formattedSubjects || subjects);
     showToast("¡Registro completado! Preparando tu panel...", "success");
     timerRef.current = setTimeout(() => navigate("/dashboard"), 1000);
   };

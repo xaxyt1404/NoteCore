@@ -9,6 +9,7 @@ import SettingsView from "../components/dashboard/views/SettingsView";
 import SupportView from "../components/dashboard/views/SupportView";
 import ProfileModal from "../components/dashboard/ProfileModal";
 import ImportJsonModal from "../components/dashboard/modals/ImportJsonModal";
+import SubjectDetailModal from "../components/dashboard/modals/SubjectDetailModal";
 import ToolModal from "../components/dashboard/modals/ToolModal";
 import { useToast } from "../context/ToastContext";
 import { getGradeStatus } from "../utils/gradeHelpers";
@@ -34,18 +35,53 @@ const NAVIGATION = {
   ],
 };
 
-// Lee las asignaturas creadas en el registro (StepSubjects) o usa mockSubjects
+const getInitialUser = () => {
+  try {
+    const saved = localStorage.getItem("notecore_active_user");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const first = parsed.firstName || parsed.name || mockUser.firstName;
+      const last = parsed.lastName ?? "";
+      return {
+        ...mockUser,
+        ...parsed,
+        firstName: first,
+        lastName: last,
+        fullName: `${first} ${last}`.trim(),
+        greetingName: first.split(/\s+/)[0] || first,
+      };
+    }
+  } catch {
+    // Si falla el parseo, usa mockUser
+  }
+  return mockUser;
+};
+
+const getInitialSemester = () => {
+  try {
+    const saved = localStorage.getItem("notecore_user_semester");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.period || mockSemester;
+    }
+  } catch {
+    // Ignorar
+  }
+  return mockSemester;
+};
+
 const getInitialSubjects = () => {
   try {
-    const saved = sessionStorage.getItem("notecore_initial_subjects");
-    if (saved) return JSON.parse(saved);
+    const fromLocal = localStorage.getItem("notecore_user_subjects");
+    if (fromLocal) return JSON.parse(fromLocal);
+    const fromSession = sessionStorage.getItem("notecore_initial_subjects");
+    if (fromSession) return JSON.parse(fromSession);
   } catch {
     // Si falla la lectura, continúa con mockSubjects
   }
   return mockSubjects;
 };
 
-// Calcula la nota de un corte individual (o null si aún no tiene notas)
 const computeCutGrade = (cut) => {
   if (!cut) return null;
   const activitiesSum = (cut.activities || []).reduce(
@@ -56,9 +92,8 @@ const computeCutGrade = (cut) => {
     (Number(cut.parcial?.grade) || 0) * ((Number(cut.parcial?.weight) || 0) / 100);
 
   const hasAnyGrade =
-    (cut.activities || []).some((a) => a.grade > 0 || a.locked) ||
+    (cut.activities || []).some((a) => a.grade > 0) ||
     cut.parcial?.grade > 0 ||
-    cut.parcial?.locked ||
     cut.bonus > 0;
 
   if (!hasAnyGrade) return null;
@@ -69,7 +104,8 @@ export default function DashboardUser() {
   const [activeView, setActiveView] = useState("view-inicio");
   const [detailSubject, setDetailSubject] = useState(null);
   const [modal, setModal] = useState(null);
-  const [user, setUser] = useState(mockUser);
+  const [user, setUser] = useState(getInitialUser);
+  const [semester] = useState(getInitialSemester);
   const [subjects, setSubjects] = useState(getInitialSubjects);
   const { showToast } = useToast();
   const navigate = useNavigate();
@@ -77,13 +113,18 @@ export default function DashboardUser() {
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
+  const persistSubjects = (nextSubjects) => {
+    setSubjects(nextSubjects);
+    localStorage.setItem("notecore_user_subjects", JSON.stringify(nextSubjects));
+    sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(nextSubjects));
+  };
+
   const closeModal = () => setModal(null);
 
   const redirectToLanding = (delay) => {
     timerRef.current = setTimeout(() => navigate("/"), delay);
   };
 
-  // Métricas, gráficos y resúmenes calculados dinámicamente desde `subjects`
   const dashboardData = useMemo(() => {
     const total = subjects.length;
     const sumCurrent = subjects.reduce((acc, s) => acc + (Number(s.current) || 0), 0);
@@ -104,7 +145,6 @@ export default function DashboardUser() {
 
     const pct = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
 
-    // Promedio por cada corte (C1, C2, C3) entre todas las materias
     const cutAverages = [0, 1, 2].map((idx) => {
       const validGrades = subjects
         .map((s) => computeCutGrade(s.cuts?.[idx]))
@@ -113,9 +153,8 @@ export default function DashboardUser() {
       return validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
     });
 
-    // Asignaturas en riesgo o regular para la tarjeta de atención
     const attentionIds = subjects
-      .filter((s) => Number(s.current) <= 3.0)
+      .filter((s) => Number(s.current) < 3.5)
       .map((s) => s.id);
 
     const lowestSubject = [...subjects].sort((a, b) => a.current - b.current)[0];
@@ -123,19 +162,19 @@ export default function DashboardUser() {
     const recommendation =
       total === 0
         ? {
-          subject: "Tus asignaturas",
+          subject: "Tus materias",
           message:
-            "aún no tienen registros. Ve a Asignaturas y agrega tus asignaturas del semestre para empezar.",
+            "aún no tienen registros. Ve a Asignaturas y agrega tus materias del semestre para empezar.",
         }
-        : lowestSubject && lowestSubject.current < 3.0
+        : lowestSubject && lowestSubject.current < 3.5
           ? {
             subject: lowestSubject.name,
-            message: `requiere mayor atención este corte. Tu nota actual es ${lowestSubject.current.toFixed(1)}. Usa las herramientas de simulación para proyectar tu próximo corte.`,
+            message: `requiere mayor atención esta semana. Tu nota actual es ${lowestSubject.current.toFixed(1)}. Usa las herramientas de simulación para proyectar tu próximo corte.`,
           }
           : {
             subject: "Excelente ritmo:",
             message:
-              "todas tus asignaturas están aprobando. Sigue registrando tus notas para mantener tu promedio.",
+              "todas tus asignaturas están aprobando. Sigue registrando tus evaluaciones para mantener tu promedio.",
           };
 
     return {
@@ -189,12 +228,24 @@ export default function DashboardUser() {
 
   const handleSaveProfile = (form) => {
     const first = form.firstName.trim();
-    setUser((prev) => ({
-      ...prev,
-      ...form,
-      fullName: first || prev.fullName,
-      greetingName: first.split(" ")[0] || prev.greetingName,
-    }));
+    const last = form.lastName.trim();
+    setUser((prev) => {
+      const updated = {
+        ...prev,
+        ...form,
+        firstName: first,
+        lastName: last,
+        fullName: `${first} ${last}`.trim() || prev.fullName,
+        greetingName: first.split(/\s+/)[0] || prev.greetingName,
+      };
+      localStorage.setItem("notecore_active_user", JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleSaveSubjectDetail = (updatedSub) => {
+    const next = subjects.map((s) => (s.id === updatedSub.id ? updatedSub : s));
+    persistSubjects(next);
   };
 
   const handleSaveSimulation = (subjectId, simulation) => {
@@ -203,17 +254,19 @@ export default function DashboardUser() {
         ? { ...s, simulations: [simulation, ...(s.simulations || [])] }
         : s
     );
-    setSubjects(updated);
-    sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(updated));
+    persistSubjects(updated);
     const targetSub = updated.find((s) => s.id === subjectId);
-    showToast(`Simulación guardada en "${targetSub?.name || "la asignatura"}".`, "success");
+    showToast(
+      `Simulación guardada en "${targetSub?.name || "la asignatura"}".`,
+      "success"
+    );
   };
 
   const handleExport = () => {
     const payload = {
       exportedAt: new Date().toISOString(),
       user,
-      semester: mockSemester,
+      semester,
       subjects,
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -230,8 +283,16 @@ export default function DashboardUser() {
     try {
       const data = JSON.parse(await file.text());
       if (Array.isArray(data.subjects)) {
-        setSubjects(data.subjects);
-        sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(data.subjects));
+        persistSubjects(data.subjects);
+      }
+      if (data.user && typeof data.user === "object") {
+        handleSaveProfile({
+          firstName: data.user.firstName || user.firstName,
+          lastName: data.user.lastName || user.lastName,
+          email: data.user.email || user.email,
+          university: data.user.university || user.university,
+          degree: data.user.degree || user.degree,
+        });
       }
       showToast("Respaldo restaurado con éxito.", "success");
     } catch {
@@ -240,16 +301,38 @@ export default function DashboardUser() {
   };
 
   const handleReset = () => {
-    setSubjects([]);
-    sessionStorage.removeItem("notecore_initial_subjects");
-    showToast("Asignaturas y notas del semestre restablecidas.", "warning");
+    const resetSubjects = subjects.map((s) => {
+      const status = getGradeStatus(0.0);
+      return {
+        ...s,
+        current: 0.0,
+        statusLabel: status.label,
+        performance: status.label,
+        cuts: (s.cuts || []).map((c) => ({
+          ...c,
+          activities: [],
+          parcial: { grade: 0, weight: 100, locked: true },
+          bonus: 0,
+        })),
+      };
+    });
+    persistSubjects(resetSubjects);
+    showToast("Calificaciones del semestre restablecidas.", "warning");
   };
 
   const handleDelete = () => {
+    localStorage.removeItem("notecore_active_user");
+    localStorage.removeItem("notecore_user_semester");
+    localStorage.removeItem("notecore_user_subjects");
     sessionStorage.removeItem("notecore_initial_subjects");
     showToast("Cuenta eliminada correctamente.", "danger");
     redirectToLanding(1200);
   };
+
+  const activeToolId =
+    modal && ["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal)
+      ? modal
+      : null;
 
   return (
     <>
@@ -261,12 +344,12 @@ export default function DashboardUser() {
         notifications={mockNotifications}
         onOpenProfile={() => setModal("profile")}
         onLogout={handleLogout}
-        chatGreeting={mockChatGreeting}
+        chatGreeting={`¡Hola ${user.greetingName}! Soy CoreAI. ¿En qué te puedo ayudar hoy con tus materias?`}
       >
         {activeView === "view-inicio" && (
           <HomeView
             user={user}
-            semester={mockSemester}
+            semester={semester}
             kpis={dashboardData.kpis}
             subjects={subjects}
             attentionIds={dashboardData.attentionIds}
@@ -274,27 +357,16 @@ export default function DashboardUser() {
             rendimientoChart={dashboardData.rendimientoChart}
             recommendation={dashboardData.recommendation}
             onNavigate={setActiveView}
-            onOpenSubjectDetail={(subject) => {
-              setDetailSubject(subject);
-              setActiveView("view-asignaturas");
-            }}
+            onOpenSubjectDetail={setDetailSubject}
           />
         )}
         {activeView === "view-asignaturas" && (
-          <SubjectsView
-            subjects={subjects}
-            initialDetailSubject={detailSubject}
-            onClearInitialDetail={() => setDetailSubject(null)}
-            onSubjectsChange={(next) => {
-              setSubjects(next);
-              sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(next));
-            }}
-          />
+          <SubjectsView subjects={subjects} onSubjectsChange={persistSubjects} />
         )}
         {activeView === "view-herramientas" && <ToolsView onOpenTool={setModal} />}
         {activeView === "view-estadisticas" && (
           <StatsView
-            semester={mockSemester}
+            semester={semester}
             subjects={subjects}
             summary={dashboardData.statsSummary}
             cuts={mockStatsCuts}
@@ -309,10 +381,7 @@ export default function DashboardUser() {
           />
         )}
         {activeView === "view-soporte" && (
-          <SupportView
-            user={user}
-            onNavigate={setActiveView}
-          />
+          <SupportView user={user} onNavigate={setActiveView} />
         )}
       </DashboardLayout>
 
@@ -328,15 +397,19 @@ export default function DashboardUser() {
         onImport={handleImport}
         onInvalid={() => showToast("Selecciona un archivo con extensión .json", "warning")}
       />
+      <SubjectDetailModal
+        isOpen={!!detailSubject}
+        onClose={() => setDetailSubject(null)}
+        subject={detailSubject}
+        onSaveSubject={handleSaveSubjectDetail}
+      />
       <ToolModal
-        toolId={
-          ["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal)
-            ? modal
-            : null
-        }
+        isOpen={!!activeToolId}
+        toolId={activeToolId}
         onClose={closeModal}
         subjects={subjects}
         onSaveSimulation={handleSaveSimulation}
+        onSaveSubject={handleSaveSubjectDetail}
       />
     </>
   );

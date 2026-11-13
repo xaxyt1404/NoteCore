@@ -715,6 +715,44 @@ a {
   outline-offset: 2px;
 }
 
+/* Menú renderizado en portal */
+.portal-dropdown-menu {
+  position: fixed;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  z-index: 450;
+}
+
+.portal-dropdown-menu .dropdown-options-list {
+  max-height: 190px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Estado bloqueado (solo lectura en ProfileModal cuando no está en edición) */
+.custom-dropdown.is-disabled .dropdown-trigger {
+  opacity: 0.78;
+  cursor: default;
+  box-shadow: none;
+  background-color: var(--bg-main);
+}
+
+.custom-dropdown.is-disabled .dropdown-trigger:hover {
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+
 /* ==========================================
    9. DESPLEGABLE CON BUSCADOR (searchable)
    ========================================== */
