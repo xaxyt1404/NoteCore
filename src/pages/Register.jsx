@@ -5,42 +5,11 @@ import StepBasicInfo from "../components/auth/StepBasicInfo";
 import StepAcademic from "../components/auth/StepAcademic";
 import StepSubjects from "../components/auth/StepSubjects";
 import { useToast } from "../context/ToastContext";
-
-const getAutoSemesterName = () => {
-  const now = new Date();
-  return `Semestre ${now.getFullYear()} - ${now.getMonth() < 6 ? 1 : 2}`;
-};
-
-const saveUserData = (data, formattedSubjects) => {
-  const firstName = data.firstName.trim();
-  const lastName = data.lastName.trim();
-  const fullName = `${firstName} ${lastName}`.trim();
-
-  localStorage.setItem(
-    "notecore_active_user",
-    JSON.stringify({
-      firstName,
-      lastName,
-      fullName,
-      greetingName: firstName.split(/\s+/)[0] || firstName,
-      email: data.email.trim(),
-      university: data.university,
-      degree: data.degree,
-      roleLabel: "Estudiante Universitario",
-    })
-  );
-
-  localStorage.setItem(
-    "notecore_user_semester",
-    JSON.stringify({ period: getAutoSemesterName(), schema: "30-30-40" })
-  );
-
-  localStorage.setItem("notecore_user_subjects", JSON.stringify(formattedSubjects));
-  sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(formattedSubjects));
-};
+import { authApi, setToken } from "../services/api";
 
 export default function Register() {
   const [step, setStep] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
   const [basic, setBasic] = useState({
     email: "",
     firstName: "",
@@ -56,39 +25,55 @@ export default function Register() {
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const handleAcademicNext = () => {
-    if (!academic.university) {
-      showToast("Por favor selecciona tu institución.", "warning");
-      return;
-    }
-    if (!academic.degree) {
-      showToast("Por favor selecciona tu programa académico.", "warning");
-      return;
-    }
-    setStep(2);
-  };
+  const handleFinish = async (formattedSubjects) => {
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      const data = await authApi.register({
+        firstName: basic.firstName.trim(),
+        lastName: basic.lastName.trim(),
+        email: basic.email.trim(),
+        password: basic.password,
+        university: academic.university,
+        degree: academic.degree,
+        subjects: formattedSubjects.map((s) => ({
+          name: s.name,
+          statsName: s.statsName || s.name,
+          icon: s.icon || "fa-book",
+        })),
+      });
 
-  const handleFinish = (formattedSubjects) => {
-    if (subjects.length === 0) {
-      showToast("Debes agregar al menos una asignatura para poder continuar.", "warning");
-      return;
+      setToken(data.token);
+      localStorage.setItem("notecore_active_user", JSON.stringify(data.user));
+      if (data.user?.semester) {
+        localStorage.setItem("notecore_user_semester", JSON.stringify(data.user.semester));
+      }
+      localStorage.setItem("notecore_user_subjects", JSON.stringify(data.subjects || []));
+      sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(data.subjects || []));
+
+      showToast("¡Cuenta creada con éxito! Redirigiendo a tu panel...", "success");
+      timerRef.current = setTimeout(() => navigate("/dashboard"), 900);
+    } catch (error) {
+      showToast(error.message || "No se pudo completar el registro.", "danger");
+      setSubmitting(false);
     }
-    saveUserData({ ...basic, ...academic }, formattedSubjects || subjects);
-    showToast("¡Registro completado! Preparando tu panel...", "success");
-    timerRef.current = setTimeout(() => navigate("/dashboard"), 1000);
   };
 
   return (
     <AuthLayout showBackLink={step === 0}>
       {step === 0 && (
-        <StepBasicInfo data={basic} onChange={setBasic} onNext={() => setStep(1)} />
+        <StepBasicInfo
+          data={basic}
+          onChange={setBasic}
+          onNext={() => setStep(1)}
+        />
       )}
       {step === 1 && (
         <StepAcademic
           data={academic}
           onChange={setAcademic}
           onBack={() => setStep(0)}
-          onNext={handleAcademicNext}
+          onNext={() => setStep(2)}
         />
       )}
       {step === 2 && (
@@ -97,7 +82,6 @@ export default function Register() {
           onChange={setSubjects}
           onBack={() => setStep(1)}
           onFinish={handleFinish}
-          onWarning={(msg) => showToast(msg, "warning")}
         />
       )}
     </AuthLayout>

@@ -5,6 +5,7 @@ import {
   getGradeStatus,
 } from "../../../utils/gradeHelpers";
 import { useToast } from "../../../context/ToastContext";
+import { subjectsApi } from "../../../services/api";
 import ModifySubjectModal from "../modals/ModifySubjectModal";
 
 const fmtCut = (val) => (val == null ? "—" : Number(val).toFixed(1));
@@ -38,18 +39,39 @@ export default function SubjectsView({
     setModifyModal((prev) => ({ ...prev, open: false }));
   };
 
-  const handleSaveModifiedSubject = (savedSub, mode) => {
-    if (mode === "create") {
-      onSubjectsChange?.([...subjects, savedSub]);
-    } else {
-      onSubjectsChange?.(subjects.map((s) => (s.id === savedSub.id ? savedSub : s)));
+  const handleSaveModifiedSubject = async (savedSub, mode) => {
+    try {
+      if (mode === "create") {
+        const res = await subjectsApi.create({
+          name: savedSub.name,
+          statsName: savedSub.statsName || savedSub.name,
+          icon: savedSub.icon || "fa-book",
+        });
+        onSubjectsChange?.([...subjects, res.subject]);
+        showToast(`Asignatura "${res.subject.name}" agregada.`, "success");
+      } else {
+        const res = await subjectsApi.update(savedSub.id, {
+          name: savedSub.name,
+          statsName: savedSub.statsName || savedSub.name,
+          icon: savedSub.icon,
+        });
+        onSubjectsChange?.(subjects.map((s) => (s.id === res.subject.id ? res.subject : s)));
+        showToast(`Asignatura "${res.subject.name}" actualizada.`, "success");
+      }
+    } catch (error) {
+      showToast(error.message || "Error al guardar la asignatura.", "danger");
     }
   };
 
-  const handleDeleteSubject = (subject) => {
-    onSubjectsChange?.(subjects.filter((s) => s.id !== subject.id));
+  const handleDeleteSubject = async (subject) => {
     setOpenMenuId(null);
-    showToast(`Asignatura "${subject.name}" eliminada.`, "info");
+    try {
+      await subjectsApi.remove(subject.id);
+      onSubjectsChange?.(subjects.filter((s) => s.id !== subject.id));
+      showToast(`Asignatura "${subject.name}" eliminada.`, "info");
+    } catch (error) {
+      showToast(error.message || "No se pudo eliminar la asignatura.", "danger");
+    }
   };
 
   return (

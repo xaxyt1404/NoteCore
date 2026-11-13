@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ModifySubjectModal from "../dashboard/modals/ModifySubjectModal";
-import { createEmptyCuts, mockSubjects } from "../../mocks/dashboardMocks";
+import { createEmptyCuts } from "../../utils/academicConstants";
 import { getGradeStatus } from "../../utils/gradeHelpers";
 
 const SUBJECT_ICONS = [

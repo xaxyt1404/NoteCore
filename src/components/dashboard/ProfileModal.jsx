@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "../common/Modal";
 import CustomDropdown from "../common/CustomDropdown";
 import AvatarCropModal from "./modals/AvatarCropModal";
-import { universities, getDegreesByUniversity } from "../../mocks/academicCatalog";
+import { adminApi } from "../../services/api";
 import { useToast } from "../../context/ToastContext";
 
 const pickForm = (u) => ({
@@ -18,18 +18,33 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(() => pickForm(user));
   const [rawImage, setRawImage] = useState(null);
+  const [universitiesList, setUniversitiesList] = useState([]);
   const fileInputRef = useRef(null);
   const { showToast } = useToast();
 
   useEffect(() => {
-    if (isOpen) {
-      setForm(pickForm(user));
-      setEditing(false);
-      setRawImage(null);
-    }
+    if (!isOpen) return;
+    setForm(pickForm(user));
+    setEditing(false);
+    setRawImage(null);
+
+    let active = true;
+    adminApi
+      .getUniversities()
+      .then((res) => {
+        if (active) setUniversitiesList(res.universities || []);
+      })
+      .catch(() => {
+        if (active) setUniversitiesList([]);
+      });
+    return () => {
+      active = false;
+    };
   }, [isOpen, user]);
 
-  const degrees = form.university ? getDegreesByUniversity(form.university) : [];
+  const universities = universitiesList.map((u) => u.name);
+  const selectedUni = universitiesList.find((u) => u.name === form.university);
+  const degrees = selectedUni?.programs || [];
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -74,7 +89,6 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
         return;
       }
       onSave?.(form);
-      showToast("Perfil actualizado correctamente.", "success");
     }
     setEditing((e) => !e);
   };
@@ -210,7 +224,9 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
             className={`btn ${editing ? "btn-primary" : "btn-outline"}`}
             onClick={handleToggle}
           >
-            <i className={`fa-solid ${editing ? "fa-floppy-disk" : "fa-pen-to-square"} icon-left`}></i>
+            <i
+              className={`fa-solid ${editing ? "fa-floppy-disk" : "fa-pen-to-square"} icon-left`}
+            ></i>
             {editing ? "Guardar cambios" : "Editar perfil"}
           </button>
           <button type="button" className="btn btn-primary" onClick={handleClose}>

@@ -14,6 +14,10 @@ export default function Topbar({
   const rightRef = useRef(null);
 
   useEffect(() => {
+    setItems(notifications);
+  }, [notifications]);
+
+  useEffect(() => {
     if (!menu) return;
     const handleOutside = (e) => {
       if (rightRef.current && !rightRef.current.contains(e.target)) setMenu(null);
@@ -24,7 +28,6 @@ export default function Topbar({
 
   const toggle = (name) => setMenu((m) => (m === name ? null : name));
   const hasUnread = items.some((n) => n.unread);
-
   const markAllRead = () => setItems((prev) => prev.map((n) => ({ ...n, unread: false })));
 
   return (
@@ -68,19 +71,27 @@ export default function Topbar({
               </button>
             </div>
             <div className="popover-body">
-              {items.map((n) => (
-                <div key={n.id} className={`notif-item${n.unread ? " unread" : ""}`}>
-                  <div className={`notif-icon ${n.variant}`}>
-                    <i className={n.icon}></i>
-                  </div>
+              {items.length === 0 ? (
+                <div className="notif-item">
                   <div className="notif-content">
-                    <p>
-                      <strong>{n.subject}:</strong> {n.message}
-                    </p>
-                    <span className="notif-time">{n.time}</span>
+                    <p>No tienes notificaciones nuevas.</p>
                   </div>
                 </div>
-              ))}
+              ) : (
+                items.map((n) => (
+                  <div key={n.id} className={`notif-item${n.unread ? " unread" : ""}`}>
+                    <div className={`notif-icon ${n.variant}`}>
+                      <i className={n.icon}></i>
+                    </div>
+                    <div className="notif-content">
+                      <p>
+                        <strong>{n.subject}:</strong> {n.message}
+                      </p>
+                      <span className="notif-time">{n.time}</span>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -137,5 +148,3 @@ export default function Topbar({
     </header>
   );
 }
-
-

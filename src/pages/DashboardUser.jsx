@@ -9,21 +9,21 @@ import SettingsView from "../components/dashboard/views/SettingsView";
 import SupportView from "../components/dashboard/views/SupportView";
 import ProfileModal from "../components/dashboard/ProfileModal";
 import ImportJsonModal from "../components/dashboard/modals/ImportJsonModal";
-import SubjectDetailModal from "../components/dashboard/modals/SubjectDetailModal";
 import ToolModal from "../components/dashboard/modals/ToolModal";
+import SubjectDetailModal from "../components/dashboard/modals/SubjectDetailModal";
 import { useToast } from "../context/ToastContext";
+import { getGradeStatus } from "../utils/gradeHelpers";
 import {
-  computeCutGrade,
-  computeSubjectGrades,
-  getGradeStatus,
-} from "../utils/gradeHelpers";
+  DEFAULT_CHAT_GREETING,
+  DEFAULT_CUT_WEIGHTS,
+  buildStatsCuts,
+} from "../utils/academicConstants";
 import {
-  mockUser,
-  mockSemester,
-  mockNotifications,
-  mockSubjects,
-  mockStatsCuts,
-} from "../mocks/dashboardMocks";
+  authApi,
+  clearSessionStorageData,
+  getToken,
+  subjectsApi,
+} from "../services/api";
 
 const NAVIGATION = {
   main: [
@@ -38,67 +38,123 @@ const NAVIGATION = {
   ],
 };
 
-const getInitialUser = () => {
+const getCachedUser = () => {
   try {
     const saved = localStorage.getItem("notecore_active_user");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      const first = parsed.firstName || parsed.name || mockUser.firstName;
-      const last = parsed.lastName ?? "";
-      return {
-        ...mockUser,
-        ...parsed,
-        firstName: first,
-        lastName: last,
-        fullName: `${first} ${last}`.trim(),
-        greetingName: first.split(/\s+/)[0] || first,
-      };
-    }
-  } catch {
-    // Si falla el parseo, usa mockUser
-  }
-  return mockUser;
-};
-
-const getInitialSemester = () => {
-  try {
-    const saved = localStorage.getItem("notecore_user_semester");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return parsed.period || mockSemester;
-    }
+    if (saved) return JSON.parse(saved);
   } catch {
     // Ignorar
   }
-  return mockSemester;
+  return {
+    firstName: "Estudiante",
+    lastName: "",
+    greetingName: "Estudiante",
+    fullName: "Estudiante NoteCore",
+    email: "",
+    university: "Universidad de Cartagena",
+    degree: "",
+    roleLabel: "Estudiante Universitario",
+    avatar: "",
+    semester: { period: "Semestre 2026 - 2", schema: "30-30-40" },
+  };
 };
 
-const getInitialSubjects = () => {
+const getCachedSubjects = () => {
   try {
-    const fromLocal = localStorage.getItem("notecore_user_subjects");
-    if (fromLocal) return JSON.parse(fromLocal);
-    const fromSession = sessionStorage.getItem("notecore_initial_subjects");
-    if (fromSession) return JSON.parse(fromSession);
+    const saved = localStorage.getItem("notecore_user_subjects");
+    if (saved) return JSON.parse(saved);
   } catch {
-    // Si falla la lectura, continúa con mockSubjects
+    // Ignorar
   }
-  return mockSubjects;
+  return [];
+};
+
+const computeCutGrade = (cut) => {
+  if (!cut) return null;
+  const activitiesSum = (cut.activities || []).reduce(
+    (acc, act) => acc + (Number(act.grade) || 0) * ((Number(act.weight) || 0) / 100),
+    0
+  );
+  const parcialSum =
+    (Number(cut.parcial?.grade) || 0) * ((Number(cut.parcial?.weight) || 0) / 100);
+
+  const hasAnyGrade =
+    (cut.activities || []).some((a) => a.grade > 0 || a.locked) ||
+    cut.parcial?.grade > 0 ||
+    cut.parcial?.locked ||
+    cut.bonus > 0;
+
+  if (!hasAnyGrade) return null;
+  return Math.min(5.0, activitiesSum + parcialSum + (Number(cut.bonus) || 0));
+};
+
+const computeSubjectGrades = (cuts = []) => {
+  let accumulated = 0;
+  let evaluatedWeight = 0;
+
+  cuts.forEach((c) => {
+    const grade = computeCutGrade(c);
+    if (grade !== null) {
+      const w = (Number(c.weight) || 0) / 100;
+      accumulated += grade * w;
+      evaluatedWeight += w;
+    }
+  });
+
+  const paceGrade =
+    evaluatedWeight > 0 ? Number((accumulated / evaluatedWeight).toFixed(2)) : 0;
+
+  return {
+    accumulated: Number(accumulated.toFixed(2)),
+    evaluatedWeight,
+    paceGrade,
+  };
 };
 
 export default function DashboardUser() {
   const [activeView, setActiveView] = useState("view-inicio");
   const [detailSubject, setDetailSubject] = useState(null);
   const [modal, setModal] = useState(null);
-  const [user, setUser] = useState(getInitialUser);
-  const [semester] = useState(getInitialSemester);
-  const [subjects, setSubjects] = useState(getInitialSubjects);
+  const [user, setUser] = useState(getCachedUser);
+  const [subjects, setSubjects] = useState(getCachedSubjects);
   const { showToast } = useToast();
   const navigate = useNavigate();
   const timerRef = useRef(null);
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const persistSubjects = (nextSubjects) => {
+  useEffect(() => {
+    if (!getToken()) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    let active = true;
+    authApi
+      .getMe()
+      .then((res) => {
+        if (!active) return;
+        if (res.user?.role === "admin") {
+          navigate("/admin", { replace: true });
+          return;
+        }
+        setUser(res.user);
+        setSubjects(res.subjects || []);
+        localStorage.setItem("notecore_active_user", JSON.stringify(res.user));
+        localStorage.setItem("notecore_user_subjects", JSON.stringify(res.subjects || []));
+      })
+      .catch(() => {
+        if (!active) return;
+        clearSessionStorageData();
+        navigate("/login", { replace: true });
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
+  const syncSubjectsCache = (nextSubjects) => {
     setSubjects(nextSubjects);
     localStorage.setItem("notecore_user_subjects", JSON.stringify(nextSubjects));
     sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(nextSubjects));
@@ -109,6 +165,52 @@ export default function DashboardUser() {
   const redirectToLanding = (delay) => {
     timerRef.current = setTimeout(() => navigate("/"), delay);
   };
+
+  const semester = user?.semester?.period || "Semestre 2026 - 2";
+
+  const cutWeights = useMemo(() => {
+    if (subjects[0]?.cuts?.length) {
+      return subjects[0].cuts.map((c) => Number(c.weight));
+    }
+    if (user?.semester?.schema) {
+      const parsed = user.semester.schema.split("-").map(Number).filter(Boolean);
+      if (parsed.length) return parsed;
+    }
+    return DEFAULT_CUT_WEIGHTS;
+  }, [subjects, user]);
+
+  const statsCuts = useMemo(() => buildStatsCuts(cutWeights), [cutWeights]);
+
+  const notifications = useMemo(() => {
+    const atRiskSubs = subjects.filter(
+      (s) => Number(s.current) > 0 && Number(s.current) <= 3.0
+    );
+    if (atRiskSubs.length > 0) {
+      return atRiskSubs.map((s, idx) => ({
+        id: s.id || idx + 1,
+        variant: "danger",
+        icon: "fa-solid fa-triangle-exclamation",
+        subject: s.name,
+        message: `Tu nota actual es ${Number(s.current).toFixed(1)}. ¡Atención con el próximo corte!`,
+        time: "En curso",
+        unread: true,
+      }));
+    }
+    return [
+      {
+        id: "welcome",
+        variant: "primary",
+        icon: "fa-solid fa-graduation-cap",
+        subject: "NoteCore",
+        message:
+          subjects.length > 0
+            ? "Tus asignaturas están sincronizadas con la nube."
+            : "¡Bienvenido! Registra tus notas en Asignaturas para proyectar tu semestre.",
+        time: "Ahora",
+        unread: subjects.length === 0,
+      },
+    ];
+  }, [subjects]);
 
   const dashboardData = useMemo(() => {
     const total = subjects.length;
@@ -147,7 +249,7 @@ export default function DashboardUser() {
     const evaluatedCount = withGrades.length;
     const pct = (count) => (evaluatedCount > 0 ? Math.round((count / evaluatedCount) * 100) : 0);
 
-    const cutAverages = [0, 1, 2].map((idx) => {
+    const cutAverages = cutWeights.map((_, idx) => {
       const validGrades = subjects
         .map((s) => computeCutGrade(s.cuts?.[idx]))
         .filter((g) => g !== null);
@@ -155,14 +257,18 @@ export default function DashboardUser() {
       return validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
     });
 
+    const attentionIds = evaluatedSubjects
+      .filter((s) => s.evaluatedWeight > 0 && s.paceGrade <= 3.0)
+      .map((s) => s.id);
+
     const lowestSubject = [...withGrades].sort((a, b) => a.paceGrade - b.paceGrade)[0];
 
     const recommendation =
       total === 0
         ? {
-          subject: "Tus materias",
+          subject: "Tus asignaturas",
           message:
-            "aún no tienen registros. Ve a Asignaturas y agrega tus materias del semestre para empezar.",
+            "aún no tienen registros. Ve a Asignaturas y agrega tus asignaturas del semestre para empezar.",
         }
         : withGrades.length === 0
           ? {
@@ -170,7 +276,7 @@ export default function DashboardUser() {
             message:
               "registra tus primeras notas en Asignaturas para ver tu ritmo académico y proyecciones de corte.",
           }
-          : lowestSubject && lowestSubject.paceGrade < 3.5
+          : lowestSubject && lowestSubject.paceGrade <= 3.0
             ? {
               subject: lowestSubject.name,
               message: `requiere mayor atención esta semana. Tu promedio evaluado es ${lowestSubject.paceGrade.toFixed(1)} (acumulado ${lowestSubject.accumulated.toFixed(1)}). Usa las herramientas para proyectar tu próximo corte.`,
@@ -193,6 +299,7 @@ export default function DashboardUser() {
         goodStanding: excelent + good,
         atRisk,
       },
+      attentionIds,
       estadoChart: {
         labels: ["Excelente", "En buen estado", "Regular", "En riesgo"],
         data: evaluatedCount > 0 ? [excelent, good, regular, atRisk] : [0, 0, 0, 0],
@@ -204,13 +311,8 @@ export default function DashboardUser() {
         ],
       },
       rendimientoChart: {
-        labels: ["Corte 1", "Corte 2", "Corte 3", "Acumulado"],
-        data: [
-          cutAverages[0] ?? 0,
-          cutAverages[1] ?? 0,
-          cutAverages[2] ?? 0,
-          average,
-        ],
+        labels: [...cutWeights.map((_, i) => `Corte ${i + 1}`), "Acumulado"],
+        data: [...cutAverages.map((val) => val ?? 0), average],
         options: [
           { value: "promedio", label: "Promedio" },
           { value: "cortes", label: "Por Cortes" },
@@ -224,48 +326,56 @@ export default function DashboardUser() {
       },
       recommendation,
     };
-  }, [subjects]);
+  }, [subjects, cutWeights]);
 
   const handleLogout = () => {
+    clearSessionStorageData();
     showToast("Sesión cerrada.", "info");
-    redirectToLanding(1000);
+    redirectToLanding(900);
   };
 
-  const handleSaveProfile = (form) => {
-    const first = form.firstName.trim();
-    const last = form.lastName.trim();
-    setUser((prev) => {
-      const updated = {
-        ...prev,
-        ...form,
-        firstName: first,
-        lastName: last,
-        fullName: `${first} ${last}`.trim() || prev.fullName,
-        greetingName: first.split(/\s+/)[0] || prev.greetingName,
-      };
-      localStorage.setItem("notecore_active_user", JSON.stringify(updated));
-      return updated;
-    });
+  const handleSaveProfile = async (form) => {
+    try {
+      const res = await authApi.updateProfile({
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
+        university: form.university,
+        degree: form.degree,
+        avatar: form.avatar,
+      });
+      setUser(res.user);
+      localStorage.setItem("notecore_active_user", JSON.stringify(res.user));
+      showToast("Perfil actualizado correctamente.", "success");
+    } catch (error) {
+      showToast(error.message || "Error al actualizar perfil.", "danger");
+    }
   };
 
-  const handleSaveSubjectDetail = (updatedSub) => {
-    const next = subjects.map((s) => (s.id === updatedSub.id ? updatedSub : s));
-    persistSubjects(next);
-    showToast(`Notas de "${updatedSub.name}" guardadas.`, "success");
+  const handleSaveSubjectDetail = async (updatedSub) => {
+    try {
+      const res = await subjectsApi.update(updatedSub.id, updatedSub);
+      const next = subjects.map((s) => (s.id === res.subject.id ? res.subject : s));
+      syncSubjectsCache(next);
+      showToast(`Notas de "${res.subject.name}" guardadas.`, "success");
+    } catch (error) {
+      showToast(error.message || "Error al guardar las notas.", "danger");
+    }
   };
 
-  const handleSaveSimulation = (subjectId, simulation) => {
-    const updated = subjects.map((s) =>
-      s.id === subjectId
-        ? { ...s, simulations: [simulation, ...(s.simulations || [])] }
-        : s
-    );
-    persistSubjects(updated);
-    const targetSub = updated.find((s) => s.id === subjectId);
-    showToast(
-      `Simulación guardada en "${targetSub?.name || "la asignatura"}".`,
-      "success"
-    );
+  const handleSaveSimulation = async (subjectId, simulation) => {
+    try {
+      const res = await subjectsApi.addSimulation(subjectId, {
+        toolId: simulation.toolId,
+        toolTitle: simulation.toolTitle,
+        summary: simulation.summary,
+      });
+      const updated = subjects.map((s) => (s.id === subjectId ? res.subject : s));
+      syncSubjectsCache(updated);
+      showToast(`Simulación guardada en "${res.subject?.name || "la asignatura"}".`, "success");
+    } catch (error) {
+      showToast(error.message || "No se pudo guardar la simulación.", "danger");
+    }
   };
 
   const handleExport = () => {
@@ -289,56 +399,45 @@ export default function DashboardUser() {
     try {
       const data = JSON.parse(await file.text());
       if (Array.isArray(data.subjects)) {
-        persistSubjects(data.subjects);
+        const res = await subjectsApi.importBackup(data.subjects);
+        syncSubjectsCache(res.subjects || []);
       }
       if (data.user && typeof data.user === "object") {
-        handleSaveProfile({
+        await handleSaveProfile({
           firstName: data.user.firstName || user.firstName,
           lastName: data.user.lastName || user.lastName,
           email: data.user.email || user.email,
           university: data.user.university || user.university,
           degree: data.user.degree || user.degree,
+          avatar: data.user.avatar ?? user.avatar,
         });
       }
-      showToast("Respaldo restaurado con éxito.", "success");
-    } catch {
-      showToast("El archivo JSON no es válido.", "danger");
+      showToast("Respaldo restaurado en la nube con éxito.", "success");
+    } catch (error) {
+      showToast(error.message || "El archivo JSON no es válido.", "danger");
     }
   };
 
-  const handleReset = () => {
-    const resetSubjects = subjects.map((s) => {
-      const status = getGradeStatus(0.0, 0);
-      return {
-        ...s,
-        current: 0.0,
-        statusLabel: status.label,
-        performance: status.label,
-        cuts: (s.cuts || []).map((c) => ({
-          ...c,
-          activities: [],
-          parcial: { grade: 0, weight: 100, locked: true },
-          bonus: 0,
-        })),
-      };
-    });
-    persistSubjects(resetSubjects);
-    showToast("Calificaciones del semestre restablecidas.", "warning");
+  const handleReset = async () => {
+    try {
+      const res = await authApi.resetSemester();
+      syncSubjectsCache(res.subjects || []);
+      showToast("Calificaciones del semestre restablecidas.", "warning");
+    } catch (error) {
+      showToast(error.message || "Error al restablecer semestre.", "danger");
+    }
   };
 
-  const handleDelete = () => {
-    localStorage.removeItem("notecore_active_user");
-    localStorage.removeItem("notecore_user_semester");
-    localStorage.removeItem("notecore_user_subjects");
-    sessionStorage.removeItem("notecore_initial_subjects");
-    showToast("Cuenta eliminada correctamente.", "danger");
-    redirectToLanding(1200);
+  const handleDelete = async () => {
+    try {
+      await authApi.deleteAccount();
+      clearSessionStorageData();
+      showToast("Cuenta eliminada correctamente.", "danger");
+      redirectToLanding(1100);
+    } catch (error) {
+      showToast(error.message || "No se pudo eliminar la cuenta.", "danger");
+    }
   };
-
-  const activeToolId =
-    modal && ["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal)
-      ? modal
-      : null;
 
   return (
     <>
@@ -347,26 +446,32 @@ export default function DashboardUser() {
         activeView={activeView}
         onNavigate={setActiveView}
         user={user}
-        notifications={mockNotifications}
+        notifications={notifications}
         onOpenProfile={() => setModal("profile")}
         onLogout={handleLogout}
-        chatGreeting={`¡Hola ${user.greetingName}! Soy CoreAI. ¿En qué te puedo ayudar hoy con tus materias?`}
+        chatGreeting={DEFAULT_CHAT_GREETING(user.greetingName)}
       >
         {activeView === "view-inicio" && (
           <HomeView
             user={user}
             semester={semester}
             kpis={dashboardData.kpis}
+            subjects={subjects}
+            attentionIds={dashboardData.attentionIds}
             estadoChart={dashboardData.estadoChart}
             rendimientoChart={dashboardData.rendimientoChart}
             recommendation={dashboardData.recommendation}
             onNavigate={setActiveView}
+            onOpenSubjectDetail={(subject) => {
+              setDetailSubject(subject);
+              setActiveView("view-asignaturas");
+            }}
           />
         )}
         {activeView === "view-asignaturas" && (
           <SubjectsView
             subjects={subjects}
-            onSubjectsChange={persistSubjects}
+            onSubjectsChange={syncSubjectsCache}
             onOpenSubjectDetail={setDetailSubject}
           />
         )}
@@ -376,7 +481,7 @@ export default function DashboardUser() {
             semester={semester}
             subjects={subjects}
             summary={dashboardData.statsSummary}
-            cuts={mockStatsCuts}
+            cuts={statsCuts}
           />
         )}
         {activeView === "view-ajustes" && (
@@ -388,10 +493,19 @@ export default function DashboardUser() {
           />
         )}
         {activeView === "view-soporte" && (
-          <SupportView user={user} onNavigate={setActiveView} />
+          <SupportView
+            user={user}
+            onNavigate={setActiveView}
+          />
         )}
       </DashboardLayout>
 
+      <SubjectDetailModal
+        isOpen={Boolean(detailSubject)}
+        onClose={() => setDetailSubject(null)}
+        subject={detailSubject}
+        onSaveSubject={handleSaveSubjectDetail}
+      />
       <ProfileModal
         isOpen={modal === "profile"}
         onClose={closeModal}
@@ -404,19 +518,15 @@ export default function DashboardUser() {
         onImport={handleImport}
         onInvalid={() => showToast("Selecciona un archivo con extensión .json", "warning")}
       />
-      <SubjectDetailModal
-        isOpen={!!detailSubject}
-        onClose={() => setDetailSubject(null)}
-        subject={detailSubject}
-        onSaveSubject={handleSaveSubjectDetail}
-      />
       <ToolModal
-        isOpen={!!activeToolId}
-        toolId={activeToolId}
+        toolId={
+          ["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal)
+            ? modal
+            : null
+        }
         onClose={closeModal}
         subjects={subjects}
         onSaveSimulation={handleSaveSimulation}
-        onSaveSubject={handleSaveSubjectDetail}
       />
     </>
   );

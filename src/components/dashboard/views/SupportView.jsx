@@ -128,6 +128,7 @@ export default function SupportView({ onNavigate, user }) {
           <ContactForm
             defaultName={user?.name || user?.fullName || ""}
             defaultEmail={user?.email || ""}
+            source="dashboard-support"
           />
         </div>
       )}
