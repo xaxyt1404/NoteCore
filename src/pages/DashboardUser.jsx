@@ -246,6 +246,7 @@ export default function DashboardUser() {
   const handleSaveSubjectDetail = (updatedSub) => {
     const next = subjects.map((s) => (s.id === updatedSub.id ? updatedSub : s));
     persistSubjects(next);
+    showToast(`Notas de "${updatedSub.name}" guardadas.`, "success");
   };
 
   const handleSaveSimulation = (subjectId, simulation) => {
@@ -361,7 +362,11 @@ export default function DashboardUser() {
           />
         )}
         {activeView === "view-asignaturas" && (
-          <SubjectsView subjects={subjects} onSubjectsChange={persistSubjects} />
+          <SubjectsView
+            subjects={subjects}
+            onSubjectsChange={persistSubjects}
+            onOpenSubjectDetail={setDetailSubject}
+          />
         )}
         {activeView === "view-herramientas" && <ToolsView onOpenTool={setModal} />}
         {activeView === "view-estadisticas" && (

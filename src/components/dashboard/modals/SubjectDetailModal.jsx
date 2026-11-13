@@ -48,7 +48,16 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
 
   useEffect(() => {
     if (subject) {
-      const clonedCuts = JSON.parse(JSON.stringify(subject.cuts || [])).map((cut) => {
+      const baseCuts =
+        Array.isArray(subject.cuts) && subject.cuts.length > 0
+          ? subject.cuts
+          : [
+            { id: 1, name: "Corte 1", weight: 30, activities: [], parcial: { grade: 0, weight: 100, locked: true }, bonus: 0 },
+            { id: 2, name: "Corte 2", weight: 30, activities: [], parcial: { grade: 0, weight: 100, locked: true }, bonus: 0 },
+            { id: 3, name: "Corte 3", weight: 40, activities: [], parcial: { grade: 0, weight: 100, locked: true }, bonus: 0 },
+          ];
+
+      const clonedCuts = JSON.parse(JSON.stringify(baseCuts)).map((cut) => {
         const acts = cut.activities || [];
         const actsWeight = sumActivitiesWeight(acts);
         const defaultParcialWeight = Math.max(0, 100 - actsWeight);
@@ -156,7 +165,7 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
           weight: 0,
           locked: false,
         };
-        const updatedActivities = [...cut.activities, newAct];
+        const updatedActivities = [newAct, ...cut.activities];
         const autoParcialWeight = Math.max(0, 100 - sumActivitiesWeight(updatedActivities));
 
         return {

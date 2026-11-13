@@ -2,7 +2,6 @@ import { getGradeStatus } from "../../../utils/gradeHelpers";
 
 const fmt = (value, decimals = 1) => (value == null ? "—" : Number(value).toFixed(decimals));
 
-// Calcula la nota de un corte a partir de su objeto (actividades + parcial + bono)
 const getCutGrade = (cut) => {
   if (typeof cut === "number" || cut === null) return cut;
   if (!cut) return null;
@@ -16,18 +15,28 @@ const getCutGrade = (cut) => {
   const total = activitiesSum + parcialContribution + (Number(cut.bonus) || 0);
 
   const hasAnyGrade =
-    (cut.activities || []).some((a) => a.grade > 0 || a.locked) ||
-    cut.parcial?.grade > 0 ||
-    cut.parcial?.locked ||
-    cut.bonus > 0;
+    (cut.activities || []).some((a) => Number(a.grade) > 0) ||
+    Number(cut.parcial?.grade) > 0 ||
+    Number(cut.bonus) > 0;
 
   if (!hasAnyGrade) return null;
   return Math.min(5.0, total);
 };
 
-export default function StatsView({ semester, subjects = [], summary, cuts }) {
-  const sorted = [...subjects].sort((a, b) => b.current - a.current);
-  const summaryStatus = getGradeStatus(summary.current);
+export default function StatsView({
+  semester,
+  subjects = [],
+  summary = { cuts: [null, null, null], current: 0 },
+  cuts = [
+    { label: "C1", weight: 30 },
+    { label: "C2", weight: 30 },
+    { label: "C3", weight: 40 },
+  ],
+}) {
+  const sorted = [...subjects].sort((a, b) => (Number(b.current) || 0) - (Number(a.current) || 0));
+  const summaryCurrent = Number(summary?.current) || 0;
+  const summaryCuts = Array.isArray(summary?.cuts) ? summary.cuts : [null, null, null];
+  const summaryStatus = getGradeStatus(summaryCurrent);
 
   return (
     <section id="view-estadisticas" className="dash-view active">
@@ -78,23 +87,31 @@ export default function StatsView({ semester, subjects = [], summary, cuts }) {
                 </tr>
               ) : (
                 sorted.map((s, i) => {
-                  const status = getGradeStatus(s.current);
+                  const currentVal = Number(s.current) || 0;
+                  const status = getGradeStatus(currentVal);
+                  const subjectCuts = Array.isArray(s.cuts) ? s.cuts : [null, null, null];
+
                   return (
                     <tr key={s.id}>
                       <td>{i + 1}</td>
                       <td>
-                        <i className={`fa-solid ${s.icon} card-icon`}></i> {s.statsName}
+                        <i className={`fa-solid ${s.icon || "fa-book"} card-icon`}></i>{" "}
+                        {s.statsName || s.name}
                       </td>
-                      {s.cuts.map((c, idx) => (
-                        <td key={c.id || idx}>
-                          {fmt(getCutGrade(c))}
+                      {cuts.map((_, idx) => (
+                        <td key={subjectCuts[idx]?.id || idx}>
+                          {fmt(getCutGrade(subjectCuts[idx]))}
                         </td>
                       ))}
                       <td>
-                        <span className={`subject-grade-badge ${status.colorClass}`}>{fmt(s.current)}</span>
+                        <span className={`subject-grade-badge ${status.colorClass}`}>
+                          {fmt(currentVal)}
+                        </span>
                       </td>
                       <td>
-                        <span className={`subject-grade-badge ${status.colorClass}`}>{status.label}</span>
+                        <span className={`subject-grade-badge ${status.colorClass}`}>
+                          {status.label}
+                        </span>
                       </td>
                     </tr>
                   );
@@ -104,17 +121,13 @@ export default function StatsView({ semester, subjects = [], summary, cuts }) {
 
             <tfoot>
               <tr>
-                <td colSpan={2}>
-                  PROMEDIO GENERAL
-                </td>
-                {summary.cuts.map((c, idx) => (
-                  <td key={idx}>
-                    {fmt(c, 2)}
-                  </td>
+                <td colSpan={2}>PROMEDIO GENERAL</td>
+                {cuts.map((_, idx) => (
+                  <td key={idx}>{fmt(summaryCuts[idx], 2)}</td>
                 ))}
                 <td>
                   <span className={`subject-grade-badge ${summaryStatus.colorClass}`}>
-                    {fmt(summary.current, 2)}
+                    {fmt(summaryCurrent, 2)}
                   </span>
                 </td>
                 <td>

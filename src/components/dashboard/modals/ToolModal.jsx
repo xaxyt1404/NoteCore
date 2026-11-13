@@ -199,7 +199,6 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
   // Gestión de filas de actividades (las nuevas agregadas en la herramienta sí son editables)
   const addActivityRow = () => {
     setActivities((prev) => [
-      ...prev,
       {
         id: Date.now(),
         name: `Actividad ${prev.length + 1}`,
@@ -207,6 +206,7 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
         weight: 0,
         imported: false,
       },
+      ...prev,
     ]);
     triggerAutoCalc();
   };

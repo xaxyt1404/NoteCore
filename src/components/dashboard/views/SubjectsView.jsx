@@ -1,29 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getGradeStatus } from "../../../utils/gradeHelpers";
 import { useToast } from "../../../context/ToastContext";
-import SubjectDetailModal from "../modals/SubjectDetailModal";
 import ModifySubjectModal from "../modals/ModifySubjectModal";
 
 export default function SubjectsView({
-  subjects: initialSubjects = [],
+  subjects = [],
   onSubjectsChange,
-  initialDetailSubject = null,
-  onClearInitialDetail,
+  onOpenSubjectDetail,
 }) {
   const { showToast } = useToast();
-  const [subjects, setSubjects] = useState(initialSubjects);
-  const [selectedSubject, setSelectedSubject] = useState(initialDetailSubject);
   const [modifyModal, setModifyModal] = useState({ open: false, mode: "create", subject: null });
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  // Sincroniza el estado local y notifica al padre (DashboardUser) si está conectado
-  const syncSubjects = (updater) => {
-    setSubjects((prev) => {
-      const next = typeof updater === "function" ? updater(prev) : updater;
-      onSubjectsChange?.(next);
-      return next;
-    });
-  };
+  useEffect(() => {
+    if (!openMenuId) return;
+    const handleOutside = (e) => {
+      if (!e.target.closest(".card-menu-wrapper")) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [openMenuId]);
 
   const openModify = (mode, subject = null) => {
     setOpenMenuId(null);
@@ -36,19 +34,14 @@ export default function SubjectsView({
 
   const handleSaveModifiedSubject = (savedSub, mode) => {
     if (mode === "create") {
-      syncSubjects((prev) => [...prev, savedSub]);
+      onSubjectsChange?.([...subjects, savedSub]);
     } else {
-      syncSubjects((prev) => prev.map((s) => (s.id === savedSub.id ? savedSub : s)));
+      onSubjectsChange?.(subjects.map((s) => (s.id === savedSub.id ? savedSub : s)));
     }
   };
 
-  const handleSaveDetails = (updated) => {
-    syncSubjects((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-    showToast(`Notas de "${updated.name}" guardadas.`, "success");
-  };
-
   const handleDeleteSubject = (subject) => {
-    syncSubjects((prev) => prev.filter((s) => s.id !== subject.id));
+    onSubjectsChange?.(subjects.filter((s) => s.id !== subject.id));
     setOpenMenuId(null);
     showToast(`Asignatura "${subject.name}" eliminada.`, "info");
   };
@@ -78,18 +71,18 @@ export default function SubjectsView({
       ) : (
         <div className="subjects-grid-3col">
           {subjects.map((s) => {
-            const { status, colorClass, label } = getGradeStatus(s.current);
+            const currentVal = Number(s.current) || 0;
+            const { status, colorClass, label } = getGradeStatus(currentVal);
             const isMenuOpen = openMenuId === s.id;
 
             return (
               <div className="dash-card subject-card-compact" key={s.id}>
                 <div className="dash-card-header">
                   <div className="subject-card-title">
-                    <i className={`fa-solid ${s.icon} card-icon`}></i>
+                    <i className={`fa-solid ${s.icon || "fa-book"} card-icon`}></i>
                     <h3>{s.name}</h3>
                   </div>
 
-                  {/* Menú de 3 puntos flotante */}
                   <div className="card-menu-wrapper">
                     <button
                       type="button"
@@ -132,7 +125,7 @@ export default function SubjectsView({
                   <div className="subject-card-top-info">
                     <span className={`subject-grade-badge ${status}`}>{label}</span>
                     <div className="grade-display">
-                      <span className={`grade-val ${colorClass}`}>{s.current.toFixed(1)}</span>
+                      <span className={`grade-val ${colorClass}`}>{currentVal.toFixed(1)}</span>
                       <span className="grade-max">/ 5.0</span>
                     </div>
                   </div>
@@ -142,7 +135,7 @@ export default function SubjectsView({
                       className="card-link-action"
                       onClick={(e) => {
                         e.preventDefault();
-                        setSelectedSubject(s);
+                        onOpenSubjectDetail?.(s);
                       }}
                     >
                       Ver detalles <i className="fa-solid fa-arrow-right"></i>
@@ -155,24 +148,12 @@ export default function SubjectsView({
         </div>
       )}
 
-      {/* Modal para Agregar / Editar Nombre / Editar Ícono */}
       <ModifySubjectModal
         isOpen={modifyModal.open}
         onClose={closeModify}
         onSaveSubject={handleSaveModifiedSubject}
         subject={modifyModal.subject}
         mode={modifyModal.mode}
-      />
-
-      {/* Modal de Detalles de Asignatura */}
-      <SubjectDetailModal
-        isOpen={!!selectedSubject}
-        onClose={() => {
-          setSelectedSubject(null);
-          onClearInitialDetail?.();
-        }}
-        subject={selectedSubject}
-        onSaveSubject={handleSaveDetails}
       />
     </section>
   );

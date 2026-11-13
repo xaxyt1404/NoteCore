@@ -91,7 +91,7 @@ export default function SupportView({ onNavigate, user }) {
             {GUIDE_STEPS.map((item) => (
               <div className="scenario-card" key={item.step}>
                 <strong>
-                  <i className={`fa-solid ${item.icon} highlight icon-left`}></i>
+                  <i className={`fa-solid ${item.icon} highlight icon-left`}></i>{" "}
                   {item.step}. {item.title}
                 </strong>
                 <p className="dash-card-sub">{item.description}</p>
