@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
-import { getGradeStatus } from "../../../utils/gradeHelpers";
+import {
+  computeCutGrade,
+  computeSubjectGrades,
+  getGradeStatus,
+} from "../../../utils/gradeHelpers";
 import { useToast } from "../../../context/ToastContext";
 import ModifySubjectModal from "../modals/ModifySubjectModal";
+
+const fmtCut = (val) => (val == null ? "—" : Number(val).toFixed(1));
 
 export default function SubjectsView({
   subjects = [],
@@ -71,9 +77,14 @@ export default function SubjectsView({
       ) : (
         <div className="subjects-grid-3col">
           {subjects.map((s) => {
-            const currentVal = Number(s.current) || 0;
-            const { status, colorClass, label } = getGradeStatus(currentVal);
+            const subjectCuts = Array.isArray(s.cuts) ? s.cuts : [null, null, null];
+            const { accumulated, paceGrade, evaluatedWeight } = computeSubjectGrades(subjectCuts);
+            const { status, colorClass, label } = getGradeStatus(paceGrade, evaluatedWeight);
             const isMenuOpen = openMenuId === s.id;
+
+            const c1 = computeCutGrade(subjectCuts[0]);
+            const c2 = computeCutGrade(subjectCuts[1]);
+            const c3 = computeCutGrade(subjectCuts[2]);
 
             return (
               <div className="dash-card subject-card-compact" key={s.id}>
@@ -122,13 +133,29 @@ export default function SubjectsView({
                 </div>
 
                 <div>
-                  <div className="subject-card-top-info">
+                  <div className="subject-status-center">
                     <span className={`subject-grade-badge ${status}`}>{label}</span>
+                  </div>
+
+                  <div className="subject-card-top-info">
+                    <div className="subject-cuts-breakdown">
+                      <span>
+                        C1: <strong>{fmtCut(c1)}</strong>
+                      </span>
+                      <span>
+                        C2: <strong>{fmtCut(c2)}</strong>
+                      </span>
+                      <span>
+                        C3: <strong>{fmtCut(c3)}</strong>
+                      </span>
+                    </div>
+
                     <div className="grade-display">
-                      <span className={`grade-val ${colorClass}`}>{currentVal.toFixed(1)}</span>
+                      <span className={`grade-val ${colorClass}`}>{accumulated.toFixed(1)}</span>
                       <span className="grade-max">/ 5.0</span>
                     </div>
                   </div>
+
                   <div className="subject-card-footer">
                     <a
                       href="#"

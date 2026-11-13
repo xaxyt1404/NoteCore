@@ -12,14 +12,17 @@ import ImportJsonModal from "../components/dashboard/modals/ImportJsonModal";
 import SubjectDetailModal from "../components/dashboard/modals/SubjectDetailModal";
 import ToolModal from "../components/dashboard/modals/ToolModal";
 import { useToast } from "../context/ToastContext";
-import { getGradeStatus } from "../utils/gradeHelpers";
+import {
+  computeCutGrade,
+  computeSubjectGrades,
+  getGradeStatus,
+} from "../utils/gradeHelpers";
 import {
   mockUser,
   mockSemester,
   mockNotifications,
   mockSubjects,
   mockStatsCuts,
-  mockChatGreeting,
 } from "../mocks/dashboardMocks";
 
 const NAVIGATION = {
@@ -82,24 +85,6 @@ const getInitialSubjects = () => {
   return mockSubjects;
 };
 
-const computeCutGrade = (cut) => {
-  if (!cut) return null;
-  const activitiesSum = (cut.activities || []).reduce(
-    (acc, act) => acc + (Number(act.grade) || 0) * ((Number(act.weight) || 0) / 100),
-    0
-  );
-  const parcialSum =
-    (Number(cut.parcial?.grade) || 0) * ((Number(cut.parcial?.weight) || 0) / 100);
-
-  const hasAnyGrade =
-    (cut.activities || []).some((a) => a.grade > 0) ||
-    cut.parcial?.grade > 0 ||
-    cut.bonus > 0;
-
-  if (!hasAnyGrade) return null;
-  return Math.min(5.0, activitiesSum + parcialSum + (Number(cut.bonus) || 0));
-};
-
 export default function DashboardUser() {
   const [activeView, setActiveView] = useState("view-inicio");
   const [detailSubject, setDetailSubject] = useState(null);
@@ -127,23 +112,40 @@ export default function DashboardUser() {
 
   const dashboardData = useMemo(() => {
     const total = subjects.length;
-    const sumCurrent = subjects.reduce((acc, s) => acc + (Number(s.current) || 0), 0);
-    const average = total > 0 ? Number((sumCurrent / total).toFixed(2)) : 0;
+
+    const evaluatedSubjects = subjects.map((s) => {
+      const grades = computeSubjectGrades(s.cuts || []);
+      const statusInfo = getGradeStatus(grades.paceGrade, grades.evaluatedWeight);
+      return { ...s, ...grades, statusInfo };
+    });
+
+    const sumAccumulated = evaluatedSubjects.reduce((acc, s) => acc + s.accumulated, 0);
+    const average = total > 0 ? Number((sumAccumulated / total).toFixed(2)) : 0;
+
+    const withGrades = evaluatedSubjects.filter((s) => s.evaluatedWeight > 0);
+    const paceAverage =
+      withGrades.length > 0
+        ? Number(
+          (
+            withGrades.reduce((acc, s) => acc + s.paceGrade, 0) / withGrades.length
+          ).toFixed(2)
+        )
+        : 0;
 
     let excelent = 0;
     let good = 0;
     let regular = 0;
     let atRisk = 0;
 
-    subjects.forEach((s) => {
-      const { status } = getGradeStatus(s.current);
-      if (status === "excelent") excelent += 1;
-      else if (status === "success") good += 1;
-      else if (status === "warning") regular += 1;
-      else atRisk += 1;
+    withGrades.forEach((s) => {
+      if (s.statusInfo.status === "excelent") excelent += 1;
+      else if (s.statusInfo.status === "success") good += 1;
+      else if (s.statusInfo.status === "warning") regular += 1;
+      else if (s.statusInfo.status === "danger") atRisk += 1;
     });
 
-    const pct = (count) => (total > 0 ? Math.round((count / total) * 100) : 0);
+    const evaluatedCount = withGrades.length;
+    const pct = (count) => (evaluatedCount > 0 ? Math.round((count / evaluatedCount) * 100) : 0);
 
     const cutAverages = [0, 1, 2].map((idx) => {
       const validGrades = subjects
@@ -153,11 +155,7 @@ export default function DashboardUser() {
       return validGrades.reduce((a, b) => a + b, 0) / validGrades.length;
     });
 
-    const attentionIds = subjects
-      .filter((s) => Number(s.current) < 3.5)
-      .map((s) => s.id);
-
-    const lowestSubject = [...subjects].sort((a, b) => a.current - b.current)[0];
+    const lowestSubject = [...withGrades].sort((a, b) => a.paceGrade - b.paceGrade)[0];
 
     const recommendation =
       total === 0
@@ -166,16 +164,22 @@ export default function DashboardUser() {
           message:
             "aún no tienen registros. Ve a Asignaturas y agrega tus materias del semestre para empezar.",
         }
-        : lowestSubject && lowestSubject.current < 3.5
+        : withGrades.length === 0
           ? {
-            subject: lowestSubject.name,
-            message: `requiere mayor atención esta semana. Tu nota actual es ${lowestSubject.current.toFixed(1)}. Usa las herramientas de simulación para proyectar tu próximo corte.`,
-          }
-          : {
-            subject: "Excelente ritmo:",
+            subject: "Primer paso:",
             message:
-              "todas tus asignaturas están aprobando. Sigue registrando tus evaluaciones para mantener tu promedio.",
-          };
+              "registra tus primeras notas en Asignaturas para ver tu ritmo académico y proyecciones de corte.",
+          }
+          : lowestSubject && lowestSubject.paceGrade < 3.5
+            ? {
+              subject: lowestSubject.name,
+              message: `requiere mayor atención esta semana. Tu promedio evaluado es ${lowestSubject.paceGrade.toFixed(1)} (acumulado ${lowestSubject.accumulated.toFixed(1)}). Usa las herramientas para proyectar tu próximo corte.`,
+            }
+            : {
+              subject: "Excelente ritmo:",
+              message:
+                "todas tus asignaturas evaluadas van por buen camino. Sigue registrando tus notas para asegurar el semestre.",
+            };
 
     return {
       kpis: {
@@ -189,10 +193,9 @@ export default function DashboardUser() {
         goodStanding: excelent + good,
         atRisk,
       },
-      attentionIds,
       estadoChart: {
         labels: ["Excelente", "En buen estado", "Regular", "En riesgo"],
-        data: total > 0 ? [excelent, good, regular, atRisk] : [0, 0, 0, 0],
+        data: evaluatedCount > 0 ? [excelent, good, regular, atRisk] : [0, 0, 0, 0],
         legend: [
           { key: "excelente", label: "Excelente", count: excelent, percent: pct(excelent) },
           { key: "bueno", label: "En buen estado", count: good, percent: pct(good) },
@@ -201,7 +204,7 @@ export default function DashboardUser() {
         ],
       },
       rendimientoChart: {
-        labels: ["Corte 1", "Corte 2", "Corte 3", "Actual"],
+        labels: ["Corte 1", "Corte 2", "Corte 3", "Acumulado"],
         data: [
           cutAverages[0] ?? 0,
           cutAverages[1] ?? 0,
@@ -216,6 +219,8 @@ export default function DashboardUser() {
       statsSummary: {
         cuts: cutAverages,
         current: average,
+        paceCurrent: paceAverage,
+        hasEvaluated: withGrades.length > 0,
       },
       recommendation,
     };
@@ -303,7 +308,7 @@ export default function DashboardUser() {
 
   const handleReset = () => {
     const resetSubjects = subjects.map((s) => {
-      const status = getGradeStatus(0.0);
+      const status = getGradeStatus(0.0, 0);
       return {
         ...s,
         current: 0.0,
@@ -352,13 +357,10 @@ export default function DashboardUser() {
             user={user}
             semester={semester}
             kpis={dashboardData.kpis}
-            subjects={subjects}
-            attentionIds={dashboardData.attentionIds}
             estadoChart={dashboardData.estadoChart}
             rendimientoChart={dashboardData.rendimientoChart}
             recommendation={dashboardData.recommendation}
             onNavigate={setActiveView}
-            onOpenSubjectDetail={setDetailSubject}
           />
         )}
         {activeView === "view-asignaturas" && (

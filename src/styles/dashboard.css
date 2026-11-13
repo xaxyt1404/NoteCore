@@ -911,6 +911,34 @@
   font-size: 0.73rem;
 }
 
+/* Estado neutral cuando una asignatura aún no tiene notas */
+.subject-grade-badge.neutral {
+  background-color: var(--bg-card-hover);
+  color: var(--text-muted);
+}
+
+/* Badge de estado centrado encima en tarjetas de Asignaturas */
+.subject-status-center {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.45rem;
+}
+
+/* Desglose compacto de cortes (C1, C2, C3) a la izquierda del acumulado */
+.subject-cuts-breakdown {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.subject-cuts-breakdown strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
 /* =====================================
    10. BANNER COREAI, FAB Y CHAT DRAWER
    ===================================== */

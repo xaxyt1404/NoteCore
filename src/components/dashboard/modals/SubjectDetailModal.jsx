@@ -1,42 +1,11 @@
 import { useEffect, useState } from "react";
 import Modal from "../../common/Modal";
-import { formatGrade, getGradeStatus } from "../../../utils/gradeHelpers";
 import { useToast } from "../../../context/ToastContext";
-
-const computeCutGrade = (cut) => {
-  if (!cut) return null;
-  const activitiesSum = (cut.activities || []).reduce(
-    (acc, act) => acc + (Number(act.grade) || 0) * ((Number(act.weight) || 0) / 100),
-    0
-  );
-  const parcialSum =
-    (Number(cut.parcial?.grade) || 0) * ((Number(cut.parcial?.weight) || 0) / 100);
-
-  const hasAnyGrade =
-    (cut.activities || []).some((a) => a.grade > 0) ||
-    cut.parcial?.grade > 0 ||
-    cut.bonus > 0;
-
-  if (!hasAnyGrade) return null;
-  return Math.min(5.0, activitiesSum + parcialSum + (Number(cut.bonus) || 0));
-};
-
-const computeSubjectCurrent = (cuts = []) => {
-  let weightedSum = 0;
-  let evaluatedWeight = 0;
-
-  cuts.forEach((c) => {
-    const grade = computeCutGrade(c);
-    if (grade !== null) {
-      const w = (Number(c.weight) || 0) / 100;
-      weightedSum += grade * w;
-      evaluatedWeight += w;
-    }
-  });
-
-  if (evaluatedWeight === 0) return 0;
-  return Number((weightedSum / evaluatedWeight).toFixed(2));
-};
+import {
+  computeSubjectGrades,
+  formatGrade,
+  getGradeStatus,
+} from "../../../utils/gradeHelpers";
 
 const sumActivitiesWeight = (activities = []) =>
   activities.reduce((acc, a) => acc + (Number(a.weight) || 0), 0);
@@ -273,12 +242,12 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
       return;
     }
 
-    const newCurrent = computeSubjectCurrent(cutsData);
-    const status = getGradeStatus(newCurrent);
+    const { accumulated, paceGrade, evaluatedWeight } = computeSubjectGrades(cutsData);
+    const status = getGradeStatus(paceGrade, evaluatedWeight);
     onSaveSubject({
       ...subject,
       cuts: cutsData,
-      current: newCurrent,
+      current: accumulated,
       statusLabel: status.label,
       performance: status.label,
     });
@@ -295,7 +264,6 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
       </div>
 
       <div className="modal-body">
-        {/* Selector de Cortes (Pestañas) */}
         <div className="sim-tabs">
           {cutsData.map((cut, idx) => (
             <button
@@ -309,7 +277,6 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
           ))}
         </div>
 
-        {/* Sección Puntos Adicionales */}
         <div className="form-group">
           <div className="label-wrapper">
             <label>Puntos adicionales (a la definitiva del corte):</label>
@@ -327,7 +294,6 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
           </div>
         </div>
 
-        {/* Actividades Dinámicas */}
         <div className="activities-section">
           <div className="section-header-row">
             <h4>Actividades del Corte</h4>
@@ -442,7 +408,6 @@ export default function SubjectDetailModal({ isOpen, onClose, subject, onSaveSub
           )}
         </div>
 
-        {/* Examen Parcial */}
         <div className="scenario-card">
           <h4>
             <i className="fa-solid fa-file-lines highlight icon-left"></i> Examen Parcial

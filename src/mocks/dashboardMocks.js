@@ -2,11 +2,12 @@ export const mockUser = {
   firstName: "Estiben Yesid",
   lastName: "Martinez",
   greetingName: "Yesid",
-  fullName: "Estiben Yesid",
+  fullName: "Estiben Yesid Martinez",
   email: "yesid@notecore.com",
   university: "Universidad de Cartagena",
   degree: "Ingeniería de Sistemas",
   roleLabel: "Estudiante Universitario",
+  avatar: "",
 };
 
 export const mockSemester = "Semestre 2026 - 2";
@@ -14,21 +15,13 @@ export const mockSemester = "Semestre 2026 - 2";
 export const mockNotifications = [
   {
     id: 1,
-    variant: "danger",
-    icon: "fa-solid fa-triangle-exclamation",
-    subject: "Física",
-    message: "Tu nota bajó a 2.8. ¡Atención con el próximo parcial!",
-    time: "Hace 10 min",
-    unread: true,
-  },
-  {
-    id: 2,
     variant: "primary",
-    icon: "fa-regular fa-calendar",
-    subject: "Matemáticas",
-    message: "Parcial 2 programado para el 15 de Octubre.",
-    time: "Hace 2 horas",
-    unread: false,
+    icon: "fa-solid fa-graduation-cap",
+    subject: "NoteCore",
+    message:
+      "¡Bienvenido! Registra tus notas en Asignaturas para proyectar tu semestre.",
+    time: "Ahora",
+    unread: true,
   },
 ];
 
@@ -70,4 +63,3 @@ export const mockStatsCuts = [
 
 export const mockChatGreeting =
   "¡Hola Yesid! Soy CoreAI. ¿En qué te puedo ayudar hoy con tus materias?";
-  

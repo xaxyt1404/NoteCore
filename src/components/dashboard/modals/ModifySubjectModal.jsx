@@ -69,7 +69,7 @@ export default function ModifySubjectModal({
 
     if (mode === "create") {
       const initialGrade = 0.0;
-      const status = getGradeStatus(initialGrade);
+      const status = getGradeStatus(initialGrade, 0);
 
       const newSubject = {
         id: `sub-${Date.now()}`,

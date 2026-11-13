@@ -1,61 +1,33 @@
-import { useEffect, useMemo, useState } from "react";
-import { Doughnut, Line } from "react-chartjs-2";
+import { useState } from "react";
 import {
   Chart as ChartJS,
   ArcElement,
   CategoryScale,
-  Filler,
   LinearScale,
-  LineElement,
   PointElement,
+  LineElement,
+  Filler,
   Tooltip,
+  Legend,
 } from "chart.js";
+import { Doughnut, Line } from "react-chartjs-2";
 import CustomDropdown from "../../common/CustomDropdown";
-import { getGradeStatus } from "../../../utils/gradeHelpers";
 
-ChartJS.register(ArcElement, CategoryScale, Filler, LinearScale, LineElement, PointElement, Tooltip);
+ChartJS.register(
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
 
-const readVar = (name) =>
-  getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-
-const readColors = () => ({
-  primary: readVar("--primary"),
-  excelent: readVar("--excelent"),
-  success: readVar("--success"),
-  warning: readVar("--warning"),
-  danger: readVar("--danger"),
-  textColor: readVar("--text-muted"),
-  borderColor: readVar("--border-color"),
-  bgCard: readVar("--bg-card"),
-  bgTooltip: readVar("--bg-tooltip"),
-  textTooltip: readVar("--text-tooltip"),
-});
-
-// Sincroniza los colores del gráfico con las variables CSS del tema activo
-function useChartColors() {
-  const [colors, setColors] = useState(readColors);
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => setColors(readColors()));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-    return () => observer.disconnect();
-  }, []);
-
-  return colors;
-}
-
-const hexToRgba = (hex, alpha) => {
-  const c = hex.replace("#", "");
-  const full = c.length === 3 ? c.split("").map((x) => x + x).join("") : c;
-  const n = parseInt(full, 16);
-  if (Number.isNaN(n)) return "transparent";
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
-};
-
-const tickFont = { family: "Inter", size: 11, weight: "600" };
+const cssVar = (name, fallback) =>
+  typeof window !== "undefined"
+    ? getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback
+    : fallback;
 
 const LEGEND_COLOR_CLASS = {
   excelente: "text-excelent",
@@ -68,115 +40,84 @@ export default function HomeView({
   user,
   semester,
   kpis,
-  subjects,
-  attentionIds,
   estadoChart,
   rendimientoChart,
   recommendation,
   onNavigate,
-  onOpenSubjectDetail,
 }) {
-  const colors = useChartColors();
-  const [mode, setMode] = useState(rendimientoChart.options[0].value);
+  const [mode, setMode] = useState("promedio");
 
-  const attention = attentionIds
-    .map((id) => subjects.find((s) => s.id === id))
-    .filter(Boolean);
+  const primary = cssVar("--primary", "#2ab8ff");
+  const excelent = cssVar("--excelent", "#29d217");
+  const success = cssVar("--success", "#18a87c");
+  const warning = cssVar("--warning", "#f5a623");
+  const danger = cssVar("--danger", "#e54d4d");
+  const textMuted = cssVar("--text-muted", "#8c9ba5");
+  const borderColor = cssVar("--border-color", "#2b3744");
 
-  const hasAttention = attention.length > 0;
-
-  const lineData = useMemo(
-    () => ({
-      labels: rendimientoChart.labels,
-      datasets: [
-        {
-          label: "Promedio",
-          data: rendimientoChart.data,
-          borderColor: colors.primary,
-          borderWidth: 3,
-          pointBackgroundColor: colors.bgCard,
-          pointBorderColor: colors.primary,
-          pointBorderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          fill: true,
-          tension: 0.35,
-          backgroundColor: (context) => {
-            const { ctx, chartArea } = context.chart;
-            if (!chartArea) return undefined;
-            const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-            g.addColorStop(0, hexToRgba(colors.primary, 0.35));
-            g.addColorStop(1, hexToRgba(colors.primary, 0));
-            return g;
-          },
-        },
-      ],
-    }),
-    [colors, rendimientoChart],
-  );
-
-  const lineOptions = useMemo(
-    () => ({
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: colors.bgTooltip,
-          titleColor: colors.textTooltip,
-          bodyColor: colors.primary,
-          borderColor: colors.borderColor,
-          borderWidth: 1,
-          padding: 10,
-          displayColors: false,
-        },
+  const donutData = {
+    labels: estadoChart.labels,
+    datasets: [
+      {
+        data: estadoChart.data,
+        backgroundColor: [excelent, success, warning, danger],
+        borderWidth: 0,
+        hoverOffset: 4,
       },
-      scales: {
-        x: { grid: { display: false }, ticks: { color: colors.textColor, font: tickFont } },
-        y: {
-          min: 0,
-          max: 5.0,
-          grid: { color: colors.borderColor },
-          ticks: { stepSize: 0.5, color: colors.textColor, font: tickFont },
-        },
-      },
-    }),
-    [colors],
-  );
-
-  const donutData = useMemo(
-    () => ({
-      labels: estadoChart.labels,
-      datasets: [
-        {
-          data: estadoChart.data,
-          backgroundColor: [colors.excelent, colors.success, colors.warning, colors.danger],
-          borderWidth: 0,
-          hoverOffset: 4,
-        },
-      ],
-    }),
-    [colors, estadoChart],
-  );
-
-  const donutOptions = {
-    cutout: "80%",
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { enabled: true, padding: 8 } },
+    ],
   };
 
-  const goTo = (e, id) => {
-    e.preventDefault();
-    onNavigate?.(id);
+  const donutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "74%",
+    plugins: { legend: { display: false } },
+  };
+
+  const lineData = {
+    labels: rendimientoChart.labels,
+    datasets: [
+      {
+        label: mode === "promedio" ? "Promedio General" : "Por Cortes",
+        data: rendimientoChart.data,
+        borderColor: primary,
+        backgroundColor: "rgba(42, 184, 255, 0.12)",
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: primary,
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        pointRadius: 5,
+      },
+    ],
+  };
+
+  const lineOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: {
+        min: 0,
+        max: 5.0,
+        ticks: { color: textMuted, font: { weight: "600" } },
+        grid: { color: borderColor },
+      },
+      x: {
+        ticks: { color: textMuted, font: { weight: "600" } },
+        grid: { display: false },
+      },
+    },
   };
 
   return (
     <section id="view-inicio" className="dash-view active">
       <div className="view-welcome-bar">
         <div className="welcome-heading">
-          <h1>Hola, {user.greetingName} 👋</h1>
-          <p>Este es el resumen de tu progreso académico.</p>
+          <h1>
+            Bienvenido, <span className="highlight">{user.greetingName}</span> 👋
+          </h1>
+          <p>Este es el resumen de tu progreso y desempeño académico actual.</p>
         </div>
         <button type="button" className="btn btn-outline semester-selector-btn">
           <i className="fa-regular fa-calendar icon-left"></i>
@@ -191,7 +132,7 @@ export default function HomeView({
             <i className="fa-solid fa-graduation-cap"></i>
           </div>
           <div className="kpi-content">
-            <span className="kpi-label">Promedio general</span>
+            <span className="kpi-label">Promedio acumulado</span>
             <div className="kpi-value-row">
               <span className="kpi-value">{kpis.average.toFixed(1)}</span>
               <span className="kpi-max">/ {kpis.maxGrade.toFixed(1)}</span>
@@ -228,27 +169,27 @@ export default function HomeView({
         </div>
       </div>
 
-      {/* Tarjeta unificada: Estado académico + Asignaturas que requieren atención (si existen) */}
-      <div className={`dash-card academic-overview-card ${hasAttention ? "has-attention" : "no-attention"}`}>
+      {/* Tarjeta simplificada: solo Estado académico con dona centrada */}
+      <div className="dash-card academic-overview-card no-attention">
         <div className="overview-status-col">
           <div className="dash-card-header">
             <div>
               <h3>
                 <i className="fa-solid fa-bullseye card-icon"></i> Estado académico
               </h3>
-              <p className="dash-card-sub">Vista rápida de tu rendimiento por área</p>
+              <p className="dash-card-sub">Vista rápida de tu rendimiento por ritmo de evaluación</p>
             </div>
           </div>
 
-          <div className={`donut-layout ${hasAttention ? "donut-stacked" : "donut-centered"}`}>
+          <div className="donut-layout donut-centered">
             <div className="donut-chart-box">
               <Doughnut data={donutData} options={donutOptions} />
               <div className="donut-center-info">
                 <span className="donut-val">{kpis.average.toFixed(1)}</span>
-                <span className="donut-lbl">Promedio</span>
+                <span className="donut-lbl">Acumulado</span>
               </div>
             </div>
-            <div className={`donut-legend-list ${hasAttention ? "legend-horizontal" : "legend-vertical"}`}>
+            <div className="donut-legend-list legend-vertical">
               {estadoChart.legend.map((item) => {
                 const colorClass = LEGEND_COLOR_CLASS[item.key] || "";
                 return (
@@ -263,45 +204,6 @@ export default function HomeView({
             </div>
           </div>
         </div>
-
-        {hasAttention && (
-          <div className="overview-attention-col">
-            <div className="dash-card-header">
-              <div>
-                <h3>
-                  <i className="fa-solid fa-triangle-exclamation card-icon text-danger"></i> Asignaturas que
-                  requieren atención
-                </h3>
-                <p className="dash-card-sub">Estas asignaturas están en riesgo o cerca del mínimo.</p>
-              </div>
-              <a href="#view-asignaturas" className="card-link-action" onClick={(e) => goTo(e, "view-asignaturas")}>
-                Ver todas <i className="fa-solid fa-arrow-right"></i>
-              </a>
-            </div>
-
-            <div className="attention-subjects-list">
-              {attention.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className="attention-subject-item"
-                  aria-label={`Abrir asignatura ${s.name}`}
-                  onClick={() => {
-                    onOpenSubjectDetail?.(s);
-                  }}
-                >
-                  <div className="subject-header-row">
-                    <span className="subject-name">{s.name}</span>
-                    <span className={`subject-grade-badge ${getGradeStatus(s.current).colorClass}`}>
-                      Nota actual <strong>{s.current.toFixed(1)}</strong> / 5.0
-                    </span>
-                    <i className="fa-solid fa-chevron-right arrow-indicator"></i>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="dash-card">
@@ -333,7 +235,11 @@ export default function HomeView({
             </p>
           </div>
         </div>
-        <button type="button" className="btn btn-primary">
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => onNavigate?.("view-herramientas")}
+        >
           <i className="fa-solid fa-arrow-right icon-left"></i> Ver sugerencias
         </button>
       </div>

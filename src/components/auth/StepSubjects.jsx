@@ -51,7 +51,7 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
       return;
     }
 
-    const status = getGradeStatus(0.0);
+    const status = getGradeStatus(0.0, 0);
     const formattedSubjects = subjects.map((s, idx) => ({
       id: `sub-${Date.now()}-${idx}`,
       name: s.name,
@@ -76,14 +76,6 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
       addSubject();
     }
   };
-
-  const iconBtn = (color) => ({
-    background: "none",
-    border: "none",
-    color,
-    cursor: "pointer",
-    padding: "2px 6px",
-  });
 
   return (
     <div>
