@@ -100,6 +100,7 @@
   }
 
   .dashboard-main {
+    padding-top: 70px;
     margin-left: 260px;
     width: calc(100% - 260px);
     display: flex;
@@ -201,8 +202,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 260px;
+  right: 0;
   z-index: 80;
 }
 
@@ -1178,8 +1181,6 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.88rem;
-  white-space: nowrap;
 }
 
 .stats-table thead {
@@ -1188,16 +1189,16 @@
 }
 
 .stats-table th {
-  padding: 0.9rem 1.2rem;
+  padding: 0.95rem 1rem;
   font-weight: 700;
   color: var(--text-muted);
   font-size: 0.78rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 .stats-table td {
-  padding: 1rem 1.2rem;
+  padding: 1rem;
   color: var(--text-main);
   border-bottom: 1px solid var(--border-color);
   vertical-align: middle;
@@ -1489,8 +1490,462 @@
   touch-action: pan-y;
 }
 
+/* =========================
+   19. RESPONSIVO DEL PANEL
+   ========================= */
+
+@media (max-width: 1250px) {
+  #view-estadisticas .stats-table th,
+  #view-estadisticas .stats-table td {
+    padding: 0.85rem 0.6rem;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .dashboard-main {
+    padding-top: 70px;
+    width: 100%;
+    max-width: 100vw;
+    min-width: 0;
+  }
+
+  .dash-header {
+    padding: 0 1.25rem;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+    left: 0;
+  }
+
+  .dash-viewport {
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .kpi-grid,
+  .subjects-grid-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .academic-overview-card.has-attention {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .academic-overview-card.has-attention .overview-status-col {
+    padding-right: 0;
+    padding-bottom: 1.5rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .academic-overview-card.has-attention .overview-attention-col {
+    max-width: 100%;
+  }
+  #view-estadisticas .stats-table {
+    font-size: 0.82rem;
+  }
+
+  #view-estadisticas .stats-table th,
+  #view-estadisticas .stats-table td {
+    padding: 0.75rem 0.65rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .dash-header {
+    padding: 0 1rem;
+  }
+
+  .dash-header .logo-img {
+    height: 36px;
+  }
+
+  .view-welcome-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .ai-recommendation-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.4rem;
+    gap: 1.2rem;
+  }
+
+  .ai-recommendation-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Remodelación de tabla de Estadísticas (#view-estadisticas) en móvil */
+  #view-estadisticas .table-responsive {
+    overflow-x: visible;
+  }
+
+  #view-estadisticas .stats-table,
+  #view-estadisticas .stats-table tbody,
+  #view-estadisticas .stats-table tfoot {
+    display: block;
+    width: 100%;
+  }
+
+  #view-estadisticas .stats-table thead {
+    display: none;
+  }
+
+  #view-estadisticas .stats-table tbody tr,
+  #view-estadisticas .stats-table tfoot tr {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.65rem 0.5rem;
+    padding: 1rem;
+    margin-bottom: 0.85rem;
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    white-space: normal;
+  }
+
+  #view-estadisticas .stats-table tbody tr:last-child {
+    margin-bottom: 0.85rem;
+  }
+
+  #view-estadisticas .stats-table tfoot tr {
+    margin-bottom: 0;
+    border-color: var(--primary);
+    background-color: var(--bg-card-hover);
+  }
+
+  #view-estadisticas .stats-table td {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.3rem;
+    border: none;
+    background-color: var(--bg-card);
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* Etiquetas superiores para los 3 cortes */
+  #view-estadisticas .stats-table tbody td:nth-child(3)::before,
+  #view-estadisticas .stats-table tfoot td:nth-child(2)::before {
+    content: "C1 (30%)";
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  #view-estadisticas .stats-table tbody td:nth-child(4)::before,
+  #view-estadisticas .stats-table tfoot td:nth-child(3)::before {
+    content: "C2 (30%)";
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  #view-estadisticas .stats-table tbody td:nth-child(5)::before,
+  #view-estadisticas .stats-table tfoot td:nth-child(4)::before {
+    content: "C3 (40%)";
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+
+  /* Fila superior de cada ficha: Posición + Asignatura */
+  #view-estadisticas .stats-table tbody td:nth-child(1) {
+    display: none;
+  }
+
+  #view-estadisticas .stats-table tbody td:nth-child(2),
+  #view-estadisticas .stats-table tfoot td:nth-child(1) {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    background: transparent;
+    padding: 0 0 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    border-radius: 0;
+    font-size: 0.98rem;
+    font-weight: 800;
+    text-align: left;
+  }
+
+  /* Fila inferior de cada ficha: Nota Actual y Estado */
+  #view-estadisticas .stats-table tbody td:nth-child(6),
+  #view-estadisticas .stats-table tfoot td:nth-child(5) {
+    grid-column: 1 / 2;
+    background: transparent;
+    padding: 0.25rem 0 0 0;
+    align-items: flex-start;
+  }
+
+  #view-estadisticas .stats-table tbody td:nth-child(7),
+  #view-estadisticas .stats-table tfoot td:nth-child(6) {
+    grid-column: 2 / -1;
+    background: transparent;
+    padding: 0.25rem 0 0 0;
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  .dash-viewport {
+    padding: 1rem 0.9rem;
+  }
+
+  .dash-view {
+    gap: 1.1rem;
+    width: 100%;
+  }
+
+  .dashboard-main {
+    padding-top: 60px;
+  }
+
+  .dash-header {
+    height: 60px;
+    padding: 0 0.85rem;
+    gap: 0.5rem;
+  }
+
+  .header-left {
+    gap: 0.55rem;
+  }
+
+  .dash-header .logo-img {
+    height: 30px;
+  }
+
+  .header-right {
+    gap: 0.45rem;
+    flex-shrink: 0;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .profile-btn {
+    padding: 0 0.6rem;
+    gap: 5px;
+  }
+
+  .header-popover-menu {
+    width: min(290px, calc(100vw - 1.7rem));
+  }
+
+  .welcome-heading h1 {
+    font-size: 1.45rem;
+  }
+
+  .welcome-heading p {
+    font-size: 0.85rem;
+  }
+
+  .kpi-grid,
+  .subjects-grid-3col {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .kpi-card {
+    padding: 1rem 1.1rem;
+    gap: 0.95rem;
+    align-items: center;
+  }
+
+  .kpi-icon-box {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+  }
+
+  .kpi-value {
+    font-size: 1.55rem;
+  }
+
+  .dash-card {
+    padding: 1.1rem;
+    width: 100%;
+  }
+
+  .dash-card-header {
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .dash-card-header h3 {
+    font-size: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .subject-card-compact .dash-card-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .donut-layout.donut-centered,
+  .donut-layout.donut-stacked {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .donut-chart-box {
+    width: 125px;
+    height: 125px;
+  }
+
+  .donut-legend-list.legend-horizontal {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .subject-header-row {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+
+  .ai-rec-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .ai-fab-btn {
+    bottom: 1.1rem;
+    right: 1.1rem;
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  .ai-chat-drawer {
+    right: 0.85rem;
+    left: 0.85rem;
+    bottom: 4.8rem;
+    width: auto;
+    height: 420px;
+  }
+  /* Tabla de metas en Herramienta 1 adaptada sin scroll horizontal */
+  .result-box .table-responsive {
+    overflow-x: visible;
+  }
+
+  .result-box .stats-table,
+  .result-box .stats-table tbody,
+  .result-box .stats-table tr,
+  .result-box .stats-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .result-box .stats-table thead {
+    display: none;
+  }
+
+  .result-box .stats-table tr {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    padding: 0.75rem 0.85rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .result-box .stats-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .result-box .stats-table td {
+    padding: 0;
+    border: none;
+    width: auto;
+  }
+
+  .result-box .stats-table td:first-child::before {
+    content: "Meta ";
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .result-box .stats-table td:last-child {
+    width: 100%;
+    font-size: 0.82rem;
+  }
+
+  #view-ajustes .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  #view-ajustes .form-grid .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .settings-option-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .settings-option-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  #view-soporte .scenarios-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .dash-viewport {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .welcome-heading h1 {
+    font-size: 1.3rem;
+  }
+
+  .kpi-card {
+    padding: 0.9rem;
+    gap: 0.8rem;
+  }
+
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+
+  .form-grid.activity-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ==================
-   19. ACCESIBILIDAD
+   20. ACCESIBILIDAD
    ================== */
 
 /* Foco Accesible */
