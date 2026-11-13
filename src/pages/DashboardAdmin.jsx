@@ -15,7 +15,7 @@ export default function DashboardAdmin() {
       navigation={NAVIGATION}
       activeView="view-admin-inicio"
       user={mockUser}
-      onLogout={() => navigate("/login")}
+      onLogout={() => navigate("/")}
     >
       <section id="view-admin-inicio" className="dash-view active"></section>
     </DashboardLayout>

@@ -79,8 +79,8 @@ export default function DashboardUser() {
 
   const closeModal = () => setModal(null);
 
-  const redirectToLogin = (delay) => {
-    timerRef.current = setTimeout(() => navigate("/login"), delay);
+  const redirectToLanding = (delay) => {
+    timerRef.current = setTimeout(() => navigate("/"), delay);
   };
 
   // Métricas, gráficos y resúmenes calculados dinámicamente desde `subjects`
@@ -142,7 +142,10 @@ export default function DashboardUser() {
       kpis: {
         average,
         maxGrade: 5.0,
-        trend: total > 0 ? `${total} ${total === 1 ? "asignatura activa" : "asignaturas activas"}` : "Sin asignaturas aún",
+        trend:
+          total > 0
+            ? `${total} ${total === 1 ? "asignatura activa" : "asignaturas activas"}`
+            : "Sin asignaturas aún",
         totalSubjects: total,
         goodStanding: excelent + good,
         atRisk,
@@ -181,7 +184,7 @@ export default function DashboardUser() {
 
   const handleLogout = () => {
     showToast("Sesión cerrada.", "info");
-    redirectToLogin(1000);
+    redirectToLanding(1000);
   };
 
   const handleSaveProfile = (form) => {
@@ -193,6 +196,7 @@ export default function DashboardUser() {
       greetingName: first.split(" ")[0] || prev.greetingName,
     }));
   };
+
   const handleSaveSimulation = (subjectId, simulation) => {
     const updated = subjects.map((s) =>
       s.id === subjectId
@@ -244,7 +248,7 @@ export default function DashboardUser() {
   const handleDelete = () => {
     sessionStorage.removeItem("notecore_initial_subjects");
     showToast("Cuenta eliminada correctamente.", "danger");
-    redirectToLogin(1200);
+    redirectToLanding(1200);
   };
 
   return (
@@ -304,7 +308,12 @@ export default function DashboardUser() {
             onDelete={handleDelete}
           />
         )}
-        {activeView === "view-soporte" && <SupportView />}
+        {activeView === "view-soporte" && (
+          <SupportView
+            user={user}
+            onNavigate={setActiveView}
+          />
+        )}
       </DashboardLayout>
 
       <ProfileModal
@@ -320,12 +329,15 @@ export default function DashboardUser() {
         onInvalid={() => showToast("Selecciona un archivo con extensión .json", "warning")}
       />
       <ToolModal
-        toolId={["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal) ? modal : null}
+        toolId={
+          ["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal)
+            ? modal
+            : null
+        }
         onClose={closeModal}
         subjects={subjects}
         onSaveSimulation={handleSaveSimulation}
       />
     </>
-
   );
 }
