@@ -5,9 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NoteCore</title>
+  <meta name="color-scheme" content="light dark" />
   <link rel="icon" type="image/png" href="/NoteCore/favicon.png" />
 
-  <!-- Tema síncrono (evita FOUC) -->
+  <!-- Tema síncrono (evita FOUC): data-theme + color-scheme pintan el fondo correcto antes de cargar el CSS -->
   <script>
     (function () {
       try {
@@ -19,6 +20,7 @@
               : "light"
             : pref;
         document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.style.colorScheme = theme;
       } catch (e) { }
     })();
   </script>
@@ -45,12 +47,12 @@
   <meta name="twitter:description"
     content="Configura tus cortes, calcula cuánto necesitas para aprobar y recibe apoyo de CoreAI." />
   <meta name="twitter:image" content="https://xaxyt1404.github.io/NoteCore/notecorebanner.png" />
-  <script type="module" crossorigin src="/NoteCore/assets/index-BR2tUdnU.js"></script>
-  <link rel="stylesheet" crossorigin href="/NoteCore/assets/index-H-jU2wJo.css">
+  <script type="module" crossorigin src="/NoteCore/assets/index-BHa4b6Z6.js"></script>
+  <link rel="stylesheet" crossorigin href="/NoteCore/assets/index-JmDTd8A0.css">
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root"></div>
 </body>
 
 </html>
