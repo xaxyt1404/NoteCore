@@ -15,13 +15,35 @@ export const formatGradePrecise = (val) =>
 
 // Clase según exigencia de la nota requerida
 export function getGradeColorClass(grade) {
-  if (grade <= 4.0) return "text-success";
-  if (grade <= 4.5) return "text-warning";
+  const rounded = Math.round(Number(grade) * 100) / 100;
+  if (rounded <= 3.0) return "text-excelent";
+  if (rounded <= 3.6) return "text-success";
+  if (rounded <= 4.5) return "text-warning";
   return "text-danger";
 }
 
+// Etiqueta + clase de color según exigencia de la nota requerida
+export function getRequiredGradeViability(grade) {
+  const rounded = Math.round(Number(grade) * 100) / 100;
+  if (rounded <= 0) {
+    return { colorClass: "text-excelent", label: "Meta cumplida" };
+  }
+  if (rounded <= 3.0) {
+    return { colorClass: "text-excelent", label: "Muy alcanzable" };
+  }
+  if (rounded <= 3.6) {
+    return { colorClass: "text-success", label: "Alcanzable" };
+  }
+  if (rounded <= 4.5) {
+    return { colorClass: "text-warning", label: "Requiere esfuerzo" };
+  }
+  if (rounded <= 5.0) {
+    return { colorClass: "text-danger", label: "Máximo esfuerzo" };
+  }
+  return { colorClass: "text-danger", label: "Supera el máximo (5,0)" };
+}
+
 // Clase y etiqueta según estado de la nota
-// danger: < 3.0 | warning: 3.0 a 3.4 | success: 3.5 a 4.4 | excelent: >= 4.5
 export function getGradeStatus(grade) {
   const value = Number(grade);
   if (value < 3.0) {

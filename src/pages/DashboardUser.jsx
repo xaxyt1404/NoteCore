@@ -9,6 +9,7 @@ import SettingsView from "../components/dashboard/views/SettingsView";
 import SupportView from "../components/dashboard/views/SupportView";
 import ProfileModal from "../components/dashboard/ProfileModal";
 import ImportJsonModal from "../components/dashboard/modals/ImportJsonModal";
+import ToolModal from "../components/dashboard/modals/ToolModal";
 import { useToast } from "../context/ToastContext";
 import { getGradeStatus } from "../utils/gradeHelpers";
 import {
@@ -114,7 +115,7 @@ export default function DashboardUser() {
 
     // Asignaturas en riesgo o regular para la tarjeta de atención
     const attentionIds = subjects
-      .filter((s) => Number(s.current) < 3.5)
+      .filter((s) => Number(s.current) <= 3.0)
       .map((s) => s.id);
 
     const lowestSubject = [...subjects].sort((a, b) => a.current - b.current)[0];
@@ -126,15 +127,15 @@ export default function DashboardUser() {
           message:
             "aún no tienen registros. Ve a Asignaturas y agrega tus asignaturas del semestre para empezar.",
         }
-        : lowestSubject && lowestSubject.current < 3.5
+        : lowestSubject && lowestSubject.current < 3.0
           ? {
             subject: lowestSubject.name,
-            message: `requiere mayor atención esta semana. Tu nota actual es ${lowestSubject.current.toFixed(1)}. Usa las herramientas de simulación para proyectar tu próximo corte.`,
+            message: `requiere mayor atención este corte. Tu nota actual es ${lowestSubject.current.toFixed(1)}. Usa las herramientas de simulación para proyectar tu próximo corte.`,
           }
           : {
             subject: "Excelente ritmo:",
             message:
-              "todas tus asignaturas están aprobando. Sigue registrando tus evaluaciones para mantener tu promedio.",
+              "todas tus asignaturas están aprobando. Sigue registrando tus notas para mantener tu promedio.",
           };
 
     return {
@@ -191,6 +192,17 @@ export default function DashboardUser() {
       fullName: first || prev.fullName,
       greetingName: first.split(" ")[0] || prev.greetingName,
     }));
+  };
+  const handleSaveSimulation = (subjectId, simulation) => {
+    const updated = subjects.map((s) =>
+      s.id === subjectId
+        ? { ...s, simulations: [simulation, ...(s.simulations || [])] }
+        : s
+    );
+    setSubjects(updated);
+    sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(updated));
+    const targetSub = updated.find((s) => s.id === subjectId);
+    showToast(`Simulación guardada en "${targetSub?.name || "la asignatura"}".`, "success");
   };
 
   const handleExport = () => {
@@ -307,6 +319,13 @@ export default function DashboardUser() {
         onImport={handleImport}
         onInvalid={() => showToast("Selecciona un archivo con extensión .json", "warning")}
       />
+      <ToolModal
+        toolId={["last-cut", "parcial-needed", "what-if", "strategy", "inverse"].includes(modal) ? modal : null}
+        onClose={closeModal}
+        subjects={subjects}
+        onSaveSimulation={handleSaveSimulation}
+      />
     </>
+
   );
 }
