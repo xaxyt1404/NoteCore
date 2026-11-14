@@ -429,22 +429,23 @@
 }
 
 .profile-popover {
-  width: 220px;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(310px, calc(100vw - 1.7rem));
   padding: 0.5rem;
 }
-
 .user-info-head {
   padding: 0.4rem 0.5rem;
 }
-
 .user-full-name {
   font-weight: 800;
   font-size: 0.88rem;
+  overflow-wrap: anywhere;
 }
-
 .user-email {
   font-size: 0.75rem;
   color: var(--text-muted);
+  overflow-wrap: anywhere;
 }
 
 .popover-divider {
@@ -775,6 +776,15 @@
 .attention-subject-item:hover {
   border-color: var(--primary);
   transform: translateX(4px);
+}
+
+.attention-subject-item.is-static {
+  cursor: default;
+}
+
+.attention-subject-item.is-static:hover {
+  border-color: var(--border-color);
+  transform: none;
 }
 
 .subject-header-row {

@@ -165,6 +165,15 @@ export const adminApi = {
     request(`/admin/universities/${id}`, {
       method: "DELETE",
     }),
+  updateUser: (id, payload) =>
+    request(`/admin/users/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
+  deleteUser: (id) =>
+    request(`/admin/users/${id}`, {
+      method: "DELETE",
+    }),
 };
 
 // ==========================================

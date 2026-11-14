@@ -1,8 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProfileModal from "../components/dashboard/ProfileModal";
 import Modal from "../components/common/Modal";
+import CustomDropdown from "../components/common/CustomDropdown";
 import { useToast } from "../context/ToastContext";
 import {
   adminApi,
@@ -11,6 +23,21 @@ import {
   contactApi,
   getToken,
 } from "../services/api";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
+
+const cssVar = (name, fallback) =>
+  typeof window !== "undefined"
+    ? getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback
+    : fallback;
 
 const NAVIGATION = {
   main: [
@@ -21,6 +48,11 @@ const NAVIGATION = {
   ],
   bottom: [],
 };
+
+const TRAFFIC_RANGE_OPTIONS = [
+  { value: "7d", label: "Últimos 7 días" },
+  { value: "30d", label: "Últimos 30 días" },
+];
 
 const getCachedAdmin = () => {
   try {
@@ -47,6 +79,7 @@ export default function DashboardAdmin() {
   const [user, setUser] = useState(getCachedAdmin);
   const [profileOpen, setProfileOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [trafficRange, setTrafficRange] = useState("7d");
 
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -58,19 +91,29 @@ export default function DashboardAdmin() {
   const [messages, setMessages] = useState([]);
   const [universities, setUniversities] = useState([]);
 
-  // Estado de bandeja de mensajes
-  const [msgFilter, setMsgFilter] = useState("all"); // "all" | "pending" | "resolved"
+  const [msgFilter, setMsgFilter] = useState("all");
   const [replyModalMsg, setReplyModalMsg] = useState(null);
   const [replyText, setReplyText] = useState("");
   const [sendingReply, setSendingReply] = useState(false);
 
-  // Estado de nueva/edición de universidad
   const [uniModal, setUniModal] = useState({ open: false, editing: null });
   const [uniForm, setUniForm] = useState({
     name: "",
     city: "Cartagena",
     cutsInput: "30, 30, 40",
     programsInput: "",
+  });
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [editingUser, setEditingUser] = useState(false);
+  const [confirmDeleteUser, setConfirmDeleteUser] = useState(false);
+  const [savingUser, setSavingUser] = useState(false);
+  const [userForm, setUserForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    university: "",
+    degree: "",
   });
 
   const { showToast } = useToast();
@@ -114,7 +157,6 @@ export default function DashboardAdmin() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
-  // Notificaciones en la Topbar con los mensajes pendientes
   const notifications = useMemo(() => {
     const pending = messages.filter((m) => m.status === "pending");
     if (pending.length === 0) {
@@ -147,6 +189,115 @@ export default function DashboardAdmin() {
     return messages;
   }, [messages, msgFilter]);
 
+  const universityNames = useMemo(() => universities.map((u) => u.name), [universities]);
+
+  const selectedUserDegrees = useMemo(() => {
+    const found = universities.find((u) => u.name === userForm.university);
+    return found?.programs || [];
+  }, [universities, userForm.university]);
+
+  const { trafficChartData, trafficChartOptions } = useMemo(() => {
+    const days = trafficRange === "30d" ? 30 : 7;
+    const primary = cssVar("--primary", "#2ab8ff");
+    const success = cssVar("--success", "#18a87c");
+    const textMuted = cssVar("--text-muted", "#8c9ba5");
+    const borderColor = cssVar("--border-color", "#2b3744");
+
+    const toDayKey = (dateVal) => {
+      const d = new Date(dateVal);
+      if (Number.isNaN(d.getTime())) return null;
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+        d.getDate()
+      ).padStart(2, "0")}`;
+    };
+
+    const userCounts = {};
+    users.forEach((u) => {
+      const k = toDayKey(u.createdAt);
+      if (k) userCounts[k] = (userCounts[k] || 0) + 1;
+    });
+
+    const msgCounts = {};
+    messages.forEach((m) => {
+      const k = toDayKey(m.createdAt);
+      if (k) msgCounts[k] = (msgCounts[k] || 0) + 1;
+    });
+
+    const labels = [];
+    const userSeries = [];
+    const msgSeries = [];
+
+    const today = new Date();
+    for (let i = days - 1; i >= 0; i -= 1) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const key = toDayKey(d);
+      labels.push(
+        d.toLocaleDateString("es-CO", { day: "2-digit", month: "short" })
+      );
+      userSeries.push(userCounts[key] || 0);
+      msgSeries.push(msgCounts[key] || 0);
+    }
+
+    return {
+      trafficChartData: {
+        labels,
+        datasets: [
+          {
+            label: "Registros",
+            data: userSeries,
+            borderColor: primary,
+            backgroundColor: "rgba(42, 184, 255, 0.14)",
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: primary,
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: days > 14 ? 3 : 5,
+          },
+          {
+            label: "Mensajes",
+            data: msgSeries,
+            borderColor: success,
+            backgroundColor: "rgba(24, 168, 124, 0.10)",
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: success,
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: days > 14 ? 3 : 5,
+          },
+        ],
+      },
+      trafficChartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: textMuted, boxWidth: 12, font: { weight: "600" } },
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            suggestedMax: 5,
+            ticks: {
+              stepSize: 1,
+              color: textMuted,
+              font: { weight: "600" },
+            },
+            grid: { color: borderColor },
+          },
+          x: {
+            ticks: { color: textMuted, font: { weight: "600" } },
+            grid: { display: false },
+          },
+        },
+      },
+    };
+  }, [users, messages, trafficRange]);
+
   const handleLogout = () => {
     clearSessionStorageData();
     showToast("Sesión de administrador cerrada.", "info");
@@ -168,6 +319,86 @@ export default function DashboardAdmin() {
       showToast("Perfil actualizado correctamente.", "success");
     } catch (error) {
       showToast(error.message || "Error al actualizar perfil.", "danger");
+    }
+  };
+
+  const openUserModal = (target) => {
+    if (target.role === "admin") return;
+    setSelectedUser(target);
+    setEditingUser(false);
+    setConfirmDeleteUser(false);
+    setUserForm({
+      firstName: target.firstName || "",
+      lastName: target.lastName || "",
+      email: target.email || "",
+      university: target.university || "",
+      degree: target.degree || "",
+    });
+  };
+
+  const closeUserModal = () => {
+    setSelectedUser(null);
+    setEditingUser(false);
+    setConfirmDeleteUser(false);
+  };
+
+  const handleToggleEditUser = async () => {
+    if (!editingUser) {
+      setEditingUser(true);
+      setConfirmDeleteUser(false);
+      return;
+    }
+
+    if (!userForm.firstName.trim() || !userForm.lastName.trim() || !userForm.email.trim()) {
+      showToast("Nombre, apellidos y correo electrónico son obligatorios.", "warning");
+      return;
+    }
+    if (!userForm.university || !userForm.degree) {
+      showToast("Selecciona la institución y el programa académico.", "warning");
+      return;
+    }
+
+    setSavingUser(true);
+    try {
+      const res = await adminApi.updateUser(selectedUser.id, {
+        firstName: userForm.firstName.trim(),
+        lastName: userForm.lastName.trim(),
+        email: userForm.email.trim(),
+        university: userForm.university,
+        degree: userForm.degree,
+      });
+      setUsers((prev) => prev.map((u) => (u.id === res.user.id ? res.user : u)));
+      setSelectedUser(res.user);
+      setEditingUser(false);
+      showToast("Perfil de usuario actualizado correctamente.", "success");
+    } catch (error) {
+      showToast(error.message || "Error al actualizar el usuario.", "danger");
+    } finally {
+      setSavingUser(false);
+    }
+  };
+
+  const handleDeleteSelectedUser = async () => {
+    if (!selectedUser || savingUser) return;
+    if (!confirmDeleteUser) {
+      setConfirmDeleteUser(true);
+      return;
+    }
+
+    setSavingUser(true);
+    try {
+      await adminApi.deleteUser(selectedUser.id);
+      setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
+      setStats((prev) => ({
+        ...prev,
+        totalUsers: Math.max(0, (prev.totalUsers || 1) - 1),
+      }));
+      showToast(`Perfil de "${selectedUser.fullName}" eliminado.`, "danger");
+      closeUserModal();
+    } catch (error) {
+      showToast(error.message || "No se pudo eliminar el perfil.", "danger");
+    } finally {
+      setSavingUser(false);
     }
   };
 
@@ -198,7 +429,6 @@ export default function DashboardAdmin() {
         ),
       }));
 
-      // Abre correo prellenado para enviar también al email del remitente
       const mailSubject = encodeURIComponent("Respuesta de Soporte - NoteCore");
       const mailBody = encodeURIComponent(
         `Hola ${replyModalMsg.name},\n\n${replyText.trim()}\n\nSaludos,\nEquipo NoteCore`
@@ -354,21 +584,34 @@ export default function DashboardAdmin() {
 
               <div className="kpi-card">
                 <div className="kpi-icon-box">
-                  <i className="fa-solid fa-envelope-open-text"></i>
-                </div>
-                <div className="kpi-info">
-                  <span className="kpi-label">Mensajes Pendientes</span>
-                  <div className="kpi-value">{stats.pendingMessages}</div>
-                </div>
-              </div>
-
-              <div className="kpi-card">
-                <div className="kpi-icon-box">
                   <i className="fa-solid fa-building-columns"></i>
                 </div>
                 <div className="kpi-info">
                   <span className="kpi-label">Instituciones Activas</span>
                   <div className="kpi-value">{stats.totalUniversities}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="dash-card">
+              <div className="dash-card-header">
+                <div>
+                  <h3>
+                    <i className="fa-solid fa-chart-line card-icon"></i> Tráfico de la página
+                  </h3>
+                  <p className="dash-card-sub">
+                    Actividad diaria de registros y consultas en NoteCore
+                  </p>
+                </div>
+                <CustomDropdown
+                  options={TRAFFIC_RANGE_OPTIONS}
+                  value={trafficRange}
+                  onChange={setTrafficRange}
+                />
+              </div>
+              <div>
+                <div className="chart-container">
+                  <Line data={trafficChartData} options={trafficChartOptions} />
                 </div>
               </div>
             </div>
@@ -397,7 +640,7 @@ export default function DashboardAdmin() {
               ) : (
                 <div className="attention-subjects-list">
                   {messages.slice(0, 4).map((m) => (
-                    <div key={m.id} className="attention-subject-item">
+                    <div key={m.id} className="attention-subject-item is-static">
                       <div className="subject-header-row">
                         <span className="subject-name">
                           {m.name} ({m.email})
@@ -564,29 +807,162 @@ export default function DashboardAdmin() {
 
             <div className="dash-card">
               <div className="attention-subjects-list">
-                {users.map((u) => (
-                  <div key={u.id} className="attention-subject-item">
-                    <div className="subject-header-row">
-                      <span className="subject-name">
-                        {u.fullName} ({u.email})
-                      </span>
-                      <span
-                        className={`subject-grade-badge ${u.role === "admin" ? "excelent" : "success"
-                          }`}
-                      >
-                        {u.role === "admin" ? "Admin" : "Estudiante"}
-                      </span>
+                {users.map((u) => {
+                  const isAdminAccount = u.role === "admin";
+                  return (
+                    <div
+                      key={u.id}
+                      className={`attention-subject-item${isAdminAccount ? " is-static" : ""}`}
+                      onClick={isAdminAccount ? undefined : () => openUserModal(u)}
+                    >
+                      <div className="subject-header-row">
+                        <span className="subject-name">
+                          {u.fullName} ({u.email})
+                        </span>
+                        <span
+                          className={`subject-grade-badge ${isAdminAccount ? "excelent" : "success"
+                            }`}
+                        >
+                          {isAdminAccount ? "Admin" : "Estudiante"}
+                        </span>
+                      </div>
+                      <p className="dash-card-sub">
+                        {u.university} · {u.degree}
+                      </p>
                     </div>
-                    <p className="dash-card-sub">
-                      {u.university} · {u.degree}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </section>
         )}
       </DashboardLayout>
+
+      {/* Modal de Perfil del Usuario Seleccionado (Editar / Eliminar) */}
+      <Modal
+        isOpen={Boolean(selectedUser)}
+        onClose={closeUserModal}
+        cardClassName="profile-modal-card"
+      >
+        <div className="modal-header">
+          <div className="modal-title">
+            <i className="fa-solid fa-user-gear highlight"></i>
+            <span>Perfil de Estudiante</span>
+          </div>
+        </div>
+
+        <div className="modal-body">
+          <div className="profile-avatar-section">
+            <div className="profile-frame-avatar">
+              {selectedUser?.avatar ? (
+                <img
+                  src={selectedUser.avatar}
+                  alt={`Foto de ${selectedUser.firstName}`}
+                  className="profile-avatar-img"
+                />
+              ) : (
+                <i className="fa-solid fa-user"></i>
+              )}
+            </div>
+            <div className="profile-head-info">
+              <h3>{`${userForm.firstName} ${userForm.lastName}`.trim()}</h3>
+              <span className="badge">{selectedUser?.roleLabel || "Estudiante Universitario"}</span>
+            </div>
+          </div>
+
+          <form className="profile-form" onSubmit={(e) => e.preventDefault()}>
+            <div className="form-grid">
+              <div className="form-group">
+                <label htmlFor="admin-user-firstname">Nombre</label>
+                <input
+                  id="admin-user-firstname"
+                  type="text"
+                  value={userForm.firstName}
+                  onChange={(e) => setUserForm((f) => ({ ...f, firstName: e.target.value }))}
+                  readOnly={!editingUser}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="admin-user-lastname">Apellidos</label>
+                <input
+                  id="admin-user-lastname"
+                  type="text"
+                  value={userForm.lastName}
+                  onChange={(e) => setUserForm((f) => ({ ...f, lastName: e.target.value }))}
+                  readOnly={!editingUser}
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="admin-user-email">Correo Electrónico</label>
+              <input
+                id="admin-user-email"
+                type="email"
+                value={userForm.email}
+                onChange={(e) => setUserForm((f) => ({ ...f, email: e.target.value }))}
+                readOnly={!editingUser}
+              />
+            </div>
+
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Institución</label>
+                <CustomDropdown
+                  options={universityNames}
+                  value={userForm.university}
+                  onChange={(university) =>
+                    setUserForm((f) => ({ ...f, university, degree: "" }))
+                  }
+                  placeholder="Selecciona Institución"
+                  disabled={!editingUser}
+                />
+              </div>
+              <div className="form-group">
+                <label>Programa Académico</label>
+                <CustomDropdown
+                  key={userForm.university}
+                  searchable
+                  options={selectedUserDegrees}
+                  value={userForm.degree}
+                  onChange={(degree) => setUserForm((f) => ({ ...f, degree }))}
+                  placeholder="Selecciona Programa"
+                  emptyMessage="Selecciona primero una institución"
+                  disabled={!editingUser}
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div className="modal-footer modal-footer-between">
+          <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              className={`btn ${editingUser ? "btn-primary" : "btn-outline"}`}
+              onClick={handleToggleEditUser}
+              disabled={savingUser}
+            >
+              <i
+                className={`fa-solid ${editingUser ? "fa-floppy-disk" : "fa-pen-to-square"} icon-left`}
+              ></i>
+              {editingUser ? (savingUser ? "Guardando..." : "Guardar cambios") : "Editar perfil"}
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline btn-danger"
+              onClick={handleDeleteSelectedUser}
+              disabled={savingUser}
+            >
+              <i className="fa-solid fa-user-xmark icon-left"></i>
+              {confirmDeleteUser ? "Confirmar eliminación" : "Eliminar perfil"}
+            </button>
+          </div>
+          <button type="button" className="btn btn-primary" onClick={closeUserModal}>
+            Cerrar
+          </button>
+        </div>
+      </Modal>
 
       {/* Modal de Respuesta a Mensaje */}
       <Modal

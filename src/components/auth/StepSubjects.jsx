@@ -63,10 +63,7 @@ export default function StepSubjects({ subjects, onChange, onBack, onFinish, onW
       cuts: createEmptyCuts(),
     }));
 
-    // Sincroniza el arreglo en memoria y guarda respaldo inicial para el Dashboard
-    mockSubjects.splice(0, mockSubjects.length, ...formattedSubjects);
     sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(formattedSubjects));
-
     onFinish?.(formattedSubjects);
   };
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "../../common/Modal";
 import CustomDropdown from "../../common/CustomDropdown";
 import {
+  computeSubjectGrades,
   formatGrade,
   formatGradePrecise,
   getGradeStatus,
@@ -85,7 +86,13 @@ function LockedGradeField({ label, value }) {
   );
 }
 
-export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimulation }) {
+export default function ToolModal({
+  toolId,
+  onClose,
+  subjects = [],
+  onSaveSimulation,
+  onSaveSubject,
+}) {
   const isOpen = Boolean(toolId && TOOL_META[toolId]);
   const meta = TOOL_META[toolId] || { icon: "fa-calculator", title: "" };
 
@@ -266,22 +273,60 @@ export default function ToolModal({ toolId, onClose, subjects = [], onSaveSimula
     parcialWeight > 0 ? (finalCutGrade - accumulatedCutPoints) / (parcialWeight / 100) : null;
 
   // Guarda el cálculo inverso dentro de la asignatura seleccionada (solo Herramienta 5)
+  // Guarda el cálculo inverso (actividades + parcial calculado) dentro de la asignatura seleccionada
   const handleSaveToSubject = () => {
-    if (!selectedSubject || toolId !== "inverse") return;
-    const summaryText =
-      inverseParcialGrade !== null
-        ? `Nota calculada del parcial en Corte ${activeCutIdx + 1}: ${formatGradePrecise(
-          Math.max(0, inverseParcialGrade)
-        )}.`
-        : "Cálculo inverso registrado.";
+    if (!selectedSubject || toolId !== "inverse" || parcialWeight <= 0 || inverseParcialGrade === null) {
+      return;
+    }
 
-    onSaveSimulation?.(selectedSubject.id, {
+    const clampedParcial = Number(Math.min(5.0, Math.max(0.0, inverseParcialGrade)).toFixed(2));
+    const updatedCuts = (selectedSubject.cuts || []).map((cut, idx) => {
+      if (idx !== activeCutIdx) return cut;
+      return {
+        ...cut,
+        activities: activities.map((a) => ({
+          id: a.id,
+          name: a.name,
+          grade: Number(a.grade) || 0,
+          weight: Number(a.weight) || 0,
+          locked: true,
+        })),
+        parcial: {
+          ...(cut.parcial || {}),
+          grade: clampedParcial,
+          weight: parcialWeight,
+          locked: true,
+        },
+      };
+    });
+
+    const { accumulated, paceGrade, evaluatedWeight } = computeSubjectGrades(updatedCuts);
+    const status = getGradeStatus(paceGrade, evaluatedWeight);
+    const summaryText = `Nota calculada del parcial en Corte ${activeCutIdx + 1}: ${formatGradePrecise(
+      clampedParcial
+    )}.`;
+
+    const newSimulation = {
       id: Date.now(),
       toolId,
       toolTitle: meta.title,
       summary: summaryText,
       createdAt: new Date().toISOString(),
-    });
+    };
+
+    if (onSaveSubject) {
+      onSaveSubject({
+        ...selectedSubject,
+        cuts: updatedCuts,
+        current: accumulated,
+        statusLabel: status.label,
+        performance: status.label,
+        simulations: [newSimulation, ...(selectedSubject.simulations || [])],
+      });
+    } else {
+      onSaveSimulation?.(selectedSubject.id, newSimulation);
+    }
+
     onClose?.();
   };
 

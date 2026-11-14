@@ -68,9 +68,9 @@ export default function CoreAIChat({ greeting }) {
         className={`ai-chat-drawer${open ? " active" : ""}`}
         aria-hidden={!open}
       >
-        <div className="chat-header">
-          <div className="chat-title">
-            <i className="fa-solid fa-robot"></i> CoreAI Assistant
+        <div className="ai-chat-header">
+          <div className="ai-chat-title">
+            <i className="fa-solid fa-robot highlight"></i> CoreAI Assistant
           </div>
           <button
             type="button"
@@ -82,17 +82,36 @@ export default function CoreAIChat({ greeting }) {
           </button>
         </div>
 
-        <div className="chat-messages">
-          {messages.map((m) => (
-            <div key={m.id} className={`message ${m.sender === "user" ? "user-msg" : "ai-msg"}`}>
-              {m.text}
-            </div>
-          ))}
-          {sending && <div className="message ai-msg">Analizando tus asignaturas...</div>}
+        <div className="ai-chat-body">
+          {messages.map((m) =>
+            m.sender === "user" ? (
+              <div
+                key={m.id}
+                className="chat-message user"
+                style={{
+                  alignSelf: "flex-end",
+                  backgroundColor: "var(--primary)",
+                  color: "var(--text-on-primary)",
+                  padding: "0.8rem 1rem",
+                  borderRadius: "16px 16px 4px 16px",
+                  fontSize: "0.88rem",
+                  maxWidth: "85%",
+                  lineHeight: 1.4,
+                }}
+              >
+                {m.text}
+              </div>
+            ) : (
+              <div key={m.id} className="chat-message bot">
+                {m.text}
+              </div>
+            )
+          )}
+          {sending && <div className="chat-message bot">Analizando tus asignaturas...</div>}
           <div ref={messagesEndRef} />
         </div>
 
-        <form className="chat-input-area" onSubmit={handleSend}>
+        <form className="ai-chat-footer" onSubmit={handleSend}>
           <input
             type="text"
             placeholder="Pregúntame cómo va tu semestre..."
@@ -103,7 +122,7 @@ export default function CoreAIChat({ greeting }) {
           />
           <button
             type="submit"
-            className="btn-send-chat"
+            className="btn-send"
             aria-label="Enviar mensaje"
             disabled={sending || !text.trim()}
           >

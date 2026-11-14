@@ -527,6 +527,7 @@ export default function DashboardUser() {
         onClose={closeModal}
         subjects={subjects}
         onSaveSimulation={handleSaveSimulation}
+        onSaveSubject={handleSaveSubjectDetail}
       />
     </>
   );

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+// import { useRef } from "react";
 import Modal from "../common/Modal";
 import CustomDropdown from "../common/CustomDropdown";
-import AvatarCropModal from "./modals/AvatarCropModal";
+// import AvatarCropModal from "./modals/AvatarCropModal";
 import { adminApi } from "../../services/api";
 import { useToast } from "../../context/ToastContext";
 
@@ -17,16 +18,23 @@ const pickForm = (u) => ({
 export default function ProfileModal({ isOpen, onClose, user, onSave }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(() => pickForm(user));
-  const [rawImage, setRawImage] = useState(null);
+  // const [rawImage, setRawImage] = useState(null);
   const [universitiesList, setUniversitiesList] = useState([]);
-  const fileInputRef = useRef(null);
+  // const fileInputRef = useRef(null);
   const { showToast } = useToast();
+
+  const isAdmin = user?.role === "admin";
 
   useEffect(() => {
     if (!isOpen) return;
     setForm(pickForm(user));
     setEditing(false);
-    setRawImage(null);
+    // setRawImage(null);
+
+    if (isAdmin) {
+      setUniversitiesList([]);
+      return;
+    }
 
     let active = true;
     adminApi
@@ -40,7 +48,7 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
     return () => {
       active = false;
     };
-  }, [isOpen, user]);
+  }, [isOpen, user, isAdmin]);
 
   const universities = universitiesList.map((u) => u.name);
   const selectedUni = universitiesList.find((u) => u.name === form.university);
@@ -52,6 +60,11 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
     setForm((f) => ({ ...f, university, degree: "" }));
   };
 
+  const handleAvatarUploadClick = () => {
+    showToast("La subida de fotos de perfil aún no está disponible.", "info");
+  };
+
+  /* Descomentar cuando se habilite almacenamiento externo de avatares:
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     e.target.value = "";
@@ -70,10 +83,11 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
     };
     reader.readAsDataURL(file);
   };
+  */
 
   const handleClose = () => {
     setEditing(false);
-    setRawImage(null);
+    // setRawImage(null);
     setForm(pickForm(user));
     onClose?.();
   };
@@ -84,7 +98,7 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
         showToast("Nombre, apellidos y correo electrónico son obligatorios.", "warning");
         return;
       }
-      if (!form.university || !form.degree) {
+      if (!isAdmin && (!form.university || !form.degree)) {
         showToast("Selecciona tu institución y programa académico.", "warning");
         return;
       }
@@ -118,13 +132,13 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
 
               {editing && (
                 <>
-                  <input
+                  {/* <input
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     className="sr-only"
                     onChange={handleFileChange}
-                  />
+                  /> */}
                   {form.avatar && (
                     <button
                       type="button"
@@ -141,7 +155,8 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
                     className="avatar-edit-btn"
                     aria-label="Cambiar foto de perfil"
                     title="Subir foto"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={handleAvatarUploadClick}
+                  // onClick={() => fileInputRef.current?.click()}
                   >
                     <i className="fa-solid fa-camera"></i>
                   </button>
@@ -190,31 +205,33 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
               />
             </div>
 
-            <div className="form-grid">
-              <div className="form-group">
-                <label>Institución</label>
-                <CustomDropdown
-                  options={universities}
-                  value={form.university}
-                  onChange={handleUniversityChange}
-                  placeholder="Selecciona tu Institución"
-                  disabled={!editing}
-                />
+            {!isAdmin && (
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Institución</label>
+                  <CustomDropdown
+                    options={universities}
+                    value={form.university}
+                    onChange={handleUniversityChange}
+                    placeholder="Selecciona tu Institución"
+                    disabled={!editing}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Programa Académico</label>
+                  <CustomDropdown
+                    key={form.university}
+                    searchable
+                    options={degrees}
+                    value={form.degree}
+                    onChange={(degree) => setForm((f) => ({ ...f, degree }))}
+                    placeholder="Selecciona tu Programa Académico"
+                    emptyMessage="Selecciona primero una institución"
+                    disabled={!editing}
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Programa Académico</label>
-                <CustomDropdown
-                  key={form.university}
-                  searchable
-                  options={degrees}
-                  value={form.degree}
-                  onChange={(degree) => setForm((f) => ({ ...f, degree }))}
-                  placeholder="Selecciona tu Programa Académico"
-                  emptyMessage="Selecciona primero una institución"
-                  disabled={!editing}
-                />
-              </div>
-            </div>
+            )}
           </form>
         </div>
 
@@ -235,7 +252,7 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
         </div>
       </Modal>
 
-      <AvatarCropModal
+      {/* <AvatarCropModal
         isOpen={Boolean(rawImage)}
         imageSrc={rawImage}
         onClose={() => setRawImage(null)}
@@ -243,7 +260,7 @@ export default function ProfileModal({ isOpen, onClose, user, onSave }) {
           setForm((f) => ({ ...f, avatar: croppedAvatar }));
           setRawImage(null);
         }}
-      />
+      /> */}
     </>
   );
 }
