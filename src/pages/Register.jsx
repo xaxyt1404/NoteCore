@@ -59,6 +59,35 @@ export default function Register() {
     }
   };
 
+  const handleGoogleSuccess = async (accessToken) => {
+    try {
+      const data = await authApi.googleLogin(accessToken);
+      setToken(data.token);
+      localStorage.setItem("notecore_active_user", JSON.stringify(data.user));
+      if (data.user?.semester) {
+        localStorage.setItem("notecore_user_semester", JSON.stringify(data.user.semester));
+      }
+      if (Array.isArray(data.subjects)) {
+        localStorage.setItem("notecore_user_subjects", JSON.stringify(data.subjects));
+        sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(data.subjects));
+      }
+      const targetRoute = data.user?.role === "admin" ? "/admin" : "/dashboard";
+      showToast("¡Sesión iniciada con Google! Redirigiendo...", "success");
+
+      if (!data.user?.degree && data.user?.role !== "admin") {
+        setTimeout(() => {
+          showToast(
+            "No olvides ir a tu perfil para configurar tu institución y programa académico.",
+            "info"
+          );
+        }, 1100);
+        
+      } timerRef.current = setTimeout(() => navigate(targetRoute), 800);
+    } catch (error) {
+      showToast(error.message || "No se pudo iniciar sesión con Google.", "danger");
+    }
+  };
+
   return (
     <AuthLayout showBackLink={step === 0}>
       {step === 0 && (
@@ -66,6 +95,7 @@ export default function Register() {
           data={basic}
           onChange={setBasic}
           onNext={() => setStep(1)}
+          onGoogleSuccess={handleGoogleSuccess}
         />
       )}
       {step === 1 && (

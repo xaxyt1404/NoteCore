@@ -46,6 +46,26 @@ export default function Login() {
     setView("login");
   };
 
+  const handleGoogleSuccess = async (accessToken) => {
+    try {
+      const data = await authApi.googleLogin(accessToken);
+      setToken(data.token);
+      localStorage.setItem("notecore_active_user", JSON.stringify(data.user));
+      if (data.user?.semester) {
+        localStorage.setItem("notecore_user_semester", JSON.stringify(data.user.semester));
+      }
+      if (Array.isArray(data.subjects)) {
+        localStorage.setItem("notecore_user_subjects", JSON.stringify(data.subjects));
+        sessionStorage.setItem("notecore_initial_subjects", JSON.stringify(data.subjects));
+      }
+      const targetRoute = data.user?.role === "admin" ? "/admin" : "/dashboard";
+      showToast("¡Sesión iniciada con Google! Redirigiendo...", "success");
+      timerRef.current = setTimeout(() => navigate(targetRoute), 800);
+    } catch (error) {
+      showToast(error.message || "No se pudo iniciar sesión con Google.", "danger");
+    }
+  };
+
   return (
     <AuthLayout showBackLink={view === "login"}>
       {view === "login" ? (
@@ -53,6 +73,7 @@ export default function Login() {
           onSubmit={handleLogin}
           onForgot={() => setView("forgot")}
           loading={loading}
+          onGoogleSuccess={handleGoogleSuccess}
         />
       ) : (
         <ForgotPasswordView

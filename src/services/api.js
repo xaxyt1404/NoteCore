@@ -87,6 +87,11 @@ export const authApi = {
     request("/auth/account", {
       method: "DELETE",
     }),
+  googleLogin: (accessToken) =>
+    request("/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ accessToken }),
+    }),
 };
 
 // ==========================================

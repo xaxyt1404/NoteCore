@@ -2,7 +2,12 @@ import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import SocialAuthGrid from "./SocialAuthGrid";
 
-export default function LoginView({ onSubmit, onForgot, loading = false }) {
+export default function LoginView({
+  onSubmit,
+  onForgot,
+  onGoogleSuccess,
+  loading = false,
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
@@ -115,9 +120,7 @@ export default function LoginView({ onSubmit, onForgot, loading = false }) {
         </p>
       </form>
 
-      <SocialAuthGrid />
+      <SocialAuthGrid onGoogleSuccess={onGoogleSuccess} disabled={loading} />
     </div>
   );
 }
-
-

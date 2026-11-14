@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 import SocialAuthGrid from "./SocialAuthGrid";
 import TermsModal from "./TermsModal";
 
-export default function StepBasicInfo({ data, onChange, onNext }) {
+export default function StepBasicInfo({
+  data,
+  onChange,
+  onNext,
+  onGoogleSuccess,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const [termsOpen, setTermsOpen] = useState(false);
   const firstNameRef = useRef(null);
@@ -164,7 +169,7 @@ export default function StepBasicInfo({ data, onChange, onNext }) {
         </p>
       </form>
 
-      <SocialAuthGrid />
+      <SocialAuthGrid onGoogleSuccess={onGoogleSuccess} />
 
       <TermsModal
         isOpen={termsOpen}
